@@ -27,9 +27,13 @@ pub fn router() -> Router<AppState> {
         .route("/v1/auth/sessions", get(auth::list_sessions))
         // Media
         .route("/v1/media", post(media::upload_image))
-        // Catalog
+        // Catalog (meta before bare {id} is fine; static segments first)
         .route("/v1/foods", get(foods::list_foods))
         .route("/v1/foods/groups", get(foods::list_groups))
+        .route(
+            "/v1/foods/{id}/meta",
+            get(foods::get_food_meta).put(foods::put_food_meta),
+        )
         .route("/v1/foods/{id}", get(foods::get_food))
         // Fridge (auth required)
         .route("/v1/fridge", get(fridge::list_fridge).post(fridge::add_fridge))

@@ -9,13 +9,14 @@ import { api, type MealDto } from "../lib/api";
 type Mode = "meals" | "ingredients";
 
 export function BrowsePage() {
-  const { foods, catalogLoading, getRating } = useApp();
+  const { foods, catalog, catalogLoading, getRating } = useApp();
   const [mode, setMode] = useState<Mode>("ingredients");
   const [q, setQ] = useState("");
   const [group, setGroup] = useState("");
   const [meals, setMeals] = useState<MealDto[]>([]);
   const [mealsLoading, setMealsLoading] = useState(false);
   const [mealsError, setMealsError] = useState<string | null>(null);
+  const totalIngredients = catalog?.count ?? foods.length;
 
   const groups = useMemo(() => {
     const set = new Set(foods.map((f) => f.food_group).filter(Boolean));
@@ -73,6 +74,10 @@ export function BrowsePage() {
             <h1>Browse</h1>
             <p className="lede">Search public meals and USDA Foundation ingredients</p>
           </div>
+          <div className="catalog-count-chip" title="Total ingredients in catalog">
+            <strong>{catalogLoading ? "…" : totalIngredients.toLocaleString()}</strong>
+            <span>ingredients</span>
+          </div>
         </div>
 
         <div className="seg" role="tablist">
@@ -83,7 +88,7 @@ export function BrowsePage() {
             aria-selected={mode === "ingredients"}
             onClick={() => setMode("ingredients")}
           >
-            Ingredients
+            Ingredients ({catalogLoading ? "…" : totalIngredients.toLocaleString()})
           </button>
           <button
             type="button"
@@ -173,7 +178,9 @@ export function BrowsePage() {
             )}
             <p className="text-sm muted mt-12">
               Showing {ingredientHits.length}
-              {q || group ? " matches" : ` of ${foods.length}`}
+              {q || group ? " matches" : ` of ${totalIngredients.toLocaleString()}`}
+              {" · "}
+              <strong>{totalIngredients.toLocaleString()}</strong> total ingredients
             </p>
           </section>
         )}

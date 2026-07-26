@@ -2864,3 +2864,43 @@ code {
   display: block;
 }
 
+.catalog-count-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-sm);
+  line-height: 1.15;
+}
+
+.catalog-count-chip strong {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.catalog-count-chip span {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.ingredient-photo-wrap {
+  position: relative;
+}
+
+.ingredient-photo-edit {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  box-shadow: var(--shadow);
+}
+

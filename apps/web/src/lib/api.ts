@@ -292,6 +292,25 @@ export const api = {
 
   getFood: (id: string) => request<ApiFood>(`/v1/foods/${encodeURIComponent(id)}`),
 
+  getFoodMeta: (id: string) =>
+    request<{
+      food_id: string;
+      description: string;
+      photo_url: string | null;
+      catalog_description: string;
+      catalog_picture: string | null;
+    }>(`/v1/foods/${encodeURIComponent(id)}/meta`, undefined, true),
+
+  putFoodMeta: (
+    id: string,
+    body: { description?: string; photo_url?: string | null; clear_photo?: boolean },
+  ) =>
+    request<{ food_id: string; description: string; photo_url: string | null }>(
+      `/v1/foods/${encodeURIComponent(id)}/meta`,
+      { method: "PUT", body: JSON.stringify(body) },
+      true,
+    ),
+
   groups: () => request<{ groups: string[] }>("/v1/foods/groups"),
 
   listFridge: () => request<{ items: FridgeItemDto[] }>("/v1/fridge", undefined, true),

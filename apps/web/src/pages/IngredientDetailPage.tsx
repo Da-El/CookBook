@@ -1,20 +1,69 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { FoodThumb } from "../components/FoodThumb";
 import { MacroPills } from "../components/MacroPills";
+import { PhotoPicker } from "../components/PhotoPicker";
 import { StarRating } from "../components/StarRating";
 import { useApp } from "../context/AppContext";
+import { api, ApiError, getAccessToken } from "../lib/api";
 import { getFoodById } from "../lib/catalog";
+import { mediaUrl } from "../lib/photo";
+import type { CatalogFood } from "../types";
+
+const META_KEY = "grok-cookbook-food-meta-v1";
+
+type LocalMeta = { description: string; photoUrl: string | null };
+
+function loadLocalMeta(foodId: string): LocalMeta {
+  try {
+    const raw = localStorage.getItem(META_KEY);
+    if (!raw) return { description: "", photoUrl: null };
+    const all = JSON.parse(raw) as Record<string, LocalMeta>;
+    return all[foodId] ?? { description: "", photoUrl: null };
+  } catch {
+    return { description: "", photoUrl: null };
+  }
+}
+
+function saveLocalMeta(foodId: string, meta: LocalMeta) {
+  try {
+    const raw = localStorage.getItem(META_KEY);
+    const all = raw ? (JSON.parse(raw) as Record<string, LocalMeta>) : {};
+    all[foodId] = meta;
+    localStorage.setItem(META_KEY, JSON.stringify(all));
+  } catch {
+    /* ignore */
+  }
+}
 
 export function IngredientDetailPage() {
   const { foodId = "" } = useParams();
   const navigate = useNavigate();
-  const { foods, catalogLoading, catalogError, fridge, getRating, setRating, addToFridge } =
-    useApp();
+  const {
+    foods,
+    catalog,
+    catalogLoading,
+    catalogError,
+    fridge,
+    getRating,
+    setRating,
+    addToFridge,
+    user,
+  } = useApp();
 
   const food = useMemo(() => getFoodById(foods, foodId), [foods, foodId]);
   const rating = food ? getRating("ingredient", food.id) : undefined;
   const [notes, setNotes] = useState(rating?.notes ?? "");
+
+  const [description, setDescription] = useState("");
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+  const [editingDesc, setEditingDesc] = useState(false);
+  const [editingPhoto, setEditingPhoto] = useState(false);
+  const [descDraft, setDescDraft] = useState("");
+  const [photoDraft, setPhotoDraft] = useState<string | null>(null);
+  const [metaLoading, setMetaLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [metaError, setMetaError] = useState<string | null>(null);
 
   const inFridge = useMemo(
     () =>
@@ -27,6 +76,85 @@ export function IngredientDetailPage() {
       ),
     [fridge, food],
   );
+
+  // Load user meta (server if signed in, else localStorage)
+  useEffect(() => {
+    if (!food) return;
+    let cancelled = false;
+    setMetaLoading(true);
+    setMetaError(null);
+
+    (async () => {
+      if (user && getAccessToken()) {
+        try {
+          const meta = await api.getFoodMeta(food.id);
+          if (cancelled) return;
+          setDescription(meta.description || "");
+          setPhotoUrl(meta.photo_url);
+          setDescDraft(meta.description || "");
+          setPhotoDraft(meta.photo_url);
+          return;
+        } catch {
+          /* fall through to local */
+        }
+      }
+      const local = loadLocalMeta(food.id);
+      if (!cancelled) {
+        setDescription(local.description);
+        setPhotoUrl(local.photoUrl);
+        setDescDraft(local.description);
+        setPhotoDraft(local.photoUrl);
+      }
+    })().finally(() => {
+      if (!cancelled) setMetaLoading(false);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [food, user]);
+
+  async function saveMeta(next: { description?: string; photoUrl?: string | null; clearPhoto?: boolean }) {
+    if (!food) return;
+    setSaving(true);
+    setMetaError(null);
+    const desc = next.description !== undefined ? next.description : description;
+    let photo = next.photoUrl !== undefined ? next.photoUrl : photoUrl;
+    if (next.clearPhoto) photo = null;
+
+    try {
+      if (user && getAccessToken()) {
+        let photo_url = photo;
+        if (photo?.startsWith("data:")) {
+          const up = await api.uploadMedia(photo);
+          photo_url = up.url;
+        }
+        const res = await api.putFoodMeta(food.id, {
+          description: desc,
+          photo_url: next.clearPhoto ? null : photo_url,
+          clear_photo: next.clearPhoto || false,
+        });
+        setDescription(res.description);
+        setPhotoUrl(res.photo_url);
+        setDescDraft(res.description);
+        setPhotoDraft(res.photo_url);
+        saveLocalMeta(food.id, { description: res.description, photoUrl: res.photo_url });
+      } else {
+        const meta = { description: desc, photoUrl: photo };
+        saveLocalMeta(food.id, meta);
+        setDescription(meta.description);
+        setPhotoUrl(meta.photoUrl);
+        setDescDraft(meta.description);
+        setPhotoDraft(meta.photoUrl);
+      }
+      setEditingDesc(false);
+      setEditingPhoto(false);
+    } catch (err) {
+      setMetaError(err instanceof ApiError ? err.message : "Could not save");
+    } finally {
+      setSaving(false);
+    }
+  }
 
   if (catalogLoading) {
     return (
@@ -70,6 +198,19 @@ export function IngredientDetailPage() {
 
   const micros = food.micros ?? [];
   const other = food.other_nutrients ?? [];
+  const totalIngredients = catalog?.count ?? foods.length;
+
+  const displayFood: CatalogFood = {
+    ...food,
+    picture: mediaUrl(photoUrl) || food.picture,
+    picture_candidates: photoUrl
+      ? [mediaUrl(photoUrl)!, ...(food.picture_candidates || [])].filter(Boolean) as string[]
+      : food.picture_candidates,
+  };
+
+  const hasCustomDesc = description.trim().length > 0;
+  const catalogDesc =
+    food.description && food.description !== food.name ? food.description : "";
 
   return (
     <div className="page">
@@ -80,7 +221,11 @@ export function IngredientDetailPage() {
               ← Back
             </button>
             <h1 className="mt-8">{food.name}</h1>
-            <p className="lede">{food.food_group}</p>
+            <p className="lede">
+              {food.food_group}
+              {" · "}
+              <strong>{totalIngredients.toLocaleString()}</strong> ingredients in catalog
+            </p>
           </div>
           <button
             type="button"
@@ -102,24 +247,164 @@ export function IngredientDetailPage() {
 
         {/* 1. Main card: photo + identity */}
         <section className="card">
-          <FoodThumb food={food} size="lg" />
-          <div className="card-pad">
-            <div className="meta-chips">
-              <span className="tag">{food.food_group || "Unclassified"}</span>
-              <span className="badge-ok">USDA Foundation</span>
+          {editingPhoto ? (
+            <div className="card-pad">
+              <PhotoPicker
+                value={photoDraft}
+                onChange={setPhotoDraft}
+                label="Ingredient photo"
+                hint="Your photo of this ingredient"
+                large
+              />
+              <div className="row-end mt-12" style={{ gap: 8 }}>
+                <button
+                  type="button"
+                  className="btn btn-ghost btn-sm"
+                  disabled={saving}
+                  onClick={() => {
+                    setPhotoDraft(photoUrl);
+                    setEditingPhoto(false);
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-secondary btn-sm"
+                  disabled={saving}
+                  onClick={() => saveMeta({ clearPhoto: true })}
+                >
+                  Remove photo
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary btn-sm"
+                  disabled={saving}
+                  onClick={() => saveMeta({ photoUrl: photoDraft })}
+                >
+                  {saving ? "Saving…" : "Save photo"}
+                </button>
+              </div>
             </div>
-
-            {food.name_scientific && (
-              <p className="scientific mt-12">{food.name_scientific}</p>
-            )}
-
-            {food.description && food.description !== food.name ? (
-              <p className="detail-desc mt-12">{food.description}</p>
-            ) : null}
-          </div>
+          ) : (
+            <>
+              <div className="ingredient-photo-wrap">
+                <FoodThumb food={displayFood} size="lg" />
+                <button
+                  type="button"
+                  className="btn btn-secondary btn-sm ingredient-photo-edit"
+                  onClick={() => {
+                    setPhotoDraft(photoUrl);
+                    setEditingPhoto(true);
+                  }}
+                >
+                  {photoUrl ? "Edit photo" : "Add photo"}
+                </button>
+              </div>
+              <div className="card-pad">
+                <div className="meta-chips">
+                  <span className="tag">{food.food_group || "Unclassified"}</span>
+                  <span className="badge-ok">USDA Foundation</span>
+                </div>
+                {food.name_scientific && (
+                  <p className="scientific mt-12">{food.name_scientific}</p>
+                )}
+              </div>
+            </>
+          )}
         </section>
 
-        {/* 2. Rating / review — second card */}
+        {/* Description under photo card */}
+        <section className="card card-pad">
+          <div className="card-head">
+            <h2 className="card-title">Description</h2>
+            {!editingDesc && (
+              <button
+                type="button"
+                className="btn btn-ghost btn-sm"
+                onClick={() => {
+                  setDescDraft(hasCustomDesc ? description : catalogDesc);
+                  setEditingDesc(true);
+                }}
+              >
+                {hasCustomDesc || catalogDesc ? "Edit" : "Add"}
+              </button>
+            )}
+          </div>
+
+          {metaLoading ? (
+            <p className="muted text-sm mt-8">Loading…</p>
+          ) : editingDesc ? (
+            <>
+              <div className="field mt-8">
+                <label htmlFor="food-desc" className="sr-only">
+                  Description
+                </label>
+                <textarea
+                  id="food-desc"
+                  value={descDraft}
+                  onChange={(e) => setDescDraft(e.target.value)}
+                  rows={4}
+                  placeholder="What is this ingredient? Flavor, how you use it, brands you like…"
+                  autoFocus
+                />
+              </div>
+              <div className="row-end mt-8" style={{ gap: 8 }}>
+                <button
+                  type="button"
+                  className="btn btn-ghost btn-sm"
+                  disabled={saving}
+                  onClick={() => setEditingDesc(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary btn-sm"
+                  disabled={saving}
+                  onClick={() => saveMeta({ description: descDraft })}
+                >
+                  {saving ? "Saving…" : "Save description"}
+                </button>
+              </div>
+            </>
+          ) : hasCustomDesc ? (
+            <p className="detail-desc mt-8">{description}</p>
+          ) : catalogDesc ? (
+            <p className="detail-desc mt-8 muted">{catalogDesc}</p>
+          ) : (
+            <p className="muted text-sm mt-8">
+              No description yet.{" "}
+              <button
+                type="button"
+                className="btn btn-ghost btn-sm"
+                style={{ display: "inline", padding: "0 4px", verticalAlign: "baseline" }}
+                onClick={() => {
+                  setDescDraft("");
+                  setEditingDesc(true);
+                }}
+              >
+                Write one
+              </button>
+            </p>
+          )}
+          {metaError && (
+            <p className="text-sm mt-8" style={{ color: "var(--danger)" }}>
+              {metaError}
+            </p>
+          )}
+          {!user && (
+            <p className="text-sm muted mt-8">
+              Signed-out edits stay on this device.{" "}
+              <Link to="/login" className="linkish">
+                Sign in
+              </Link>{" "}
+              to sync.
+            </p>
+          )}
+        </section>
+
+        {/* Rating */}
         <section className="card card-pad">
           <h2 className="card-title">Your rating</h2>
           <p className="muted text-sm mt-8">Rate this ingredient out of 10</p>
@@ -203,7 +488,6 @@ export function IngredientDetailPage() {
         {other.length > 0 && (
           <section className="card card-pad">
             <h2 className="card-title">Other nutrients</h2>
-            <p className="muted text-sm mt-8">Additional nutrient values</p>
             <div className="nutrient-table mt-12">
               {other.map((m) => (
                 <div key={m.name} className="nutrient-table-row">
@@ -241,6 +525,13 @@ export function IngredientDetailPage() {
       </div>
 
       <aside className="rail">
+        <div className="card card-pad">
+          <h2 className="card-title">Catalog</h2>
+          <div className="nutrient mt-12">
+            <div className="val">{totalIngredients.toLocaleString()}</div>
+            <div className="lbl">ingredients</div>
+          </div>
+        </div>
         <div className="card card-pad">
           <h2 className="card-title">Quick macros</h2>
           <div className="mt-12">
