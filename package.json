@@ -17,6 +17,7 @@
     "stack:full": "powershell -ExecutionPolicy Bypass -File scripts/dev-up.ps1 -Full",
     "catalog": "node scripts/build-foundation-catalog.mjs",
     "catalog:foundation": "node scripts/build-foundation-catalog.mjs",
-    "catalog:all": "node scripts/build-foundation-catalog.mjs"
+    "catalog:photos": "node scripts/enrich-catalog-photos.mjs",
+    "catalog:all": "node scripts/build-foundation-catalog.mjs && node scripts/enrich-catalog-photos.mjs"
   }
 }

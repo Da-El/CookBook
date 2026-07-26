@@ -80,10 +80,7 @@ export function IngredientDetailPage() {
               ← Back
             </button>
             <h1 className="mt-8">{food.name}</h1>
-            <p className="lede">
-              {food.food_group}
-              {food.food_subgroup ? ` · ${food.food_subgroup}` : ""}
-            </p>
+            <p className="lede">{food.food_group}</p>
           </div>
           <button
             type="button"
@@ -103,44 +100,59 @@ export function IngredientDetailPage() {
           </button>
         </div>
 
+        {/* 1. Main card: photo + identity */}
         <section className="card">
           <FoodThumb food={food} size="lg" />
           <div className="card-pad">
             <div className="meta-chips">
               <span className="tag">{food.food_group || "Unclassified"}</span>
-              {food.food_subgroup ? <span className="tag tag--muted">{food.food_subgroup}</span> : null}
-              <span className="badge-ok">USDA Foundation</span>
-              {food.macros_complete && (food.micros?.length ?? 0) > 0 ? (
-                <span className="badge-ok">Data complete</span>
-              ) : (
-                <span className="tag tag--muted">Some nutrients missing</span>
-              )}
             </div>
 
             {food.name_scientific && (
               <p className="scientific mt-12">{food.name_scientific}</p>
             )}
 
-            {food.description ? (
+            {food.description && food.description !== food.name ? (
               <p className="detail-desc mt-12">{food.description}</p>
-            ) : (
-              <p className="muted mt-12">No description for this food.</p>
-            )}
-
-            <p className="field-hint mt-12">
-              {food.id}
-              {food.fdc_id != null ? ` · FDC #${food.fdc_id}` : ""}
-              {" · "}
-              {food.source || "USDA Foundation Foods"}
-            </p>
+            ) : null}
           </div>
+        </section>
+
+        {/* 2. Rating / review — second card */}
+        <section className="card card-pad">
+          <h2 className="card-title">Your rating</h2>
+          <p className="muted text-sm mt-8">Rate this ingredient out of 10</p>
+          <div className="mt-12">
+            <StarRating
+              value={rating?.score ?? 0}
+              size="lg"
+              onChange={(score) => setRating("ingredient", food.id, score, notes)}
+            />
+          </div>
+          <div className="field mt-16">
+            <label htmlFor="rating-notes">Review notes</label>
+            <textarea
+              id="rating-notes"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              onBlur={() => {
+                if (rating?.score) setRating("ingredient", food.id, rating.score, notes);
+              }}
+              placeholder="Taste, freshness, brand, value…"
+            />
+          </div>
+          <button
+            type="button"
+            className="btn btn-secondary btn-sm mt-8"
+            onClick={() => setRating("ingredient", food.id, rating?.score ?? 0, notes)}
+          >
+            Save review
+          </button>
         </section>
 
         <section className="card card-pad">
           <h2 className="card-title">Macronutrients</h2>
-          <p className="muted text-sm mt-8">
-            Per 100 g · source: {food.nutrient_sources?.macros ?? "usda_foundation"}
-          </p>
+          <p className="muted text-sm mt-8">Per 100 g</p>
           <div className="mt-12">
             <MacroPills macros={food.macros} />
           </div>
@@ -170,9 +182,7 @@ export function IngredientDetailPage() {
 
         <section className="card card-pad">
           <h2 className="card-title">Micronutrients</h2>
-          <p className="muted text-sm mt-8">
-            Vitamins &amp; minerals · source: {food.nutrient_sources?.micros ?? "usda_foundation"}
-          </p>
+          <p className="muted text-sm mt-8">Vitamins &amp; minerals</p>
           {micros.length === 0 ? (
             <p className="muted mt-12">No micronutrient rows for this food.</p>
           ) : (
@@ -192,7 +202,7 @@ export function IngredientDetailPage() {
         {other.length > 0 && (
           <section className="card card-pad">
             <h2 className="card-title">Other nutrients</h2>
-            <p className="muted text-sm mt-8">Additional USDA nutrient values for this food</p>
+            <p className="muted text-sm mt-8">Additional nutrient values</p>
             <div className="nutrient-table mt-12">
               {other.map((m) => (
                 <div key={m.name} className="nutrient-table-row">
@@ -205,37 +215,6 @@ export function IngredientDetailPage() {
             </div>
           </section>
         )}
-
-        <section className="card card-pad">
-          <h2 className="card-title">Your rating</h2>
-          <p className="muted text-sm mt-8">Rate this ingredient out of 10 stars</p>
-          <div className="mt-12">
-            <StarRating
-              value={rating?.score ?? 0}
-              size="lg"
-              onChange={(score) => setRating("ingredient", food.id, score, notes)}
-            />
-          </div>
-          <div className="field mt-16">
-            <label htmlFor="rating-notes">Review notes</label>
-            <textarea
-              id="rating-notes"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              onBlur={() => {
-                if (rating?.score) setRating("ingredient", food.id, rating.score, notes);
-              }}
-              placeholder="Taste, freshness, brand, value…"
-            />
-          </div>
-          <button
-            type="button"
-            className="btn btn-secondary btn-sm mt-8"
-            onClick={() => setRating("ingredient", food.id, rating?.score ?? 0, notes)}
-          >
-            Save review
-          </button>
-        </section>
 
         {inFridge.length > 0 && (
           <section className="card card-pad">
@@ -253,7 +232,7 @@ export function IngredientDetailPage() {
                 </div>
               ))}
             </ul>
-            <Link to="/ingredients" className="btn btn-ghost btn-sm mt-8">
+            <Link to="/cookbook" className="btn btn-ghost btn-sm mt-8">
               Open fridge
             </Link>
           </section>
@@ -271,18 +250,7 @@ export function IngredientDetailPage() {
           <h2 className="card-title">Group</h2>
           <p className="text-sm mt-8">
             <strong>{food.food_group}</strong>
-            <br />
-            <span className="muted">{food.food_subgroup || "—"}</span>
           </p>
-        </div>
-        <div className="card card-pad">
-          <h2 className="card-title">Community rating</h2>
-          <p className="muted text-sm mt-8">
-            Multi-user averages land with the backend. Right now your 10-star score is saved on this device.
-          </p>
-          <div className="mt-12">
-            <StarRating value={rating?.score ?? 0} showValue size="sm" />
-          </div>
         </div>
       </aside>
     </div>

@@ -26,6 +26,13 @@ export type CatalogFood = {
   food_subgroup: string;
   picture: string | null;
   picture_candidates?: string[];
+  picture_attribution?: {
+    source?: string;
+    title?: string;
+    license?: string;
+    artist?: string;
+    page?: string;
+  };
   emoji: string;
   source: string;
   macros: Macros;
