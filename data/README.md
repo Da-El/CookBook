@@ -2,9 +2,9 @@
 
 ## USDA Foundation Foods (active catalog source)
 
-**Path:** `data/usda/FoodData_Central_foundation_food_json_2025-04-24.json`  
+**Path:** `data/usda/FoodData_Central_foundation_food_json_2026-04-30.json` (latest dump)  
 **Source:** https://fdc.nal.usda.gov/download-datasets  
-**Foods:** ~340 Foundation Foods  
+**Foods:** ~360+ Foundation Foods (grows as USDA adds items; live site may show more)  
 **License:** Public domain / CC0 1.0 — free for commercial use  
 
 Build the app catalog:

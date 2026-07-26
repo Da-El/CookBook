@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { FoodThumb } from "../components/FoodThumb";
+import { ReviewsList } from "../components/ReviewsList";
 import { StarRating } from "../components/StarRating";
 import { useApp } from "../context/AppContext";
 import { api, ApiError, type MealDto, type ReviewDto } from "../lib/api";
@@ -12,6 +13,8 @@ export function MealDetailPage() {
   const { user, foods } = useApp();
   const [meal, setMeal] = useState<MealDto | null>(null);
   const [reviews, setReviews] = useState<ReviewDto[]>([]);
+  const [reviewsLoading, setReviewsLoading] = useState(false);
+  const [reviewAvg, setReviewAvg] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [score, setScore] = useState(0);
@@ -38,20 +41,28 @@ export function MealDetailPage() {
             /* ignore */
           }
         }
-        if (user) {
-          try {
-            const r = await api.listReviews({ subject_type: "meal", subject_id: mealId });
-            if (!cancelled) {
-              setReviews(r.items);
+        // Community reviews (public meals; works signed-out too)
+        setReviewsLoading(true);
+        try {
+          const r = await api.listReviews({ subject_type: "meal", subject_id: mealId, limit: 100 });
+          if (!cancelled) {
+            setReviews(r.items);
+            setReviewAvg(r.avg ?? m.review_avg ?? null);
+            if (user) {
               const mine = r.items.find((x) => x.user_id === user.id);
               if (mine) {
                 setScore(mine.score);
                 setNotes(mine.notes);
               }
             }
-          } catch {
-            /* reviews optional if private */
           }
+        } catch {
+          if (!cancelled) {
+            setReviews([]);
+            setReviewAvg(m.review_avg ?? null);
+          }
+        } finally {
+          if (!cancelled) setReviewsLoading(false);
         }
       } catch (err) {
         if (!cancelled) setError(err instanceof ApiError ? err.message : "Meal not found");
@@ -84,7 +95,9 @@ export function MealDetailPage() {
       });
       setReviews((prev) => {
         const rest = prev.filter((x) => x.user_id !== user.id);
-        return [r, ...rest];
+        const next = [r, ...rest];
+        setReviewAvg(next.reduce((s, x) => s + x.score, 0) / next.length);
+        return next;
       });
       setMeal((m) =>
         m
@@ -344,38 +357,13 @@ export function MealDetailPage() {
           )}
         </section>
 
-        {reviews.length > 0 && (
-          <section className="card card-pad">
-            <h2 className="card-title">Reviews</h2>
-            <ul className="ing-list mt-12">
-              {reviews.map((r) => (
-                <li key={r.id} className="ing-row">
-                  <div className="avatar avatar--sm avatar--accent">
-                    <span>
-                      {r.display_name
-                        .split(/\s+/)
-                        .map((w) => w[0])
-                        .join("")
-                        .slice(0, 2)
-                        .toUpperCase()}
-                    </span>
-                  </div>
-                  <div className="ing-meta">
-                    <div className="name">
-                      <Link to={`/u/${encodeURIComponent(r.handle)}`} className="linkish">
-                        @{r.handle}
-                      </Link>
-                    </div>
-                    <div className="group">
-                      <StarRating value={r.score} showValue />
-                      {r.notes ? ` · ${r.notes}` : ""}
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
+        <ReviewsList
+          reviews={reviews}
+          loading={reviewsLoading}
+          avg={reviewAvg}
+          title="All reviews"
+          emptyText="No reviews yet — be the first to rate this meal."
+        />
       </div>
 
       <aside className="rail">

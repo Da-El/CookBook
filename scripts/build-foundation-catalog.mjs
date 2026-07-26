@@ -58,7 +58,8 @@ function findFoundationJson(dir) {
   if (!fs.existsSync(dir)) return null;
   const files = fs
     .readdirSync(dir)
-    .filter((n) => /foundation.*\.json$/i.test(n) || /FoodData_Central_foundation/i.test(n))
+    .filter((n) => /FoodData_Central_foundation.*\.json$/i.test(n) || /foundation.*food.*\.json$/i.test(n))
+    .filter((n) => n.toLowerCase().endsWith(".json"))
     .map((n) => path.join(dir, n));
   if (!files.length) return null;
   files.sort();
@@ -103,11 +104,14 @@ function main() {
   }
   console.log("Reading", srcPath);
   const raw = JSON.parse(fs.readFileSync(srcPath, "utf8"));
-  const list = raw.FoundationFoods || raw.foundationFoods || [];
+  const list = (raw.FoundationFoods || raw.foundationFoods || []).filter(
+    (f) => f && f.fdcId != null && f.description,
+  );
   if (!list.length) {
     console.error("No FoundationFoods array in file");
     process.exit(1);
   }
+  console.log(`Parsed ${list.length} foundation foods (nulls skipped)`);
 
   const foods = list.map((f) => {
     const fdcId = f.fdcId;

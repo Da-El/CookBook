@@ -3,9 +3,10 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { FoodThumb } from "../components/FoodThumb";
 import { MacroPills } from "../components/MacroPills";
 import { PhotoPicker } from "../components/PhotoPicker";
+import { ReviewsList } from "../components/ReviewsList";
 import { StarRating } from "../components/StarRating";
 import { useApp } from "../context/AppContext";
-import { api, ApiError, getAccessToken } from "../lib/api";
+import { api, ApiError, getAccessToken, type ReviewDto } from "../lib/api";
 import { getFoodById } from "../lib/catalog";
 import { mediaUrl } from "../lib/photo";
 import type { CatalogFood } from "../types";
@@ -64,6 +65,10 @@ export function IngredientDetailPage() {
   const [metaLoading, setMetaLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [metaError, setMetaError] = useState<string | null>(null);
+  const [reviews, setReviews] = useState<ReviewDto[]>([]);
+  const [reviewsLoading, setReviewsLoading] = useState(false);
+  const [reviewAvg, setReviewAvg] = useState<number | null>(null);
+  const [reviewSaving, setReviewSaving] = useState(false);
 
   const inFridge = useMemo(
     () =>
@@ -113,6 +118,76 @@ export function IngredientDetailPage() {
       cancelled = true;
     };
   }, [food, user]);
+
+  // Load community reviews for this ingredient
+  useEffect(() => {
+    if (!food) return;
+    let cancelled = false;
+    setReviewsLoading(true);
+    api
+      .listReviews({ subject_type: "ingredient", subject_id: food.id, limit: 100 })
+      .then((res) => {
+        if (cancelled) return;
+        setReviews(res.items);
+        setReviewAvg(res.avg ?? null);
+        if (user) {
+          const mine = res.items.find((x) => x.user_id === user.id);
+          if (mine) {
+            setNotes(mine.notes);
+            setRating("ingredient", food.id, mine.score, mine.notes);
+          }
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setReviews([]);
+          setReviewAvg(null);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setReviewsLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [food, user, setRating]);
+
+  async function saveIngredientReview() {
+    if (!food) return;
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+    const score = rating?.score ?? 0;
+    if (score < 1) {
+      setMetaError("Pick a score from 1–10");
+      return;
+    }
+    setReviewSaving(true);
+    setMetaError(null);
+    try {
+      const r = await api.upsertReview({
+        subject_type: "ingredient",
+        subject_id: food.id,
+        score,
+        notes,
+      });
+      setRating("ingredient", food.id, score, notes);
+      setReviews((prev) => {
+        const rest = prev.filter((x) => x.user_id !== user.id);
+        return [r, ...rest];
+      });
+      setReviewAvg((prev) => {
+        const others = reviews.filter((x) => x.user_id !== user.id);
+        const all = [...others, r];
+        return all.reduce((s, x) => s + x.score, 0) / all.length;
+      });
+    } catch (err) {
+      setMetaError(err instanceof ApiError ? err.message : "Could not save review");
+    } finally {
+      setReviewSaving(false);
+    }
+  }
 
   async function saveMeta(next: { description?: string; photoUrl?: string | null; clearPhoto?: boolean }) {
     if (!food) return;
@@ -404,37 +479,52 @@ export function IngredientDetailPage() {
           )}
         </section>
 
-        {/* Rating */}
+        {/* Your rating */}
         <section className="card card-pad">
           <h2 className="card-title">Your rating</h2>
           <p className="muted text-sm mt-8">Rate this ingredient out of 10</p>
-          <div className="mt-12">
-            <StarRating
-              value={rating?.score ?? 0}
-              size="lg"
-              onChange={(score) => setRating("ingredient", food.id, score, notes)}
-            />
-          </div>
-          <div className="field mt-16">
-            <label htmlFor="rating-notes">Review notes</label>
-            <textarea
-              id="rating-notes"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              onBlur={() => {
-                if (rating?.score) setRating("ingredient", food.id, rating.score, notes);
-              }}
-              placeholder="Taste, freshness, brand, value…"
-            />
-          </div>
-          <button
-            type="button"
-            className="btn btn-secondary btn-sm mt-8"
-            onClick={() => setRating("ingredient", food.id, rating?.score ?? 0, notes)}
-          >
-            Save review
-          </button>
+          {!user ? (
+            <p className="mt-12">
+              <Link to="/login">Sign in</Link> to leave a review.
+            </p>
+          ) : (
+            <>
+              <div className="mt-12">
+                <StarRating
+                  value={rating?.score ?? 0}
+                  size="lg"
+                  onChange={(score) => setRating("ingredient", food.id, score, notes)}
+                />
+              </div>
+              <div className="field mt-16">
+                <label htmlFor="rating-notes">Review notes</label>
+                <textarea
+                  id="rating-notes"
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  placeholder="Taste, freshness, brand, value…"
+                />
+              </div>
+              <button
+                type="button"
+                className="btn btn-secondary btn-sm mt-8"
+                disabled={reviewSaving}
+                onClick={saveIngredientReview}
+              >
+                {reviewSaving ? "Saving…" : "Save review"}
+              </button>
+            </>
+          )}
         </section>
+
+        {/* Community reviews */}
+        <ReviewsList
+          reviews={reviews}
+          loading={reviewsLoading}
+          avg={reviewAvg}
+          title="All reviews"
+          emptyText="No reviews yet — be the first to rate this ingredient."
+        />
 
         <section className="card card-pad">
           <h2 className="card-title">Macronutrients</h2>

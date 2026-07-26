@@ -401,7 +401,13 @@ export const api = {
     if (params.mine) sp.set("mine", "true");
     if (params.limit) sp.set("limit", String(params.limit));
     const qs = sp.toString();
-    return request<{ items: ReviewDto[] }>(`/v1/reviews${qs ? `?${qs}` : ""}`, undefined, true);
+    // Public list does not require auth; "mine" still needs a token
+    const needAuth = !!params.mine || !!getAccessToken();
+    return request<{ items: ReviewDto[]; count?: number; avg?: number | null }>(
+      `/v1/reviews${qs ? `?${qs}` : ""}`,
+      undefined,
+      needAuth,
+    );
   },
 
   deleteReview: (id: string) =>

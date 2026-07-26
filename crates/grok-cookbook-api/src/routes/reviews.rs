@@ -6,7 +6,7 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use ulid::Ulid;
 
-use crate::auth::extract::AuthUser;
+use crate::auth::extract::{AuthUser, OptionalAuthUser};
 use crate::error::{ApiResult, AppError};
 use crate::state::AppState;
 
@@ -138,13 +138,17 @@ pub async fn upsert_review(
 
 pub async fn list_reviews(
     State(state): State<AppState>,
-    auth: AuthUser,
+    auth: OptionalAuthUser,
     Query(q): Query<ListReviewsQuery>,
 ) -> ApiResult<Json<serde_json::Value>> {
     let pool = require_pool(&state)?;
     let limit = q.limit.unwrap_or(50).clamp(1, 100);
+    let viewer = auth.0.as_ref();
 
     if q.mine.unwrap_or(false) {
+        let uid = viewer
+            .map(|u| u.user_id.as_str())
+            .ok_or_else(|| AppError::Unauthorized("login required".into()))?;
         let rows: Vec<ReviewDto> = sqlx::query_as(
             r#"
             SELECT sr.id, sr.user_id, u.handle, u.display_name,
@@ -156,7 +160,7 @@ pub async fn list_reviews(
             LIMIT $2
             "#,
         )
-        .bind(&auth.user_id)
+        .bind(uid)
         .bind(limit)
         .fetch_all(pool)
         .await?;
@@ -174,7 +178,6 @@ pub async fn list_reviews(
         .ok_or_else(|| AppError::BadRequest("subject_id required".into()))?;
 
     if st == "meal" {
-        // Private meal: only owner can list (and we still allow owner to see)
         let row: Option<(String, String)> =
             sqlx::query_as("SELECT user_id, visibility FROM meals WHERE id = $1")
                 .bind(sid)
@@ -182,8 +185,11 @@ pub async fn list_reviews(
                 .await?;
         match row {
             None => return Err(AppError::NotFound("meal not found".into())),
-            Some((owner, vis)) if vis == "private" && owner != auth.user_id => {
-                return Err(AppError::NotFound("meal not found".into()));
+            Some((owner, vis)) if vis == "private" => {
+                let is_owner = viewer.map(|u| u.user_id.as_str()) == Some(owner.as_str());
+                if !is_owner {
+                    return Err(AppError::NotFound("meal not found".into()));
+                }
             }
             _ => {}
         }
@@ -206,7 +212,17 @@ pub async fn list_reviews(
     .fetch_all(pool)
     .await?;
 
-    Ok(Json(serde_json::json!({ "items": rows })))
+    let avg: Option<f64> = if rows.is_empty() {
+        None
+    } else {
+        Some(rows.iter().map(|r| r.score as f64).sum::<f64>() / rows.len() as f64)
+    };
+
+    Ok(Json(serde_json::json!({
+        "items": rows,
+        "count": rows.len(),
+        "avg": avg,
+    })))
 }
 
 pub async fn delete_review(
