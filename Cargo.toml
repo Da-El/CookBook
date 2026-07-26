@@ -4,6 +4,9 @@ members = [
     "crates/grok-cookbook-api",
     "crates/grok-cookbook-core",
     "crates/grok-cookbook-db",
+    # CookBook V2 (LLM cooking assistant) — isolated from V1 social app
+    "crates/grok-cookbook-v2-core",
+    "crates/grok-cookbook-v2-api",
 ]
 
 [workspace.package]
