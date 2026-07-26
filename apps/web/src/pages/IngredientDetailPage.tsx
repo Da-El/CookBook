@@ -177,11 +177,11 @@ export function IngredientDetailPage() {
         const rest = prev.filter((x) => x.user_id !== user.id);
         return [r, ...rest];
       });
-      setReviewAvg((prev) => {
+      {
         const others = reviews.filter((x) => x.user_id !== user.id);
         const all = [...others, r];
-        return all.reduce((s, x) => s + x.score, 0) / all.length;
-      });
+        setReviewAvg(all.reduce((s, x) => s + x.score, 0) / all.length);
+      }
     } catch (err) {
       setMetaError(err instanceof ApiError ? err.message : "Could not save review");
     } finally {
