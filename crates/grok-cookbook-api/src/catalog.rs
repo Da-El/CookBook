@@ -19,6 +19,8 @@ pub struct Catalog {
 pub struct CatalogFood {
     pub id: String,
     #[serde(default)]
+    pub fdc_id: Option<i64>,
+    #[serde(default)]
     pub foodb_id: Option<i64>,
     pub name: String,
     #[serde(default)]
@@ -68,6 +70,8 @@ impl Catalog {
         self.foods.iter().find(|f| {
             f.id == id
                 || f.id == decoded
+                || f.fdc_id.map(|n| n.to_string()).as_deref() == Some(id)
+                || f.fdc_id.map(|n| format!("fdc-{n}")).as_deref() == Some(id)
                 || f.foodb_id.map(|n| n.to_string()).as_deref() == Some(id)
                 || f.id.eq_ignore_ascii_case(&decoded)
         })

@@ -1,41 +1,40 @@
-# Grok Cookbook data stores
+# CookBook data stores
 
-## FooDB (downloaded)
+## USDA Foundation Foods (active catalog source)
 
-**Path:** `data/foodb_raw/foodb_2020_04_07_json/`  
-**Source:** https://foodb.ca/downloads — JSON zip (2020-04-07)  
-**Size on disk:** ~3.7 GB  
+**Path:** `data/usda/FoodData_Central_foundation_food_json_2025-04-24.json`  
+**Source:** https://fdc.nal.usda.gov/download-datasets  
+**Foods:** ~340 Foundation Foods  
+**License:** Public domain / CC0 1.0 — free for commercial use  
 
-| File | Role | Downloaded? |
-|------|------|-------------|
-| Food.json | ~992 foods (name, group, description, picture meta) | Yes |
-| Nutrient.json | Macro nutrient definitions | Yes |
-| Content.json | ~5.7M content rows (compounds + nutrients in foods) | Yes (~3.3 GB) |
-| Compound.json | ~70k compounds | Yes |
-| Other tables | flavors, pathways, enzymes, taxonomy, etc. | Yes |
+Build the app catalog:
 
-This is the **full FooDB JSON release** we downloaded.  
-Not downloaded: CSV (~953 MB), XML (~6 GB), MySQL dump, or raw image binaries (images are loaded live from foodb.ca URLs).
+```bash
+npm run catalog
+```
 
-**License:** CC BY-NC 4.0 — non-commercial + attribution; commercial use needs permission.
+Writes `apps/web/public/data/catalog.json` (what the web app + API load).
 
-## USDA FoodData Central (downloaded)
+## Optional: SR Legacy (not in app catalog)
 
 **Path:** `data/usda/FoodData_Central_sr_legacy_food_json_2018-04.json`  
-**Source:** https://fdc.nal.usda.gov/download-datasets  
-**Size:** ~201 MB, ~7,793 SR Legacy foods  
+~7,793 historic SR foods. Kept on disk if you want a future “expanded” catalog, but **not** used in the live app after the Foundation-only switch.
 
-Used only to **fill missing macros/micros** when FooDB has gaps (e.g. apple cider → closest apple juice profile).
+## Removed: FooDB
 
-**License:** Public domain (US government work).
+FooDB dumps (`data/foodb_raw/`) are **no longer used** and should be deleted from disk (large, CC BY-NC).  
+Ingredient IDs are now `fdc-<id>` (USDA FDC ids), not `FOOD#####`.
 
-## App catalog (built, what the web app loads)
+## App catalog
 
 **Path:** `apps/web/public/data/catalog.json`  
-Built by:
 
-1. `npm run catalog` → extract from FooDB  
-2. `npm run catalog:usda` → USDA overlay for missing nutrients  
-3. Or `npm run catalog:all` for both  
+| Field | Notes |
+|-------|--------|
+| `id` | `fdc-321358` style |
+| `fdc_id` | USDA FDC integer |
+| `macros` | kcal, protein, fat, carbs, fiber per 100 g |
+| `micros` | curated vitamins & minerals |
+| `source` | USDA Foundation Foods |
 
-The browser never loads the 3.7 GB raw dump — only this compact catalog.
+Redeploy the Render Docker image after regenerating `catalog.json` so production picks it up.

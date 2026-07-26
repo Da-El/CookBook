@@ -11,15 +11,6 @@ function buildCandidates(food: CatalogFood): string[] {
   const list: string[] = [];
   if (food.picture_candidates?.length) list.push(...food.picture_candidates);
   if (food.picture) list.push(food.picture);
-  if (food.foodb_id) {
-    const id = food.foodb_id;
-    list.push(
-      `https://foodb.ca/system/foods/pictures/${id}/full/${id}.png`,
-      `https://foodb.ca/system/foods/pictures/${id}/full/${id}.jpg`,
-      `https://foodb.ca/system/foods/pictures/${id}/thumb/${id}.png`,
-      `https://foodb.ca/system/foods/pictures/${id}/thumb/${id}.jpg`,
-    );
-  }
   return [...new Set(list.filter(Boolean))];
 }
 
@@ -45,7 +36,7 @@ export function FoodThumb({ food, size = "md", className = "" }: Props) {
   useEffect(() => {
     setIdx(0);
     setFailedAll(false);
-  }, [food.id, food.foodb_id]);
+  }, [food.id, food.fdc_id]);
 
   const src = !failedAll && idx < candidates.length ? candidates[idx] : null;
   const hue = hueFromId(food.id);

@@ -14,14 +14,17 @@ export type NutrientAmount = {
 
 export type CatalogFood = {
   id: string;
-  foodb_id: number;
+  /** USDA FDC id when from Foundation Foods */
+  fdc_id?: number | null;
+  ndb_number?: number | null;
+  /** @deprecated FooDB id — null for USDA-only catalog */
+  foodb_id?: number | null;
   name: string;
   name_scientific: string | null;
   description: string;
   food_group: string;
   food_subgroup: string;
   picture: string | null;
-  /** Fallback image URLs when primary 404s (FooDB dump often has wrong extension). */
   picture_candidates?: string[];
   emoji: string;
   source: string;
@@ -29,13 +32,18 @@ export type CatalogFood = {
   macros_complete: boolean;
   micros: NutrientAmount[];
   other_nutrients: NutrientAmount[];
-  /** Where nutrient values came from after USDA overlay */
   nutrient_sources?: {
     macros?: string;
     micros?: string;
     usda_fdc_id?: number;
     usda_description?: string;
   };
+  portions?: {
+    amount: number | null;
+    unit: string;
+    gram_weight: number | null;
+    modifier: string;
+  }[];
 };
 
 export type CatalogPayload = {
@@ -44,6 +52,7 @@ export type CatalogPayload = {
   license: string;
   generated_at: string;
   count: number;
+  source_file?: string;
   foods: CatalogFood[];
 };
 

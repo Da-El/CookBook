@@ -98,7 +98,8 @@ async function tryRefresh(): Promise<boolean> {
 
 export type ApiFood = {
   id: string;
-  foodb_id?: number;
+  fdc_id?: number | null;
+  foodb_id?: number | null;
   name: string;
   name_scientific?: string | null;
   description?: string | null;

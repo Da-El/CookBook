@@ -71,7 +71,7 @@ export function BrowsePage() {
         <div className="page-hero">
           <div>
             <h1>Browse</h1>
-            <p className="lede">Search public meals and catalog ingredients</p>
+            <p className="lede">Search public meals and USDA Foundation ingredients</p>
           </div>
         </div>
 

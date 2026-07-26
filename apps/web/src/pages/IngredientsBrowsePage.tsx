@@ -25,7 +25,7 @@ export function IngredientsBrowsePage() {
             <p className="lede">
               {catalogLoading
                 ? "Loading…"
-                : `${results.length} of ${catalog?.count ?? foods.length} FooDB foods · each has its own page`}
+                : `${results.length} of ${catalog?.count ?? foods.length} USDA Foundation foods`}
             </p>
           </div>
           <Link to="/ingredients/add" className="btn btn-primary btn-sm">

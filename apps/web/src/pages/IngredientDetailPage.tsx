@@ -17,7 +17,14 @@ export function IngredientDetailPage() {
   const [notes, setNotes] = useState(rating?.notes ?? "");
 
   const inFridge = useMemo(
-    () => fridge.filter((i) => food && (i.foodId === food.id || i.foodId === String(food.foodb_id))),
+    () =>
+      fridge.filter(
+        (i) =>
+          food &&
+          (i.foodId === food.id ||
+            (food.fdc_id != null && i.foodId === String(food.fdc_id)) ||
+            (food.fdc_id != null && i.foodId === `fdc-${food.fdc_id}`)),
+      ),
     [fridge, food],
   );
 
@@ -52,7 +59,7 @@ export function IngredientDetailPage() {
           <section className="card card-pad empty-state">
             <h1 className="card-title">Ingredient not found</h1>
             <p className="muted mt-8">No catalog entry for “{foodId}”.</p>
-            <Link to="/ingredients/add" className="btn btn-primary mt-16">
+            <Link to="/browse" className="btn btn-primary mt-16">
               Browse catalog
             </Link>
           </section>
@@ -102,7 +109,7 @@ export function IngredientDetailPage() {
             <div className="meta-chips">
               <span className="tag">{food.food_group || "Unclassified"}</span>
               {food.food_subgroup ? <span className="tag tag--muted">{food.food_subgroup}</span> : null}
-              <span className="badge-ok">FooDB</span>
+              <span className="badge-ok">USDA Foundation</span>
               {food.macros_complete && (food.micros?.length ?? 0) > 0 ? (
                 <span className="badge-ok">Data complete</span>
               ) : (
@@ -117,11 +124,14 @@ export function IngredientDetailPage() {
             {food.description ? (
               <p className="detail-desc mt-12">{food.description}</p>
             ) : (
-              <p className="muted mt-12">No description in FooDB for this food.</p>
+              <p className="muted mt-12">No description for this food.</p>
             )}
 
             <p className="field-hint mt-12">
-              Catalog id {food.id} · FooDB #{food.foodb_id}
+              {food.id}
+              {food.fdc_id != null ? ` · FDC #${food.fdc_id}` : ""}
+              {" · "}
+              {food.source || "USDA Foundation Foods"}
             </p>
           </div>
         </section>
@@ -129,10 +139,7 @@ export function IngredientDetailPage() {
         <section className="card card-pad">
           <h2 className="card-title">Macronutrients</h2>
           <p className="muted text-sm mt-8">
-            Per 100 g · source: {food.nutrient_sources?.macros ?? "foodb"}
-            {food.nutrient_sources?.usda_description
-              ? ` (USDA: ${food.nutrient_sources.usda_description})`
-              : ""}
+            Per 100 g · source: {food.nutrient_sources?.macros ?? "usda_foundation"}
           </p>
           <div className="mt-12">
             <MacroPills macros={food.macros} />
@@ -164,11 +171,10 @@ export function IngredientDetailPage() {
         <section className="card card-pad">
           <h2 className="card-title">Micronutrients</h2>
           <p className="muted text-sm mt-8">
-            Vitamins &amp; minerals · source: {food.nutrient_sources?.micros ?? "foodb"} (FooDB compounds
-            and/or USDA SR Legacy)
+            Vitamins &amp; minerals · source: {food.nutrient_sources?.micros ?? "usda_foundation"}
           </p>
           {micros.length === 0 ? (
-            <p className="muted mt-12">No curated micronutrient rows for this food in the dump subset.</p>
+            <p className="muted mt-12">No micronutrient rows for this food.</p>
           ) : (
             <div className="nutrient-table mt-12">
               {micros.map((m) => (
@@ -186,7 +192,7 @@ export function IngredientDetailPage() {
         {other.length > 0 && (
           <section className="card card-pad">
             <h2 className="card-title">Other nutrients</h2>
-            <p className="muted text-sm mt-8">Fatty acids, ash, and other FooDB nutrient table values</p>
+            <p className="muted text-sm mt-8">Additional USDA nutrient values for this food</p>
             <div className="nutrient-table mt-12">
               {other.map((m) => (
                 <div key={m.name} className="nutrient-table-row">

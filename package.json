@@ -15,9 +15,8 @@
     "db:logs": "docker compose logs -f db",
     "stack:up": "powershell -ExecutionPolicy Bypass -File scripts/dev-up.ps1",
     "stack:full": "powershell -ExecutionPolicy Bypass -File scripts/dev-up.ps1 -Full",
-    "catalog": "node scripts/build-catalog.mjs",
-    "catalog:usda": "node scripts/merge-usda.mjs",
-    "catalog:enrich": "node scripts/enrich-catalog.mjs",
-    "catalog:all": "node scripts/build-catalog.mjs && node scripts/enrich-catalog.mjs"
+    "catalog": "node scripts/build-foundation-catalog.mjs",
+    "catalog:foundation": "node scripts/build-foundation-catalog.mjs",
+    "catalog:all": "node scripts/build-foundation-catalog.mjs"
   }
 }

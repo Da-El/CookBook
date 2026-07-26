@@ -78,7 +78,7 @@ export function AddIngredientPage() {
         <div className="page-hero">
           <div>
             <h1>Add ingredient</h1>
-            <p className="lede">Pick from the catalog · photo · quantity · dates</p>
+            <p className="lede">USDA Foundation Foods · photo · quantity · dates</p>
           </div>
           <div className="row-end">
             <Link to="/create" className="btn btn-ghost btn-sm">

@@ -11,6 +11,4 @@ set PORT=8080
 set HOST=127.0.0.1
 set RUST_LOG=grok_cookbook_api=info,sqlx=warn
 cd /d C:\Users\bjenn\CookBook
-cargo build -p grok-cookbook-api --target x86_64-pc-windows-msvc 2>&1
-if errorlevel 1 exit /b 1
 cargo run -p grok-cookbook-api --target x86_64-pc-windows-msvc

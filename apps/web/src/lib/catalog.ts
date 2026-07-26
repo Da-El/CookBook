@@ -8,17 +8,17 @@ export async function loadCatalog(): Promise<CatalogPayload> {
   if (loadPromise) return loadPromise;
 
   loadPromise = (async () => {
-    // Prefer API (Rust backend) when available; fall back to static FooDB catalog.
+    // Prefer API (Rust backend) when available; fall back to static USDA catalog.
     try {
       const base = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, "") ?? "";
-      const res = await fetch(`${base}/v1/foods?limit=1000`);
+      const res = await fetch(`${base}/v1/foods?limit=2000`);
       if (res.ok) {
         const body = (await res.json()) as { total?: number; items: CatalogFood[] };
         if (body.items?.length) {
           const data: CatalogPayload = {
             version: 3,
             source: "API /v1/foods",
-            license: "FooDB CC BY-NC + USDA public domain",
+            license: "USDA public domain / CC0",
             generated_at: new Date().toISOString(),
             count: body.total ?? body.items.length,
             foods: body.items.map((f) => ensureFoodShape(f as CatalogFood)),
@@ -92,8 +92,9 @@ export function getFoodById(foods: CatalogFood[], id: string): CatalogFood | und
     (f) =>
       f.id === id ||
       f.id === decoded ||
-      String(f.foodb_id) === id ||
-      String(f.foodb_id) === decoded ||
+      (f.fdc_id != null && String(f.fdc_id) === id) ||
+      (f.fdc_id != null && String(f.fdc_id) === decoded) ||
+      (f.fdc_id != null && `fdc-${f.fdc_id}` === decoded) ||
       f.id.toLowerCase() === decoded.toLowerCase(),
   );
 }

@@ -37,7 +37,7 @@ export function FridgePage() {
         <div className="page-hero">
           <div>
             <h1>Fridge</h1>
-            <p className="lede">Your live inventory · powered by FooDB catalog entries</p>
+            <p className="lede">Your live inventory · USDA Foundation Foods</p>
           </div>
           <div className="row-end">
             {fridge.length > 0 && (
@@ -86,7 +86,7 @@ export function FridgePage() {
 
         {catalogLoading && (
           <section className="card card-pad">
-            <p className="muted">Loading FooDB catalog…</p>
+            <p className="muted">Loading catalog…</p>
           </section>
         )}
         {catalogError && (
@@ -104,7 +104,7 @@ export function FridgePage() {
               🧊
             </div>
             <h2 className="card-title">Fridge is empty</h2>
-            <p className="muted mt-8">Search ~990 FooDB foods and add them with quantity &amp; location.</p>
+            <p className="muted mt-8">Search USDA Foundation Foods and add them to your fridge.</p>
             <Link to="/ingredients/add" className="btn btn-primary mt-16">
               Browse catalog
             </Link>
@@ -186,7 +186,8 @@ export function FridgePage() {
                 </button>
               </div>
               <p className="field-hint mt-12">
-                FooDB id {selected.food.foodb_id} · {selected.food.id}
+                {selected.food.id}
+                {selected.food.fdc_id != null ? ` · FDC #${selected.food.fdc_id}` : ""}
               </p>
             </div>
           </div>
