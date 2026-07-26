@@ -34,7 +34,7 @@ export function LoginPage() {
             🍳
           </span>
           <span className="brand-name">
-            Cook<em>Book</em>
+            Grok<em>Cookbook</em>
           </span>
         </Link>
         <h1>Welcome back</h1>

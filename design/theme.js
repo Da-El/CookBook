@@ -1,5 +1,5 @@
 /**
- * CookBook theme: light default, optional dark.
+ * Grok Cookbook theme: light default, optional dark.
  * Persists to localStorage.key: cookbook-theme
  */
 (function () {

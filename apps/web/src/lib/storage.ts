@@ -1,8 +1,8 @@
 import type { FridgeItem, SubjectRating, Theme } from "../types";
 
-const FRIDGE_KEY = "cookbook-fridge-v1";
-const THEME_KEY = "cookbook-theme";
-const RATINGS_KEY = "cookbook-ratings-v1";
+const FRIDGE_KEY = "grok-cookbook-fridge-v1";
+const THEME_KEY = "grok-cookbook-theme";
+const RATINGS_KEY = "grok-cookbook-ratings-v1";
 
 export function loadFridge(): FridgeItem[] {
   try {

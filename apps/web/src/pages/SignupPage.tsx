@@ -49,7 +49,7 @@ export function SignupPage() {
             🍳
           </span>
           <span className="brand-name">
-            Cook<em>Book</em>
+            Grok<em>Cookbook</em>
           </span>
         </Link>
         <h1>Start your kitchen</h1>

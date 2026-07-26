@@ -1,4 +1,4 @@
-# CookBook data stores
+# Grok Cookbook data stores
 
 ## FooDB (downloaded)
 

@@ -1,23 +1,21 @@
-# Local stack for CookBook
-# Usage:
-#   docker compose up -d db          # Postgres only (API runs on host with cargo)
-#   docker compose up -d             # Postgres + API (after first image build)
-#   docker compose up -d --build     # rebuild API image
+# Local stack for grok-cookbook
+#   docker compose up -d db
+#   docker compose --profile full up -d --build
 
 services:
   db:
     image: postgres:16-alpine
-    container_name: cookbook-db
+    container_name: grok-cookbook-db
     environment:
-      POSTGRES_USER: cookbook
-      POSTGRES_PASSWORD: cookbook
-      POSTGRES_DB: cookbook
+      POSTGRES_USER: grok_cookbook
+      POSTGRES_PASSWORD: grok_cookbook
+      POSTGRES_DB: grok_cookbook
     ports:
       - "5432:5432"
     volumes:
-      - cookbook_pg:/var/lib/postgresql/data
+      - grok_cookbook_pg:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U cookbook -d cookbook"]
+      test: ["CMD-SHELL", "pg_isready -U grok_cookbook -d grok_cookbook"]
       interval: 5s
       timeout: 5s
       retries: 15
@@ -27,22 +25,22 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: cookbook-api
+    container_name: grok-cookbook-api
     depends_on:
       db:
         condition: service_healthy
     ports:
       - "8080:8080"
     environment:
-      DATABASE_URL: postgres://cookbook:cookbook@db:5432/cookbook
+      DATABASE_URL: postgres://grok_cookbook:grok_cookbook@db:5432/grok_cookbook
       HOST: 0.0.0.0
       PORT: "8080"
       CATALOG_PATH: /app/catalog.json
       STATIC_DIR: /app/static
-      JWT_SECRET: local-dev-jwt-secret-change-in-production-32
-      RUST_LOG: cookbook_api=info,tower_http=info
+      JWT_SECRET: grok-cookbook-local-dev-jwt-secret-32chars
+      RUST_LOG: grok_cookbook_api=info,tower_http=info
     profiles:
-      - full   # only start with: docker compose --profile full up -d
+      - full
 
 volumes:
-  cookbook_pg:
+  grok_cookbook_pg:

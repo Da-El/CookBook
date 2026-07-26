@@ -1,9 +1,9 @@
-# CookBook — Product & System Design
+# Grok Cookbook — Product & System Design
 
 | Field | Value |
 |-------|-------|
 | **Document** | Full product & system design |
-| **Product** | CookBook |
+| **Product** | Grok Cookbook |
 | **Author** | _(TBD)_ |
 | **Date** | 2026-07-25 |
 | **Status** | **Approved for M0–M1** (rev 4 — user decisions 2026-07-25) |
@@ -13,7 +13,7 @@
 
 ## Overview
 
-CookBook is a social-media-style chef app: every user is a chef who follows other chefs, logs cooked and want-to-cook meals, manages a live fridge of catalog-backed ingredients, and writes reviews for meals and ingredients. Core surfaces map 1:1 from the existing static design system at `C:\Users\bjenn\CookBook\design\` (X-style ~600px centered feed, warm gold `#e8a54b` on charcoal, desktop side nav + mobile bottom tab bar): **Home**, **CookBook/Profile**, **Add meal**, **Add ingredient**, **Settings**, and **Auth**.
+Grok Cookbook is a social-media-style chef app: every user is a chef who follows other chefs, logs cooked and want-to-cook meals, manages a live fridge of catalog-backed ingredients, and writes reviews for meals and ingredients. Core surfaces map 1:1 from the existing static design system at `C:\Users\bjenn\Grok Cookbook\design\` (X-style ~600px centered feed, warm gold `#e8a54b` on charcoal, desktop side nav + mobile bottom tab bar): **Home**, **Grok Cookbook/Profile**, **Add meal**, **Add ingredient**, **Settings**, and **Auth**.
 
 This design specifies a **Rust + Postgres backend as the single source of truth**, an **OpenAPI-first HTTP API**, and a **thin web UI first**. Native iOS/Android clients are **deferred indefinitely** until product retention is proven (user decision 2026-07-25); architecture still keeps the API multi-client-ready. Features ship incrementally—one vertical slice at a time.
 
@@ -26,8 +26,8 @@ This design specifies a **Rust + Postgres backend as the single source of truth*
 ### Current state
 
 - **Greenfield application**: no existing backend, frontend, or infra codebase.
-- **UI prototypes only**: static HTML/CSS under `C:\Users\bjenn\CookBook\design\` (`index.html`, `auth.html`, `auth-signup.html`, `cookbook.html`, `add-meal.html`, `add-ingredient.html`, `settings.html`, `styles.css`).
-- Design tokens and shell already encode product IA: left nav / center feed / right rail on desktop; bottom tabs under 640px; CookBook profile tabs (Cooked / Want to cook / Fridge / Reviews).
+- **UI prototypes only**: static HTML/CSS under `C:\Users\bjenn\Grok Cookbook\design\` (`index.html`, `auth.html`, `auth-signup.html`, `Grok Cookbook.html`, `add-meal.html`, `add-ingredient.html`, `settings.html`, `styles.css`).
+- Design tokens and shell already encode product IA: left nav / center feed / right rail on desktop; bottom tabs under 640px; Grok Cookbook profile tabs (Cooked / Want to cook / Fridge / Reviews).
 
 ### Pain points this architecture addresses
 
@@ -45,7 +45,7 @@ This design specifies a **Rust + Postgres backend as the single source of truth*
 flowchart LR
   subgraph Shell
     Home[Home feed]
-    CB[CookBook / Profile]
+    CB[Grok Cookbook / Profile]
     AddM[Add meal]
     AddI[Add ingredient]
     Settings[Settings]
@@ -98,7 +98,7 @@ flowchart LR
 | D3 | DB + access | **PostgreSQL 16 + sqlx** | Compile-time checked SQL; no heavy ORM |
 | D4 | Migrations | **sqlx migrate** (SQL files in-repo) | Same toolchain; CI-friendly |
 | D5 | API contract | **OpenAPI 3.1 first** via `utoipa` + committed `openapi.yaml` | Multi-client codegen |
-| D6 | Auth implementation | **Custom `cookbook-auth` crate** (not Keycloak/Clerk/Auth0 for core path) | Dual cookie/Bearer + session inventory control |
+| D6 | Auth implementation | **Custom `Grok Cookbook-auth` crate** (not Keycloak/Clerk/Auth0 for core path) | Dual cookie/Bearer + session inventory control |
 | D7 | Access + refresh tokens | **JWT access (Ed25519)** 15m + **opaque rotating refresh** hashed in PG; **Redis `jti` denylist** on logout/revoke | Fast authz path with **immediate** access kill; refresh revocation in DB |
 | D8 | Web token transport | **Dual HttpOnly cookies** (`cb_access`, `cb_refresh`); **pure SPA**, no BFF | No localStorage tokens; simpler ops than BFF |
 | D9 | Mobile token transport | Access **Bearer in memory**; refresh **Keychain/Keystore**, sent in **JSON body** to `/v1/auth/refresh` | Platform norms; no cookies on native |
@@ -109,7 +109,7 @@ flowchart LR
 | D14 | Catalog strategy | **FooDB-primary** for dev/early product import + UI “Foodb”/catalog; **USDA FDC** free fallback for macros + CI fixtures; commercial FooDB license **before public commercial launch** | User wants FooDB data immediately; CC BY-NC allows non-commercial/dev with attribution |
 | D15 | Feed algorithm (v1) | **Chronological meals-only** following feed | Cursor-friendly; reviews join feed later |
 | D16 | ID type | **ULID** (26-char Crockford base32 text PK) | Time-sortable; no UUID v7 dual story |
-| D17 | Monorepo | `cookbook/` with `crates/`, `apps/web`, (`apps/ios`/`android` stubs only if needed later), `openapi/`, `infra/`, `design/` | Shared contract; native apps not scheduled |
+| D17 | Monorepo | `Grok Cookbook/` with `crates/`, `apps/web`, (`apps/ios`/`android` stubs only if needed later), `openapi/`, `infra/`, `design/` | Shared contract; native apps not scheduled |
 | D18 | Rate limits + denylist | **Redis required in prod** (≥1 replica); in-memory only single-process dev | Multi-instance correctness |
 | D19 | Email provider | **Resend** (prod); **Mailpit** (local) | Simple transactional API |
 | D20 | Native platforms | **Neither yet** — **web-only** until retention proven; M5 / PR-22–23 **deferred indefinitely** | User decision 2026-07-25; do not schedule iOS/Android until reopened |
@@ -117,7 +117,7 @@ flowchart LR
 | D22 | Secrets | **Environment secrets** via Render dashboard / Doppler / similar; never git | Standard |
 | D23 | JWT algorithm | **Ed25519** (`ed25519-dalek` / `jsonwebtoken` EdDSA) | Asymmetric; rotation via `kid` |
 | D24 | CSRF | **Always double-submit**: readable `cb_csrf` cookie + required `X-CSRF-Token` header on cookie-authenticated mutations | One approach only |
-| D25 | Deploy origin model | **Split-origin ready**: SPA on CDN, API on `api.cookbook.*`; cookies `SameSite=None; Secure` when cross-site | Documented matrix |
+| D25 | Deploy origin model | **Split-origin ready**: SPA on CDN, API on `api.Grok Cookbook.*`; cookies `SameSite=None; Secure` when cross-site | Documented matrix |
 | D26 | Default meal visibility | **`public`** (matches settings mock); fridge default **`private`** | Deliberate product choice |
 | D27 | Client codegen | **openapi-typescript** (web) from committed YAML; Swift/Kotlin generators when native starts; hand-written only for non-generated glue | Freeze contract early |
 
@@ -141,9 +141,9 @@ flowchart TB
   end
 
   subgraph Backend
-    API[Axum API<br/>cookbook-api]
-    Worker[cookbook-worker]
-    AuthN[cookbook-auth]
+    API[Axum API<br/>grok-cookbook-api]
+    Worker[Grok Cookbook-worker]
+    AuthN[Grok Cookbook-auth]
   end
 
   subgraph Data
@@ -182,17 +182,17 @@ flowchart TB
 ### Monorepo layout
 
 ```text
-cookbook/
+Grok Cookbook/
 ├── Cargo.toml
 ├── crates/
-│   ├── cookbook-api/          # Axum HTTP binary
-│   ├── cookbook-worker/       # jobs binary (same workspace image, different CMD)
-│   ├── cookbook-core/         # domain types, Error, Ulid, envelope
-│   ├── cookbook-db/           # sqlx, migrations/
-│   ├── cookbook-auth/         # password, JWT, sessions, MFA, CSRF helpers
-│   ├── cookbook-media/        # S3, magic-byte sniff, variants
-│   ├── cookbook-catalog/      # import traits: usda + foodb adapters
-│   └── cookbook-openapi/      # export openapi.yaml
+│   ├── grok-cookbook-api/          # Axum HTTP binary
+│   ├── Grok Cookbook-worker/       # jobs binary (same workspace image, different CMD)
+│   ├── grok-cookbook-core/         # domain types, Error, Ulid, envelope
+│   ├── grok-cookbook-db/           # sqlx, migrations/
+│   ├── Grok Cookbook-auth/         # password, JWT, sessions, MFA, CSRF helpers
+│   ├── Grok Cookbook-media/        # S3, magic-byte sniff, variants
+│   ├── Grok Cookbook-catalog/      # import traits: usda + foodb adapters
+│   └── Grok Cookbook-openapi/      # export openapi.yaml
 ├── apps/
 │   ├── web/
 │   ├── ios/                   # later
@@ -204,7 +204,7 @@ cookbook/
 └── README.md
 ```
 
-**Process topology:** one container image; `CMD` selects `cookbook-api` or `cookbook-worker`.
+**Process topology:** one container image; `CMD` selects `grok-cookbook-api` or `grok-cookbook-worker`.
 
 ### Backend stack (concrete)
 
@@ -229,7 +229,7 @@ cookbook/
 sequenceDiagram
   participant C as Client
   participant MW as Tower middleware
-  participant A as cookbook-auth
+  participant A as Grok Cookbook-auth
   participant H as Handler
   participant R as Redis
   participant DB as Postgres
@@ -285,20 +285,20 @@ sequenceDiagram
 | `apps/web/src/shell/` | Side nav, bottom tabs, right rail (breakpoints from design) |
 | `apps/web/src/routes/` | `/`, `/auth/sign-in`, `/auth/sign-up`, `/u/:handle`, `/meals/new`, `/ingredients/new`, `/settings/*` |
 | `apps/web/src/api/` | Generated types + fetch with credentials + CSRF |
-| `apps/web/src/features/*` | auth, feed, cookbook, meals, fridge, reviews, settings |
+| `apps/web/src/features/*` | auth, feed, Grok Cookbook, meals, fridge, reviews, settings |
 | `apps/web/src/design/` | CSS variables + import tokens |
 
 **IA notes matching mock but not full product APIs:**
 
 - Home **compose box** is presentational only → navigates to `/meals/new` (no inline create API).
 - **Share profile** → copy `https://app…/u/{handle}` to clipboard; no share-graph API.
-- **Cuisine** field: enum matching mock (`Japanese`, `Italian`, `Mexican`, `American`, `Other`) plus free-text `Other` detail optional; stored as `TEXT` with OpenAPI enum + `x-cookbook-allow-other`.
+- **Cuisine** field: enum matching mock (`Japanese`, `Italian`, `Mexican`, `American`, `Other`) plus free-text `Other` detail optional; stored as `TEXT` with OpenAPI enum + `x-Grok Cookbook-allow-other`.
 
 ### Native clients (deferred indefinitely)
 
 Per D20: **do not build iOS/Android until the user reopens native** after web retention is proven. API remains multi-client-ready (Bearer + body refresh matrix already defined). When reopened:
 
-- **iOS:** SwiftUI; Bearer access; Keychain refresh; tab bar: Home | CookBook | Add | Ingredients | Settings.
+- **iOS:** SwiftUI; Bearer access; Keychain refresh; tab bar: Home | Grok Cookbook | Add | Ingredients | Settings.
 - **Android:** Compose; same tabs; Keystore refresh.
 - Same REST paths, error envelope, media URL scheme.
 
@@ -652,7 +652,7 @@ Body/flag `remember_device: true` on login → session `remember=true` → **abs
 |------|--------|
 | Pattern | `^[a-z0-9_]{3,30}$` after trim |
 | Storage | **lowercase** only (`handle = normalize_lower(input)`); `CITEXT` unique |
-| Reserved | `me`, `admin`, `api`, `settings`, `auth`, `login`, `logout`, `cook`, `cookbook`, `support`, `help`, `null`, `undefined` |
+| Reserved | `me`, `admin`, `api`, `settings`, `auth`, `login`, `logout`, `cook`, `Grok Cookbook`, `support`, `help`, `null`, `undefined` |
 | Errors | 400 `handle_invalid`; 409 `handle_taken` |
 
 ### Login sequence
@@ -665,7 +665,7 @@ Body/flag `remember_device: true` on login → session `remember=true` → **abs
 sequenceDiagram
   participant U as User
   participant W as Web SPA
-  participant API as cookbook-api
+  participant API as grok-cookbook-api
   participant DB as Postgres
   participant R as Redis
 
@@ -1293,7 +1293,7 @@ with `per_g` usually 100. Store in `meals.macros_estimated` only when complete.
 
 ### Migration strategy
 
-- `crates/cookbook-db/migrations/NNNN_name.sql`
+- `crates/grok-cookbook-db/migrations/NNNN_name.sql`
 - Forward-only; expand/contract for user-facing renames
 - Prod: migrate job in deploy before traffic shift
 - Staging catalog: **top 500 cooking staples fixture** (checked into `testdata/catalog/fixture.json`)
@@ -1330,7 +1330,7 @@ with `per_g` usually 100. Store in `meals.macros_estimated` only when complete.
 
 ### What needs licensing vs free (accurate summary)
 
-| Material | Typical terms | CookBook use |
+| Material | Typical terms | Grok Cookbook use |
 |----------|---------------|--------------|
 | **FooDB data** (foodb.ca) | **CC BY-NC 4.0**: free for **non-commercial** use with **attribution**; **commercial** use/redistribution generally needs **explicit permission / commercial license** from rights holders | **OK for local dev, personal, non-commercial early use** with attribution. **Before public commercial launch, paid SaaS, or monetized redistribution of FooDB content:** obtain commercial license (user intends to get this later). |
 | **USDA FoodData Central** | US government data; generally free to use without a FooDB-style NC restriction | **Always free fallback** for macros, CI fixtures, and if FooDB commercial license is delayed |
@@ -1363,8 +1363,8 @@ flowchart LR
 CLI examples:
 
 ```text
-cargo run -p cookbook-worker -- import-catalog --source foodb --path ./data/foodb
-cargo run -p cookbook-worker -- import-catalog --source usda_fdc --path ./data/usda
+cargo run -p Grok Cookbook-worker -- import-catalog --source foodb --path ./data/foodb
+cargo run -p Grok Cookbook-worker -- import-catalog --source usda_fdc --path ./data/usda
 ```
 
 Runtime: `GET /v1/foods/search?q=` via `pg_trgm` only—no live upstream HTTP.
@@ -1389,12 +1389,12 @@ Runtime: `GET /v1/foods/search?q=` via `pg_trgm` only—no live upstream HTTP.
 | Backoff | `run_at = now() + min(3600, 2^attempts * 5)` seconds |
 | Dead letter | `dead_lettered_at` set after max attempts; metric + alert |
 | Concurrency | Worker processes up to N jobs (default 4); kinds can limit (import=1) |
-| Enqueue | API/domain code `INSERT INTO jobs (kind, payload, …)` via `cookbook_db::jobs::enqueue` |
+| Enqueue | API/domain code `INSERT INTO jobs (kind, payload, …)` via `grok_cookbook_db::jobs::enqueue` |
 | Reaper | Same worker loop: unlock rows where `lease_until < now()` and not done |
 
 **Kinds (enum):** `media_variant`, `media_gc`, `catalog_import`, `idempotency_gc`, `email_send` (optional).
 
-**Deploy:** same image; `cookbook-worker` command. Local: compose service `worker`.
+**Deploy:** same image; `Grok Cookbook-worker` command. Local: compose service `worker`.
 
 **PR:** worker binary + no-op poller in early infra (PR-01b); real handlers with media/catalog PRs.
 
@@ -1408,7 +1408,7 @@ Runtime: `GET /v1/foods/search?q=` via `pg_trgm` only—no live upstream HTTP.
 | compose box | → `/meals/new` | none |
 | `auth.html` | `/auth/sign-in` | `POST /v1/auth/login` |
 | `auth-signup.html` | `/auth/sign-up` | `POST /v1/auth/register` |
-| `cookbook.html` | `/u/:handle` or `/me` → redirect `/u/{my_handle}` | `GET /v1/users/{handle}` |
+| `Grok Cookbook.html` | `/u/:handle` or `/me` → redirect `/u/{my_handle}` | `GET /v1/users/{handle}` |
 | `add-meal.html` | `/meals/new` | `POST /v1/meals`, media |
 | `add-ingredient.html` | `/ingredients/new` | foods search, fridge |
 | `settings.html` | `/settings/*` | users/me, sessions, MFA |
@@ -1515,8 +1515,8 @@ Import chosen.
 1. **Local:** docker-compose (Postgres 16, Redis, MinIO, Mailpit) only — not prod
 2. **Staging / Production (year-1): Render**
    - **Static site** (or static hosting) for `apps/web` build
-   - **Web service** for `cookbook-api` (scale ≥1; prefer 2 for prod)
-   - **Background worker** for `cookbook-worker`
+   - **Web service** for `grok-cookbook-api` (scale ≥1; prefer 2 for prod)
+   - **Background worker** for `Grok Cookbook-worker`
    - **Managed Postgres** (Render Postgres or external)
    - **Redis** (Render Redis or external) — **required** for rate limits + JWT denylist
    - **Object storage external to Render:** Cloudflare R2 or S3 for media
@@ -1589,7 +1589,7 @@ Resolved earlier (engineering): web stack (Vite/React); magic link (post-M4 back
 
 ## References
 
-- UI prototypes: `C:\Users\bjenn\CookBook\design\`
+- UI prototypes: `C:\Users\bjenn\Grok Cookbook\design\`
 - FooDB: https://foodb.ca/ (CC BY-NC; commercial permission required)
 - USDA FoodData Central: https://fdc.nal.usda.gov/
 - OWASP password storage (Argon2id)
@@ -1628,15 +1628,15 @@ Track C — Social/Meals/Feed
 
 ### PR-01 — Monorepo skeleton & local infra · **M** · Track A
 
-- **Title:** `chore: initialize CookBook monorepo (Rust workspace, compose, health)`
-- **Files:** workspace Cargo.toml, `cookbook-api` `/healthz` `/readyz`, `cookbook-core`, `cookbook-db` pool, `infra/docker-compose.yml` (Postgres, Redis, MinIO, Mailpit), README, `.env.example`, CI
+- **Title:** `chore: initialize grok-cookbook monorepo (Rust workspace, compose, health)`
+- **Files:** workspace Cargo.toml, `grok-cookbook-api` `/healthz` `/readyz`, `grok-cookbook-core`, `grok-cookbook-db` pool, `infra/docker-compose.yml` (Postgres, Redis, MinIO, Mailpit), README, `.env.example`, CI
 - **Dependencies:** none
 - **Description:** Boots API; connects PG; compose up. **Acceptance:** tracing JSON logs stub; `/metrics` exposes process uptime counter.
 
 ### PR-01b — Worker binary + job poller no-op · **S** · Track A
 
-- **Title:** `feat(worker): cookbook-worker poller with empty job kinds`
-- **Files:** `cookbook-worker`, `jobs` migration (full columns), enqueue helper, metrics `job_queue_depth`
+- **Title:** `feat(worker): Grok Cookbook-worker poller with empty job kinds`
+- **Files:** `Grok Cookbook-worker`, `jobs` migration (full columns), enqueue helper, metrics `job_queue_depth`
 - **Dependencies:** PR-01
 - **Description:** Same image different CMD; leases/reaper implemented; no business handlers yet.
 
@@ -1657,7 +1657,7 @@ Track C — Social/Meals/Feed
 ### PR-04a — Auth baseline register/login/logout · **L** · Track A
 
 - **Title:** `feat(auth): Argon2id register/login/logout with sessions and JWT access`
-- **Files:** `cookbook-auth`, sessions migration (`step_up_until`, `mfa_satisfied`, `remember`), register/login/logout, handle validation, cookies + Bearer issuance, `token_version`/`sid`/`jti` checks, denylist on logout, `GET/DELETE /v1/sessions`, error envelope, dummy-hash timing, OpenAPI security
+- **Files:** `Grok Cookbook-auth`, sessions migration (`step_up_until`, `mfa_satisfied`, `remember`), register/login/logout, handle validation, cookies + Bearer issuance, `token_version`/`sid`/`jti` checks, denylist on logout, `GET/DELETE /v1/sessions`, error envelope, dummy-hash timing, OpenAPI security
 - **Dependencies:** PR-02, PR-03
 - **Description:** **No** refresh rotation, step-up, or HIBP yet. **No MFA branch** (always session after password). **Acceptance:** tests 1–4, 8–9, 15.
 
@@ -1696,10 +1696,10 @@ Track C — Social/Meals/Feed
 - **Dependencies:** PR-04a, PR-06
 - **Description:** E2E register/login/logout web.
 
-### PR-08 — Profile CookBook shell · **M** · Track C
+### PR-08 — Profile Grok Cookbook shell · **M** · Track C
 
-- **Title:** `feat: user profile CookBook shell (API + web)`
-- **Files:** `GET/PATCH /v1/users/me`, `GET /v1/users/{handle}`, web cookbook tabs empty
+- **Title:** `feat: user profile Grok Cookbook shell (API + web)`
+- **Files:** `GET/PATCH /v1/users/me`, `GET /v1/users/{handle}`, web Grok Cookbook tabs empty
 - **Dependencies:** PR-04a, PR-07
 - **Description:** Bio, stats zeros, tab chrome.
 
@@ -1713,14 +1713,14 @@ Track C — Social/Meals/Feed
 ### PR-10 — Media pipeline · **L** · Track C
 
 - **Title:** `feat(media): presign, complete verification, worker variants, GC`
-- **Files:** media_objects, `cookbook-media`, worker `media_variant` + `media_gc`, MinIO, ownership checks, magic bytes
+- **Files:** media_objects, `Grok Cookbook-media`, worker `media_variant` + `media_gc`, MinIO, ownership checks, magic bytes
 - **Dependencies:** PR-01b, PR-04a
 - **Description:** No meals yet; integration tests for type sniff and ownership.
 
 ### PR-11 — Meals CRUD + photos + web form · **L** · Track C
 
 - **Title:** `feat: meals CRUD with visibility, photo attach, add-meal UI`
-- **Files:** meals migration, meal APIs, email_verified on public, web add-meal, CookBook cooked/want tabs
+- **Files:** meals migration, meal APIs, email_verified on public, web add-meal, Grok Cookbook cooked/want tabs
 - **Dependencies:** PR-08, PR-10, PR-05 (for verified gate)
 - **Description:** Core content. **Acceptance:** unverified cannot post public; media must be owned+ready; IDOR tests.
 
@@ -1734,7 +1734,7 @@ Track C — Social/Meals/Feed
 ### PR-13 — Catalog import + search · **L** · Track B
 
 - **Title:** `feat(catalog): FooDB-primary import, USDA macros/CI, search API`
-- **Files:** `catalog_foods`, `import_runs`, `cookbook-catalog` **FooDB adapter (primary path)**, USDA adapter (macros + CI fixture 500 foods), search API, UI Foodb/catalog labeling, attribution notes
+- **Files:** `catalog_foods`, `import_runs`, `Grok Cookbook-catalog` **FooDB adapter (primary path)**, USDA adapter (macros + CI fixture 500 foods), search API, UI Foodb/catalog labeling, attribution notes
 - **Dependencies:** PR-02, PR-01b
 - **Description:** User wants FooDB data **immediately** for dev/early product. Keep USDA for `macros_complete` and CI (no FooDB dump required in CI). **Legal gate is before public commercial launch/monetization**, not before this PR merges import tooling. Macros_complete flags set; never invent zeros.
 

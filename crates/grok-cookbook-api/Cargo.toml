@@ -1,15 +1,15 @@
 [package]
-name = "cookbook-api"
+name = "grok-cookbook-api"
 version.workspace = true
 edition.workspace = true
 
 [[bin]]
-name = "cookbook-api"
+name = "grok-cookbook-api"
 path = "src/main.rs"
 
 [dependencies]
-cookbook-core = { path = "../cookbook-core" }
-cookbook-db = { path = "../cookbook-db" }
+grok-cookbook-core = { path = "../grok-cookbook-core" }
+grok-cookbook-db = { path = "../grok-cookbook-db" }
 axum = { workspace = true }
 tokio = { workspace = true }
 tower = { workspace = true }

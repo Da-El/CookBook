@@ -51,7 +51,7 @@ export function KitchenPage() {
             <h2 className="profile-name">Alex Jordan</h2>
             <p className="profile-handle">@chef_alex · Home kitchen</p>
             <p className="profile-bio">
-              Weeknight cook building CookBook. Fridge is live; meals &amp; social features land next.
+              Weeknight cook building Grok Cookbook. Fridge is live; meals &amp; social features land next.
             </p>
             <div className="stat-row">
               <span className="stat">

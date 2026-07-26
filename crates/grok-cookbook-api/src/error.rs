@@ -1,7 +1,7 @@
 use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
 use axum::Json;
-use cookbook_core::{ApiError, ApiErrorBody};
+use grok_cookbook_core::{ApiError, ApiErrorBody};
 
 pub type ApiResult<T> = Result<T, AppError>;
 

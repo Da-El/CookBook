@@ -1,11 +1,11 @@
-# Deploy CookBook (Render)
+# Deploy Grok Cookbook (Render)
 
 ## Stack
 
 | Layer | Choice |
 |-------|--------|
 | Frontend | React + Vite (`apps/web`) |
-| Backend | Rust Axum (`crates/cookbook-api`) |
+| Backend | Rust Axum (`crates/grok-cookbook-api`) |
 | Database | PostgreSQL |
 | Host | Render (Docker web service + managed Postgres) |
 
@@ -22,7 +22,7 @@ docker compose up -d db
 ```powershell
 copy .env.example .env
 # ensure DATABASE_URL points at local docker
-cargo run -p cookbook-api
+cargo run -p grok-cookbook-api
 ```
 
 API: http://127.0.0.1:8080/healthz
@@ -39,12 +39,12 @@ Vite proxies `/v1` and `/healthz` to the API.
 
 ## Render (blueprint)
 
-1. Push to GitHub (`Da-El/CookBook`).
+1. Push to GitHub (`Da-El/grok_cookbook`).
 2. Render Dashboard → **New** → **Blueprint**.
 3. Select the repo. Render reads `render.yaml`.
 4. Apply — creates:
-   - **cookbook-api** (Docker): serves API + SPA
-   - **cookbook-db** (Postgres free)
+   - **grok-cookbook-api** (Docker): serves API + SPA
+   - **grok-cookbook-db** (Postgres free)
 5. Wait for first deploy. Open the service URL on your phone.
 
 Health check: `https://<your-service>.onrender.com/healthz`

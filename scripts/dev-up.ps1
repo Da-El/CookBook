@@ -71,16 +71,16 @@ docker compose up -d db
 Write-Host "Waiting for Postgres healthy..."
 $ok = $false
 for ($i = 0; $i -lt 30; $i++) {
-  $status = docker inspect --format='{{.State.Health.Status}}' cookbook-db 2>$null
+  $status = docker inspect --format='{{.State.Health.Status}}' grok-cookbook-db 2>$null
   if ($status -eq "healthy") { $ok = $true; break }
   Start-Sleep -Seconds 2
 }
 if (-not $ok) {
-  Write-Host "Postgres did not become healthy in time. Check: docker logs cookbook-db" -ForegroundColor Red
+  Write-Host "Postgres did not become healthy in time. Check: docker logs grok-cookbook-db" -ForegroundColor Red
   exit 1
 }
 
-Write-Host "Postgres is up on localhost:5432 (user/pass/db: cookbook)" -ForegroundColor Green
+Write-Host "Postgres is up on localhost:5432 (user/pass/db: grok_cookbook)" -ForegroundColor Green
 
 if (-not (Test-Path "$Root\.env")) {
   Copy-Item "$Root\.env.example" "$Root\.env"
@@ -89,22 +89,22 @@ if (-not (Test-Path "$Root\.env")) {
 
 if ($Api) {
   Write-Host "Starting API with cargo (MSVC env if available)..."
-  $env:DATABASE_URL = "postgres://cookbook:cookbook@127.0.0.1:5432/cookbook"
+  $env:DATABASE_URL = "postgres://grok_cookbook:grok_cookbook@127.0.0.1:5432/grok_cookbook"
   $env:CATALOG_PATH = "$Root\apps\web\public\data\catalog.json"
-  $env:JWT_SECRET = "local-dev-jwt-secret-change-in-production-32"
+  $env:JWT_SECRET = "grok-cookbook-local-dev-jwt-secret-32chars"
   $env:PORT = "8080"
   $env:HOST = "127.0.0.1"
   $vcvars = "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
   if (Test-Path $vcvars) {
-    cmd /c "`"$vcvars`" >nul 2>&1 && set PATH=$env:USERPROFILE\.cargo\bin;%PATH% && set RUSTUP_HOME=$env:USERPROFILE\.rustup && set CARGO_HOME=$env:USERPROFILE\.cargo && set DATABASE_URL=$env:DATABASE_URL && set CATALOG_PATH=$env:CATALOG_PATH && set JWT_SECRET=$env:JWT_SECRET && set PORT=8080 && set HOST=127.0.0.1 && cd /d $Root && cargo run -p cookbook-api --target x86_64-pc-windows-msvc"
+    cmd /c "`"$vcvars`" >nul 2>&1 && set PATH=$env:USERPROFILE\.cargo\bin;%PATH% && set RUSTUP_HOME=$env:USERPROFILE\.rustup && set CARGO_HOME=$env:USERPROFILE\.cargo && set DATABASE_URL=$env:DATABASE_URL && set CATALOG_PATH=$env:CATALOG_PATH && set JWT_SECRET=$env:JWT_SECRET && set PORT=8080 && set HOST=127.0.0.1 && cd /d $Root && cargo run -p grok-cookbook-api --target x86_64-pc-windows-msvc"
   } else {
     $env:Path = "$env:USERPROFILE\.cargo\bin;$env:Path"
-    cargo run -p cookbook-api --target x86_64-pc-windows-msvc
+    cargo run -p grok-cookbook-api --target x86_64-pc-windows-msvc
   }
 } else {
   Write-Host ""
   Write-Host "Next: run the API in another terminal:"
-  Write-Host "  cargo run -p cookbook-api --target x86_64-pc-windows-msvc"
+  Write-Host "  cargo run -p grok-cookbook-api --target x86_64-pc-windows-msvc"
   Write-Host "Then web:"
   Write-Host "  cd apps\web; npm run dev"
   Write-Host ""

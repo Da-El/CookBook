@@ -25,7 +25,7 @@ export function HomePage() {
         </div>
 
         <section className="card card-pad">
-          <h2 className="card-title">Welcome to CookBook</h2>
+          <h2 className="card-title">Welcome to Grok Cookbook</h2>
           <p className="muted text-sm mt-8">
             Browse FooDB ingredients, stock your fridge, rate foods.
             {user ? (

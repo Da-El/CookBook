@@ -4,8 +4,8 @@
 
 const base = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, "") ?? "";
 
-const ACCESS_KEY = "cookbook-access-token";
-const REFRESH_KEY = "cookbook-refresh-token";
+const ACCESS_KEY = "grok-cookbook-access-token";
+const REFRESH_KEY = "grok-cookbook-refresh-token";
 
 export class ApiError extends Error {
   code: string;

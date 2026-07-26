@@ -17,13 +17,13 @@ COPY crates ./crates
 # Ensure workspace lock resolves
 RUN cargo generate-lockfile
 COPY apps/web/public/data/catalog.json ./apps/web/public/data/catalog.json
-RUN cargo build --release -p cookbook-api
+RUN cargo build --release -p grok-cookbook-api
 
 # ---- Runtime ----
 FROM debian:bookworm-slim
 RUN apt-get update && apt-get install -y ca-certificates libssl3 && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
-COPY --from=api-build /app/target/release/cookbook-api /app/cookbook-api
+COPY --from=api-build /app/target/release/grok-cookbook-api /app/grok-cookbook-api
 COPY --from=api-build /app/apps/web/public/data/catalog.json /app/catalog.json
 COPY --from=web-build /web/dist /app/static
 
@@ -33,4 +33,4 @@ ENV CATALOG_PATH=/app/catalog.json
 ENV STATIC_DIR=/app/static
 
 EXPOSE 8080
-CMD ["/app/cookbook-api"]
+CMD ["/app/grok-cookbook-api"]

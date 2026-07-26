@@ -1,14 +1,14 @@
 {
-  "name": "cookbook",
+  "name": "grok-cookbook",
   "private": true,
   "version": "0.1.0",
-  "description": "CookBook monorepo — web first",
+  "description": "grok-cookbook monorepo — web first",
   "scripts": {
     "dev": "npm --prefix apps/web run dev",
     "dev:web": "npm --prefix apps/web run dev",
-    "dev:api": "cargo run -p cookbook-api",
+    "dev:api": "cargo run -p grok-cookbook-api",
     "build": "npm --prefix apps/web run build",
-    "build:api": "cargo build -p cookbook-api --release",
+    "build:api": "cargo build -p grok-cookbook-api --release",
     "preview": "npm --prefix apps/web run preview",
     "db:up": "docker compose up -d db",
     "db:down": "docker compose down",

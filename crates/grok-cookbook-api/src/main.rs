@@ -21,13 +21,13 @@ async fn main() -> anyhow::Result<()> {
     tracing_subscriber::registry()
         .with(
             tracing_subscriber::EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| "cookbook_api=info,tower_http=info".into()),
+                .unwrap_or_else(|_| "grok_cookbook_api=info,tower_http=info".into()),
         )
         .with(tracing_subscriber::fmt::layer())
         .init();
 
     let database_url = std::env::var("DATABASE_URL").unwrap_or_else(|_| {
-        "postgres://cookbook:cookbook@127.0.0.1:5432/cookbook".to_string()
+        "postgres://grok_cookbook:grok_cookbook@127.0.0.1:5432/grok_cookbook".to_string()
     });
     let host = std::env::var("HOST").unwrap_or_else(|_| "0.0.0.0".to_string());
     let port: u16 = std::env::var("PORT")
@@ -35,16 +35,15 @@ async fn main() -> anyhow::Result<()> {
         .and_then(|p| p.parse().ok())
         .unwrap_or(8080);
     let catalog_path = std::env::var("CATALOG_PATH").unwrap_or_else(|_| {
-        // monorepo default
         "apps/web/public/data/catalog.json".to_string()
     });
     let static_dir = std::env::var("STATIC_DIR").ok();
 
-    tracing::info!(%database_url, %catalog_path, "starting cookbook-api");
+    tracing::info!(%database_url, %catalog_path, "starting grok-cookbook-api");
 
-    let pool = match cookbook_db::connect(&database_url).await {
+    let pool = match grok_cookbook_db::connect(&database_url).await {
         Ok(pool) => {
-            if let Err(e) = cookbook_db::migrate(&pool).await {
+            if let Err(e) = grok_cookbook_db::migrate(&pool).await {
                 tracing::error!(error = %e, "migration failed");
                 return Err(e);
             }
@@ -64,7 +63,7 @@ async fn main() -> anyhow::Result<()> {
 
     let jwt_secret = std::env::var("JWT_SECRET").unwrap_or_else(|_| {
         tracing::warn!("JWT_SECRET not set — using insecure dev default");
-        "dev-only-change-me-cookbook-jwt-secret-32b".into()
+        "dev-only-change-me-grok-cookbook-jwt-secret-32b".into()
     });
     if jwt_secret.len() < 32 {
         tracing::warn!("JWT_SECRET should be at least 32 characters");
@@ -88,7 +87,6 @@ async fn main() -> anyhow::Result<()> {
         .layer(cors)
         .with_state(state);
 
-    // Optional: serve SPA build (used on Render single-service or local preview)
     if let Some(dir) = static_dir {
         let dir = PathBuf::from(dir);
         if dir.exists() {

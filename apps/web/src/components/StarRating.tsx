@@ -8,7 +8,7 @@ type Props = {
 };
 
 /**
- * 10-star rating (CookBook standard for meals and ingredients).
+ * 10-star rating (Grok Cookbook standard for meals and ingredients).
  */
 export function StarRating({
   value,

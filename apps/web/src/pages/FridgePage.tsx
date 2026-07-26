@@ -93,7 +93,7 @@ export function FridgePage() {
           <section className="card card-pad">
             <p className="danger-text">Catalog error: {catalogError}</p>
             <p className="muted text-sm mt-8">
-              Run <code>node scripts/build-catalog.mjs</code> from the CookBook root, then refresh.
+              Run <code>node scripts/build-catalog.mjs</code> from the Grok Cookbook root, then refresh.
             </p>
           </section>
         )}

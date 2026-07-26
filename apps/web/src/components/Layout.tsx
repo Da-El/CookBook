@@ -29,7 +29,7 @@ export function Layout() {
               🍳
             </span>
             <span className="brand-name">
-              Cook<em>Book</em>
+              Grok<em>Cookbook</em>
             </span>
           </NavLink>
 

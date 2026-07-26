@@ -1,4 +1,4 @@
-# CookBook — UI Design Prototype (v2)
+# Grok Cookbook — UI Design Prototype (v2)
 
 Light-first **kitchen journal** mockups (not an X/Instagram clone). Optional dark mode via the moon/sun control.
 
@@ -11,7 +11,7 @@ Open any HTML file in a browser from this folder:
 | Home feed | `index.html` |
 | Sign in | `auth.html` |
 | Sign up | `auth-signup.html` |
-| Kitchen / profile | `cookbook.html` |
+| Kitchen / profile | `Grok Cookbook.html` |
 | Log meal | `add-meal.html` |
 | Add ingredient | `add-ingredient.html` |
 | Settings | `settings.html` |
@@ -39,11 +39,11 @@ Shared: `styles.css`, `theme.js`
 
 ### Identity (vs social clones)
 
-- Editorial cookbook feel: cream paper, terracotta, serif titles
+- Editorial Grok Cookbook feel: cream paper, terracotta, serif titles
 - Language: “kitchen”, “log meal”, “Today’s table” — not “tweet” / “post”
 - Actions: Note / Saved / Cook this — not repost / like / share spam
 - Segmented controls and recipe “plates” instead of infinite timeline chrome
 
 ## Theme toggle
 
-Click the moon (or Settings → Theme). Preference saves as `cookbook-theme`.
+Click the moon (or Settings → Theme). Preference saves as `grok-cookbook-theme`.

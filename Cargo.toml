@@ -1,16 +1,16 @@
 [workspace]
 resolver = "2"
 members = [
-    "crates/cookbook-api",
-    "crates/cookbook-core",
-    "crates/cookbook-db",
+    "crates/grok-cookbook-api",
+    "crates/grok-cookbook-core",
+    "crates/grok-cookbook-db",
 ]
 
 [workspace.package]
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
-authors = ["CookBook"]
+authors = ["Grok Cookbook"]
 
 [workspace.dependencies]
 axum = { version = "0.8", features = ["macros"] }
