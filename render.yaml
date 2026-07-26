@@ -1,23 +1,27 @@
-# Render Blueprint for grok-cookbook
-# Deploy: New → Blueprint → connect this repo
+# Render Blueprint for CookBook (repo: grok-cookbook)
+# Dashboard: New → Blueprint → connect Da-El/grok-cookbook
+# Or CLI: create postgres + web service (see DEPLOY.md)
 
 services:
   - type: web
-    name: grok-cookbook-api
+    name: cookbook
     runtime: docker
     plan: free
+    region: oregon
     dockerfilePath: ./Dockerfile
     dockerContext: .
     healthCheckPath: /healthz
     envVars:
       - key: DATABASE_URL
         fromDatabase:
-          name: grok-cookbook-db
+          name: cookbook-db
           property: connectionString
       - key: CATALOG_PATH
         value: /app/catalog.json
       - key: STATIC_DIR
         value: /app/static
+      - key: UPLOAD_DIR
+        value: /app/uploads
       - key: RUST_LOG
         value: grok_cookbook_api=info,tower_http=info
       - key: HOST
@@ -26,7 +30,8 @@ services:
         generateValue: true
 
 databases:
-  - name: grok-cookbook-db
+  - name: cookbook-db
     plan: free
     databaseName: grok_cookbook
     user: grok_cookbook
+    region: oregon
