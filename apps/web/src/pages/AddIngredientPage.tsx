@@ -78,7 +78,7 @@ export function AddIngredientPage() {
         <div className="page-hero">
           <div>
             <h1>Add ingredient</h1>
-            <p className="lede">USDA Foundation Foods · photo · quantity · dates</p>
+            <p className="lede">USDA Foundation Foods · quantity · dates</p>
           </div>
           <div className="row-end">
             <Link to="/create" className="btn btn-ghost btn-sm">
@@ -175,11 +175,7 @@ export function AddIngredientPage() {
                       {food.food_subgroup ? ` · ${food.food_subgroup}` : ""}
                     </div>
                   </div>
-                  {food.macros_complete ? (
-                    <span className="badge-ok">Macros</span>
-                  ) : (
-                    <span className="tag">Catalog</span>
-                  )}
+                  <span className="badge-ok">USDA Foundation</span>
                 </button>
                 <Link
                   to={`/ingredients/${encodeURIComponent(food.id)}`}
