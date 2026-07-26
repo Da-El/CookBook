@@ -106,6 +106,7 @@ export function IngredientDetailPage() {
           <div className="card-pad">
             <div className="meta-chips">
               <span className="tag">{food.food_group || "Unclassified"}</span>
+              <span className="badge-ok">USDA Foundation</span>
             </div>
 
             {food.name_scientific && (
