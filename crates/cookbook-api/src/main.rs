@@ -1,8 +1,10 @@
+mod auth;
 mod catalog;
 mod error;
 mod routes;
 mod state;
 
+use auth::jwt::JwtKeys;
 use axum::Router;
 use state::AppState;
 use std::net::SocketAddr;
@@ -60,7 +62,20 @@ async fn main() -> anyhow::Result<()> {
     let catalog = catalog::load_catalog(&catalog_path)?;
     tracing::info!(foods = catalog.foods.len(), "catalog loaded");
 
-    let state = AppState { pool, catalog };
+    let jwt_secret = std::env::var("JWT_SECRET").unwrap_or_else(|_| {
+        tracing::warn!("JWT_SECRET not set — using insecure dev default");
+        "dev-only-change-me-cookbook-jwt-secret-32b".into()
+    });
+    if jwt_secret.len() < 32 {
+        tracing::warn!("JWT_SECRET should be at least 32 characters");
+    }
+    let jwt = JwtKeys::from_secret(&jwt_secret);
+
+    let state = AppState {
+        pool,
+        catalog,
+        jwt,
+    };
 
     let cors = CorsLayer::new()
         .allow_origin(Any)

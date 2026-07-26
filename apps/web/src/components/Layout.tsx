@@ -10,7 +10,15 @@ const links = [
 ];
 
 export function Layout() {
-  const { theme, toggleTheme } = useApp();
+  const { theme, toggleTheme, user } = useApp();
+  const initials = user
+    ? user.display_name
+        .split(/\s+/)
+        .map((w) => w[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase()
+    : "?";
 
   return (
     <div className="app-shell">
@@ -27,7 +35,12 @@ export function Layout() {
 
           <nav className="top-links" aria-label="Primary">
             {links.map((l) => (
-              <NavLink key={l.to} to={l.to} end={l.end} className={({ isActive }) => (isActive ? "active" : undefined)}>
+              <NavLink
+                key={l.to}
+                to={l.to}
+                end={l.end}
+                className={({ isActive }) => (isActive ? "active" : undefined)}
+              >
                 <span className="nav-ico">{l.icon}</span>
                 <span className="nav-label">{l.label}</span>
               </NavLink>
@@ -44,12 +57,30 @@ export function Layout() {
             >
               <span>{theme === "dark" ? "☀️" : "🌙"}</span>
             </button>
-            <NavLink to="/ingredients/add" className="btn btn-primary btn-sm nav-cook-label">
-              Add ingredient
-            </NavLink>
-            <NavLink to="/kitchen" className="avatar avatar--sm avatar--accent" aria-label="Your kitchen">
-              <span>AJ</span>
-            </NavLink>
+            {user ? (
+              <>
+                <NavLink to="/ingredients/add" className="btn btn-primary btn-sm nav-cook-label">
+                  Add ingredient
+                </NavLink>
+                <NavLink
+                  to="/settings"
+                  className="avatar avatar--sm avatar--accent"
+                  aria-label={user.display_name}
+                  title={`@${user.handle}`}
+                >
+                  <span>{initials}</span>
+                </NavLink>
+              </>
+            ) : (
+              <>
+                <NavLink to="/login" className="btn btn-secondary btn-sm">
+                  Sign in
+                </NavLink>
+                <NavLink to="/signup" className="btn btn-primary btn-sm">
+                  Join
+                </NavLink>
+              </>
+            )}
           </div>
         </div>
       </header>
@@ -58,9 +89,14 @@ export function Layout() {
 
       <nav className="mobile-nav" aria-label="Mobile">
         {links.map((l) => (
-          <NavLink key={l.to} to={l.to} end={l.end} className={({ isActive }) => (isActive ? "active" : undefined)}>
+          <NavLink
+            key={l.to}
+            to={l.to}
+            end={l.end}
+            className={({ isActive }) => (isActive ? "active" : undefined)}
+          >
             <span className="ico">{l.icon}</span>
-            {l.label === "Log meal" ? "Log" : l.label === "Settings" ? "More" : l.label}
+            {l.label === "Settings" ? "More" : l.label}
           </NavLink>
         ))}
       </nav>

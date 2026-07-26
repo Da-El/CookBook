@@ -64,13 +64,20 @@ Health check: `https://<your-service>.onrender.com/healthz`
 |--------|------|--------|
 | GET | `/healthz` | Liveness |
 | GET | `/readyz` | DB ping |
+| POST | `/v1/auth/register` | Create account |
+| POST | `/v1/auth/login` | Returns access + refresh tokens |
+| POST | `/v1/auth/refresh` | Rotate refresh, mint access |
+| POST | `/v1/auth/logout` | Revoke current session |
+| POST | `/v1/auth/logout-all` | Revoke all + bump token_version |
+| GET | `/v1/auth/me` | Current user |
+| GET | `/v1/auth/sessions` | Active sessions |
 | GET | `/v1/foods?q=&group=&limit=` | Catalog search |
 | GET | `/v1/foods/{id}` | Food detail |
 | GET | `/v1/foods/groups` | Groups |
-| GET/POST | `/v1/fridge` | Demo-user fridge (pre-auth) |
-| DELETE | `/v1/fridge/{id}` | Remove item |
+| GET/POST | `/v1/fridge` | Auth required |
+| DELETE | `/v1/fridge/{id}` | Auth required |
 
-Auth (enterprise sessions) is next per `DESIGN.md`.
+Auth: Argon2id passwords, 15m JWT access, rotating hashed refresh tokens, session inventory.
 
 ## Free tier notes
 

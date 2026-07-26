@@ -1,5 +1,4 @@
-//! Temporary demo-user fridge API until full auth lands.
-//! Uses fixed demo user id; creates user row on first write if DB is up.
+//! Authenticated fridge API — requires Bearer access token.
 
 use axum::extract::{Path, State};
 use axum::Json;
@@ -7,10 +6,9 @@ use chrono::NaiveDate;
 use serde::{Deserialize, Serialize};
 use ulid::Ulid;
 
+use crate::auth::extract::AuthUser;
 use crate::error::{ApiResult, AppError};
 use crate::state::AppState;
-
-const DEMO_USER_ID: &str = "01DEMOUSER0000000000000000";
 
 #[derive(Debug, Serialize, sqlx::FromRow)]
 pub struct FridgeItem {
@@ -44,23 +42,11 @@ fn require_pool(state: &AppState) -> ApiResult<&sqlx::PgPool> {
         .ok_or_else(|| AppError::Unavailable("database not available".into()))
 }
 
-async fn ensure_demo_user(pool: &sqlx::PgPool) -> ApiResult<()> {
-    sqlx::query(
-        r#"
-        INSERT INTO users (id, email, email_verified, display_name, handle)
-        VALUES ($1, 'demo@cookbook.local', TRUE, 'Demo Chef', 'demo')
-        ON CONFLICT (id) DO NOTHING
-        "#,
-    )
-    .bind(DEMO_USER_ID)
-    .execute(pool)
-    .await?;
-    Ok(())
-}
-
-pub async fn list_fridge(State(state): State<AppState>) -> ApiResult<Json<serde_json::Value>> {
+pub async fn list_fridge(
+    State(state): State<AppState>,
+    auth: AuthUser,
+) -> ApiResult<Json<serde_json::Value>> {
     let pool = require_pool(&state)?;
-    ensure_demo_user(pool).await?;
     let items: Vec<FridgeItem> = sqlx::query_as(
         r#"
         SELECT id, user_id, food_id, food_name, quantity, location,
@@ -70,7 +56,7 @@ pub async fn list_fridge(State(state): State<AppState>) -> ApiResult<Json<serde_
         ORDER BY created_at DESC
         "#,
     )
-    .bind(DEMO_USER_ID)
+    .bind(&auth.user_id)
     .fetch_all(pool)
     .await?;
     Ok(Json(serde_json::json!({ "items": items })))
@@ -78,10 +64,10 @@ pub async fn list_fridge(State(state): State<AppState>) -> ApiResult<Json<serde_
 
 pub async fn add_fridge(
     State(state): State<AppState>,
+    auth: AuthUser,
     Json(body): Json<AddFridgeBody>,
 ) -> ApiResult<Json<FridgeItem>> {
     let pool = require_pool(&state)?;
-    ensure_demo_user(pool).await?;
 
     if body.food_id.trim().is_empty() {
         return Err(AppError::BadRequest("food_id required".into()));
@@ -117,7 +103,7 @@ pub async fn add_fridge(
         "#,
     )
     .bind(&id)
-    .bind(DEMO_USER_ID)
+    .bind(&auth.user_id)
     .bind(&body.food_id)
     .bind(&food_name)
     .bind(&quantity)
@@ -134,12 +120,13 @@ pub async fn add_fridge(
 
 pub async fn delete_fridge(
     State(state): State<AppState>,
+    auth: AuthUser,
     Path(id): Path<String>,
 ) -> ApiResult<Json<serde_json::Value>> {
     let pool = require_pool(&state)?;
     let res = sqlx::query("DELETE FROM fridge_items WHERE id = $1 AND user_id = $2")
         .bind(&id)
-        .bind(DEMO_USER_ID)
+        .bind(&auth.user_id)
         .execute(pool)
         .await?;
     if res.rows_affected() == 0 {

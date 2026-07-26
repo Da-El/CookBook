@@ -1,3 +1,4 @@
+use crate::auth::jwt::JwtKeys;
 use crate::catalog::Catalog;
 use sqlx::PgPool;
 use std::sync::Arc;
@@ -6,4 +7,5 @@ use std::sync::Arc;
 pub struct AppState {
     pub pool: Option<PgPool>,
     pub catalog: Arc<Catalog>,
+    pub jwt: JwtKeys,
 }

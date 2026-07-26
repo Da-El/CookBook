@@ -9,6 +9,8 @@ pub type ApiResult<T> = Result<T, AppError>;
 pub enum AppError {
     NotFound(String),
     BadRequest(String),
+    Unauthorized(String),
+    Conflict(String),
     Unavailable(String),
     Internal(String),
 }
@@ -18,6 +20,8 @@ impl AppError {
         match self {
             AppError::NotFound(_) => StatusCode::NOT_FOUND,
             AppError::BadRequest(_) => StatusCode::BAD_REQUEST,
+            AppError::Unauthorized(_) => StatusCode::UNAUTHORIZED,
+            AppError::Conflict(_) => StatusCode::CONFLICT,
             AppError::Unavailable(_) => StatusCode::SERVICE_UNAVAILABLE,
             AppError::Internal(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
@@ -27,6 +31,8 @@ impl AppError {
         match self {
             AppError::NotFound(_) => "not_found",
             AppError::BadRequest(_) => "bad_request",
+            AppError::Unauthorized(_) => "unauthorized",
+            AppError::Conflict(_) => "conflict",
             AppError::Unavailable(_) => "unavailable",
             AppError::Internal(_) => "internal",
         }
@@ -36,6 +42,8 @@ impl AppError {
         match self {
             AppError::NotFound(m)
             | AppError::BadRequest(m)
+            | AppError::Unauthorized(m)
+            | AppError::Conflict(m)
             | AppError::Unavailable(m)
             | AppError::Internal(m) => m,
         }

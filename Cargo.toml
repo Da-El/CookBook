@@ -28,3 +28,10 @@ thiserror = "2"
 anyhow = "1"
 dotenvy = "0.15"
 ulid = { version = "1", features = ["serde"] }
+argon2 = "0.5"
+password-hash = "0.5"
+jsonwebtoken = "9"
+rand = "0.8"
+sha2 = "0.10"
+hex = "0.4"
+axum-extra = { version = "0.10", features = ["typed-header"] }

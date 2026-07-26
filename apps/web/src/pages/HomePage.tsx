@@ -4,7 +4,7 @@ import { useApp } from "../context/AppContext";
 import { api, apiBase } from "../lib/api";
 
 export function HomePage() {
-  const { fridge, foods, catalog } = useApp();
+  const { fridge, foods, catalog, user } = useApp();
   const [apiStatus, setApiStatus] = useState<string>("checking…");
 
   useEffect(() => {
@@ -27,18 +27,24 @@ export function HomePage() {
         <section className="card card-pad">
           <h2 className="card-title">Welcome to CookBook</h2>
           <p className="muted text-sm mt-8">
-            Browse FooDB ingredients, stock your fridge, rate foods. Backend powers health/foods/fridge when
-            running; catalog falls back to static JSON offline.
+            Browse FooDB ingredients, stock your fridge, rate foods.
+            {user ? (
+              <> Signed in as <strong>@{user.handle}</strong>.</>
+            ) : (
+              <> Sign in to sync fridge to Postgres.</>
+            )}
           </p>
           <div className="row-end mt-16" style={{ justifyContent: "flex-start", gap: 10 }}>
             <Link to="/ingredients/browse" className="btn btn-primary">
               Browse all foods
             </Link>
+            {!user && (
+              <Link to="/signup" className="btn btn-secondary">
+                Create account
+              </Link>
+            )}
             <Link to="/ingredients" className="btn btn-secondary">
               Open fridge
-            </Link>
-            <Link to="/ingredients/add" className="btn btn-secondary">
-              Add ingredient
             </Link>
           </div>
         </section>

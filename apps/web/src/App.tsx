@@ -7,15 +7,19 @@ import { HomePage } from "./pages/HomePage";
 import { IngredientDetailPage } from "./pages/IngredientDetailPage";
 import { IngredientsBrowsePage } from "./pages/IngredientsBrowsePage";
 import { KitchenPage } from "./pages/KitchenPage";
+import { LoginPage } from "./pages/LoginPage";
 import { MealDetailPage } from "./pages/MealDetailPage";
 import { PlaceholderPage } from "./pages/PlaceholderPage";
 import { SettingsPage } from "./pages/SettingsPage";
+import { SignupPage } from "./pages/SignupPage";
 
 export default function App() {
   return (
     <AppProvider>
       <BrowserRouter>
         <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
           <Route element={<Layout />}>
             <Route index element={<HomePage />} />
             <Route path="kitchen" element={<KitchenPage />} />
