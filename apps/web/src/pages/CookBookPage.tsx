@@ -1,7 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
+import {
+  CookbookProfile,
+  profileToCookbookData,
+} from "../components/CookbookProfile";
 import { FoodThumb } from "../components/FoodThumb";
-import { IconSettings } from "../components/Icons";
+import { ProfileCustomize } from "../components/ProfileCustomize";
 import { StarRating } from "../components/StarRating";
 import { useApp } from "../context/AppContext";
 import { api, type MealDto, type ProfileDto } from "../lib/api";
@@ -18,14 +22,50 @@ type Suggestion = {
   pct: number;
 };
 
+function emptyProfile(user: {
+  id: string;
+  handle: string;
+  display_name: string;
+  bio: string;
+}): ProfileDto {
+  return {
+    id: user.id,
+    handle: user.handle,
+    display_name: user.display_name,
+    bio: user.bio || "",
+    avatar_url: null,
+    cookbook_title: "",
+    tagline: "",
+    cover_style: "parchment",
+    accent_hex: null,
+    favorite_cuisines: "",
+    location_label: "",
+    cover_url: null,
+    cooked_count: 0,
+    want_count: 0,
+    followers_count: 0,
+    following_count: 0,
+    is_following: false,
+    is_self: true,
+  };
+}
+
 export function CookBookPage() {
-  const { user, fridge, foods, removeFromFridge, authLoading } = useApp();
+  const { user, fridge, foods, removeFromFridge, authLoading, patchUser } = useApp();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [tab, setTab] = useState<Tab>("Cooked");
   const [fridgeQuery, setFridgeQuery] = useState("");
   const [cooked, setCooked] = useState<MealDto[]>([]);
   const [want, setWant] = useState<MealDto[]>([]);
   const [profile, setProfile] = useState<ProfileDto | null>(null);
   const [loadingMeals, setLoadingMeals] = useState(false);
+  const [customizeOpen, setCustomizeOpen] = useState(false);
+
+  useEffect(() => {
+    if (searchParams.get("customize") === "1" && user) {
+      setCustomizeOpen(true);
+    }
+  }, [searchParams, user]);
 
   useEffect(() => {
     if (!user) {
@@ -51,6 +91,7 @@ export function CookBookPage() {
         if (!cancelled) {
           setCooked([]);
           setWant([]);
+          setProfile(emptyProfile(user));
         }
       })
       .finally(() => {
@@ -75,13 +116,14 @@ export function CookBookPage() {
       scored.push({ meal, have, total, pct: have / total });
     }
     scored.sort((a, b) => b.pct - a.pct || b.have - a.have);
-    // unique by meal id
     const seen = new Set<string>();
-    return scored.filter((s) => {
-      if (seen.has(s.meal.id)) return false;
-      seen.add(s.meal.id);
-      return true;
-    }).slice(0, 8);
+    return scored
+      .filter((s) => {
+        if (seen.has(s.meal.id)) return false;
+        seen.add(s.meal.id);
+        return true;
+      })
+      .slice(0, 8);
   }, [want, cooked, fridgeIds]);
 
   const fridgeRows = useMemo(() => {
@@ -102,15 +144,6 @@ export function CookBookPage() {
       });
   }, [fridge, foods, fridgeQuery]);
 
-  const initials = user
-    ? user.display_name
-        .split(/\s+/)
-        .map((w) => w[0])
-        .join("")
-        .slice(0, 2)
-        .toUpperCase()
-    : "CB";
-
   if (authLoading) {
     return (
       <div className="page page--single">
@@ -128,12 +161,12 @@ export function CookBookPage() {
           <div className="page-hero">
             <div>
               <h1>CookBook</h1>
-              <p className="lede">Your meals, fridge, and kitchen journal</p>
+              <p className="lede">Your personal kitchen volume — meals, fridge, and story</p>
             </div>
           </div>
           <section className="card card-pad empty-state">
             <div className="empty-glyph" aria-hidden />
-            <p className="muted mt-12">Sign in to keep your personal CookBook.</p>
+            <p className="muted mt-12">Sign in to open your personal CookBook.</p>
             <div className="row-end mt-16" style={{ justifyContent: "center", gap: 10 }}>
               <Link to="/login" className="btn btn-primary">
                 Sign in
@@ -149,113 +182,112 @@ export function CookBookPage() {
   }
 
   const list = tab === "Cooked" ? cooked : tab === "Want to cook" ? want : [];
+  const p = profile ?? emptyProfile(user);
+  const bookData = profileToCookbookData(p);
+
+  function onProfileSaved(saved: ProfileDto) {
+    setProfile(saved);
+    patchUser({
+      display_name: saved.display_name,
+      bio: saved.bio,
+    });
+  }
 
   return (
     <div className="page">
       <div className="column">
-        <section className="card profile-card">
-          <div className="profile-cover profile-cover--book" aria-hidden />
-          <div className="profile-main">
-            <div className="profile-top">
-              <div className="avatar avatar--xl avatar--accent">
-                <span>{initials}</span>
-              </div>
-              <Link to="/settings" className="btn btn-secondary btn-sm" title="Settings">
-                <IconSettings size={16} /> Settings
-              </Link>
-            </div>
-            <h2 className="profile-name">{user.display_name}</h2>
-            <p className="profile-handle">@{user.handle}</p>
-            {(profile?.bio || user.bio) && (
-              <p className="profile-bio">{profile?.bio || user.bio}</p>
-            )}
-            <div className="stat-row">
-              <span className="stat">
-                <strong>{profile?.cooked_count ?? cooked.length}</strong> cooked
-              </span>
-              <span className="stat">
-                <strong>{profile?.want_count ?? want.length}</strong> want
-              </span>
-              <span className="stat">
-                <strong>{fridge.length}</strong> fridge
-              </span>
-              <span className="stat">
-                <strong>{profile?.followers_count ?? 0}</strong> followers
-              </span>
-            </div>
-          </div>
-        </section>
+        <CookbookProfile
+          data={bookData}
+          actions={
+            <button
+              type="button"
+              className="btn btn-primary btn-sm"
+              onClick={() => setCustomizeOpen(true)}
+            >
+              Personalize
+            </button>
+          }
+        />
 
         <div className="seg" role="tablist">
-          {TABS.map((t) => (
-            <button
-              key={t}
-              type="button"
-              role="tab"
-              aria-selected={tab === t}
-              className={tab === t ? "active" : undefined}
-              onClick={() => setTab(t)}
-            >
-              {t}
-              {t === "Fridge" ? ` (${fridge.length})` : ""}
-              {t === "Cooked" ? ` (${cooked.length})` : ""}
-              {t === "Want to cook" ? ` (${want.length})` : ""}
-            </button>
-          ))}
+          {TABS.map((t) => {
+            const count =
+              t === "Cooked" ? cooked.length : t === "Want to cook" ? want.length : fridge.length;
+            return (
+              <button
+                key={t}
+                type="button"
+                role="tab"
+                aria-selected={tab === t}
+                className={tab === t ? "active" : undefined}
+                onClick={() => setTab(t)}
+              >
+                {t} <span className="seg-count">{count}</span>
+              </button>
+            );
+          })}
         </div>
 
         {(tab === "Cooked" || tab === "Want to cook") && (
-          <section className="card card-pad">
-            {loadingMeals ? (
-              <p className="muted">Loading meals…</p>
-            ) : list.length === 0 ? (
-              <div className="empty-state">
-                <div className="empty-glyph" aria-hidden />
-                <p className="muted mt-12">
-                  {tab === "Cooked" ? "No cooked meals yet." : "Your want-to-cook list is empty."}
+          <section className="cookbook-chapter">
+            <div className="cookbook-chapter-head">
+              <div>
+                <h2>{tab === "Cooked" ? "Cooked" : "Want to cook"}</h2>
+                <p className="muted text-sm mt-4">
+                  {tab === "Cooked"
+                    ? "Meals you’ve made — your kitchen history"
+                    : "Recipes and ideas waiting on the shelf"}
                 </p>
-                <Link to="/create/meal" className="btn btn-primary btn-sm mt-12">
-                  Create a meal
-                </Link>
               </div>
-            ) : (
-              <div className="ing-list">
-                {list.map((m) => {
-                  const img = mediaUrl(m.photo_url);
-                  return (
-                    <Link
-                      key={m.id}
-                      to={`/meals/${m.id}`}
-                      className="ing-row"
-                      style={{ textDecoration: "none" }}
-                    >
-                      {img ? (
-                        <div className="meal-thumb meal-thumb--photo">
-                          <img src={img} alt="" />
+              <Link to="/create/meal" className="btn btn-primary btn-sm">
+                Add meal
+              </Link>
+            </div>
+            <div className="cookbook-chapter-body">
+              {loadingMeals ? (
+                <p className="muted">Loading meals…</p>
+              ) : list.length === 0 ? (
+                <div className="empty-state">
+                  <div className="empty-glyph" aria-hidden />
+                  <p className="muted mt-12">
+                    {tab === "Cooked" ? "No cooked meals yet." : "Your want-to-cook list is empty."}
+                  </p>
+                  <Link to="/create/meal" className="btn btn-primary btn-sm mt-12">
+                    Create a meal
+                  </Link>
+                </div>
+              ) : (
+                <div className="cookbook-meal-grid">
+                  {list.map((m) => {
+                    const img = mediaUrl(m.photo_url);
+                    return (
+                      <Link key={m.id} to={`/meals/${m.id}`} className="cookbook-meal-card">
+                        <div className="cookbook-meal-media">
+                          {img ? (
+                            <img src={img} alt="" />
+                          ) : (
+                            <span className="meal-thumb-ring" aria-hidden />
+                          )}
                         </div>
-                      ) : (
-                        <div className="meal-thumb" aria-hidden>
-                          <span className="meal-thumb-ring" />
-                        </div>
-                      )}
-                      <div className="ing-meta">
-                        <div className="name">{m.title}</div>
-                        <div className="group">
-                          {m.cuisine || "Meal"}
-                          {m.time_minutes ? ` · ${m.time_minutes} min` : ""}
-                          {m.visibility === "private" ? " · private" : ""}
-                        </div>
-                        {m.author_rating != null && (
-                          <div className="mt-8">
-                            <StarRating value={m.author_rating} showValue />
+                        <div className="cookbook-meal-body">
+                          <div className="name">{m.title}</div>
+                          <div className="meta">
+                            {m.cuisine || "Meal"}
+                            {m.time_minutes ? ` · ${m.time_minutes} min` : ""}
+                            {m.visibility === "private" ? " · private" : ""}
                           </div>
-                        )}
-                      </div>
-                    </Link>
-                  );
-                })}
-              </div>
-            )}
+                          {m.author_rating != null && (
+                            <div className="mt-8">
+                              <StarRating value={m.author_rating} showValue />
+                            </div>
+                          )}
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           </section>
         )}
 
@@ -264,7 +296,7 @@ export function CookBookPage() {
             <section className="card card-pad fridge-panel">
               <div className="card-head">
                 <div>
-                  <h2 className="card-title">Fridge</h2>
+                  <h2 className="card-title">Fridge pantry</h2>
                   <p className="muted text-sm mt-4">
                     {fridge.length === 0
                       ? "Empty — add ingredients to get meal ideas"
@@ -413,16 +445,24 @@ export function CookBookPage() {
 
       <aside className="rail">
         <div className="card card-pad">
-          <h2 className="card-title">Your CookBook</h2>
+          <h2 className="card-title">Your volume</h2>
           <p className="muted text-sm mt-8">
-            Meals you log, things you want to cook, and a live fridge with match suggestions.
+            Personalize the cover, portrait, and dedication so this feels like{" "}
+            <em>your</em> cookbook — not a generic profile.
           </p>
-          <Link to="/create" className="btn btn-primary btn-sm mt-12">
+          <button
+            type="button"
+            className="btn btn-primary btn-sm mt-12"
+            onClick={() => setCustomizeOpen(true)}
+          >
+            Personalize
+          </button>
+          <Link to="/create" className="btn btn-secondary btn-sm mt-8">
             Create
           </Link>
           <Link
             to={`/u/${encodeURIComponent(user.handle)}`}
-            className="btn btn-secondary btn-sm mt-8"
+            className="btn btn-ghost btn-sm mt-8"
           >
             Public profile
           </Link>
@@ -446,6 +486,20 @@ export function CookBookPage() {
           </div>
         )}
       </aside>
+
+      <ProfileCustomize
+        open={customizeOpen}
+        profile={p}
+        onClose={() => {
+          setCustomizeOpen(false);
+          if (searchParams.has("customize")) {
+            const next = new URLSearchParams(searchParams);
+            next.delete("customize");
+            setSearchParams(next, { replace: true });
+          }
+        }}
+        onSaved={onProfileSaved}
+      />
     </div>
   );
 }

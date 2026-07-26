@@ -223,6 +223,13 @@ export type ProfileDto = {
   display_name: string;
   bio: string;
   avatar_url: string | null;
+  cookbook_title: string;
+  tagline: string;
+  cover_style: string;
+  accent_hex: string | null;
+  favorite_cuisines: string;
+  location_label: string;
+  cover_url: string | null;
   cooked_count: number;
   want_count: number;
   followers_count: number;
@@ -230,6 +237,43 @@ export type ProfileDto = {
   is_following: boolean;
   is_self: boolean;
 };
+
+export type FollowUserDto = {
+  id: string;
+  handle: string;
+  display_name: string;
+  bio: string;
+  avatar_url: string | null;
+  followed_at?: string;
+};
+
+export type UpdateProfileBody = {
+  display_name?: string;
+  bio?: string;
+  avatar_url?: string | null;
+  clear_avatar?: boolean;
+  cookbook_title?: string;
+  tagline?: string;
+  cover_style?: string;
+  accent_hex?: string | null;
+  clear_accent?: boolean;
+  favorite_cuisines?: string;
+  location_label?: string;
+  cover_url?: string | null;
+  clear_cover?: boolean;
+};
+
+export const COVER_STYLES = [
+  { id: "parchment", label: "Parchment", blurb: "Classic paper cookbook" },
+  { id: "linen", label: "Linen", blurb: "Soft fabric cover" },
+  { id: "indigo", label: "Indigo", blurb: "Enterprise cool" },
+  { id: "kitchen", label: "Kitchen", blurb: "Warm terracotta" },
+  { id: "forest", label: "Forest", blurb: "Fresh greens" },
+  { id: "midnight", label: "Midnight", blurb: "Dark leather" },
+  { id: "rose", label: "Rose", blurb: "Soft blush" },
+  { id: "ocean", label: "Ocean", blurb: "Calm blues" },
+  { id: "violet", label: "Violet", blurb: "Modern plum" },
+] as const;
 
 export type FeedItemDto = {
   type: "meal";
@@ -445,6 +489,12 @@ export const api = {
   getProfile: (handle: string) =>
     request<ProfileDto>(`/v1/users/${encodeURIComponent(handle)}`, undefined, true),
 
+  updateProfile: (body: UpdateProfileBody) =>
+    request<ProfileDto>("/v1/me/profile", {
+      method: "PATCH",
+      body: JSON.stringify(body),
+    }, true),
+
   follow: (handle: string) =>
     request<{ following: boolean; handle: string }>(
       `/v1/follows/${encodeURIComponent(handle)}`,
@@ -460,15 +510,23 @@ export const api = {
     ),
 
   listFollowing: () =>
-    request<{ items: { id: string; handle: string; display_name: string; bio: string }[] }>(
-      "/v1/follows/following",
+    request<{ items: FollowUserDto[] }>("/v1/follows/following", undefined, true),
+
+  listFollowers: () =>
+    request<{ items: FollowUserDto[] }>("/v1/follows/followers", undefined, true),
+
+  /** People who follow this user (public list). */
+  listUserFollowers: (handle: string, limit = 50) =>
+    request<{ items: FollowUserDto[]; kind?: string; handle?: string }>(
+      `/v1/users/${encodeURIComponent(handle)}/followers?limit=${limit}`,
       undefined,
       true,
     ),
 
-  listFollowers: () =>
-    request<{ items: { id: string; handle: string; display_name: string; bio: string }[] }>(
-      "/v1/follows/followers",
+  /** People this user follows (public list). */
+  listUserFollowing: (handle: string, limit = 50) =>
+    request<{ items: FollowUserDto[]; kind?: string; handle?: string }>(
+      `/v1/users/${encodeURIComponent(handle)}/following?limit=${limit}`,
       undefined,
       true,
     ),

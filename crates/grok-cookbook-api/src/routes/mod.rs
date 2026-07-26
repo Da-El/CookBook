@@ -9,7 +9,7 @@ mod meals;
 pub mod media;
 mod reviews;
 
-use axum::routing::{delete, get, post};
+use axum::routing::{delete, get, patch, post};
 use axum::Router;
 use crate::state::AppState;
 
@@ -26,6 +26,8 @@ pub fn router() -> Router<AppState> {
         .route("/v1/auth/logout-all", post(auth::logout_all))
         .route("/v1/auth/me", get(auth::me))
         .route("/v1/auth/sessions", get(auth::list_sessions))
+        // Personal cookbook profile
+        .route("/v1/me/profile", patch(follows::update_profile))
         // Media
         .route("/v1/media", post(media::upload_image))
         // Catalog (meta before bare {id} is fine; static segments first)
@@ -56,6 +58,14 @@ pub fn router() -> Router<AppState> {
         .route("/v1/reviews/{id}", delete(reviews::delete_review))
         // Social (static follow lists before {handle})
         .route("/v1/users/{handle}", get(follows::get_profile))
+        .route(
+            "/v1/users/{handle}/followers",
+            get(follows::list_user_followers),
+        )
+        .route(
+            "/v1/users/{handle}/following",
+            get(follows::list_user_following),
+        )
         .route("/v1/follows/following", get(follows::list_following))
         .route("/v1/follows/followers", get(follows::list_followers))
         .route(

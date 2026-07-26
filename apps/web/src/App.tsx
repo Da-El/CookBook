@@ -11,6 +11,7 @@ import { BrandedDetailPage } from "./pages/BrandedDetailPage";
 import { IngredientDetailPage } from "./pages/IngredientDetailPage";
 import { LoginPage } from "./pages/LoginPage";
 import { MealDetailPage } from "./pages/MealDetailPage";
+import { LegalPage } from "./pages/LegalPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { SettingsPage } from "./pages/SettingsPage";
 import { SignupPage } from "./pages/SignupPage";
@@ -35,6 +36,7 @@ export default function App() {
             <Route path="meals/:mealId" element={<MealDetailPage />} />
             <Route path="u/:handle" element={<ProfilePage />} />
             <Route path="settings" element={<SettingsPage />} />
+            <Route path="legal" element={<LegalPage />} />
             {/* Legacy redirects */}
             <Route path="kitchen" element={<Navigate to="/cookbook" replace />} />
             <Route path="ingredients" element={<Navigate to="/cookbook" replace />} />

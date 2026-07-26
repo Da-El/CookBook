@@ -101,6 +101,8 @@ type AppContextValue = {
   logout: () => Promise<void>;
   logoutAll: () => Promise<void>;
   refreshSessions: () => Promise<SessionDto[]>;
+  /** Merge fields into the signed-in user (e.g. after profile personalization). */
+  patchUser: (patch: Partial<UserPublic>) => void;
 };
 
 const AppContext = createContext<AppContextValue | null>(null);
@@ -232,6 +234,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return res.items;
   }, []);
 
+  const patchUser = useCallback((patch: Partial<UserPublic>) => {
+    setUser((prev) => (prev ? { ...prev, ...patch } : prev));
+  }, []);
+
   const addToFridge = useCallback(
     async (input: AddFridgeInput) => {
       let photoUrl = input.photoUrl ?? null;
@@ -349,6 +355,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       logout,
       logoutAll,
       refreshSessions,
+      patchUser,
     }),
     [
       theme,
@@ -371,6 +378,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       logout,
       logoutAll,
       refreshSessions,
+      patchUser,
     ],
   );
 

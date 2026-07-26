@@ -1,15 +1,21 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import {
+  CookbookProfile,
+  profileToCookbookData,
+} from "../components/CookbookProfile";
+import { ProfileCustomize } from "../components/ProfileCustomize";
 import { StarRating } from "../components/StarRating";
 import { useApp } from "../context/AppContext";
 import { api, ApiError, type MealDto, type ProfileDto } from "../lib/api";
+import { mediaUrl } from "../lib/photo";
 
 const TABS = ["Cooked", "Want to cook"] as const;
 type Tab = (typeof TABS)[number];
 
 export function ProfilePage() {
   const { handle = "" } = useParams();
-  const { user } = useApp();
+  const { user, patchUser } = useApp();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<ProfileDto | null>(null);
   const [meals, setMeals] = useState<MealDto[]>([]);
@@ -17,6 +23,7 @@ export function ProfilePage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [followBusy, setFollowBusy] = useState(false);
+  const [customizeOpen, setCustomizeOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -96,129 +103,143 @@ export function ProfilePage() {
 
   if (!profile) return null;
 
-  const initials = profile.display_name
-    .split(/\s+/)
-    .map((w) => w[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-
   return (
     <div className="page">
       <div className="column">
-        <section className="card profile-card">
-          <div className="profile-cover" aria-hidden />
-          <div className="profile-main">
-            <div className="profile-top">
-              <div className="avatar avatar--xl avatar--accent">
-                <span>{initials}</span>
-              </div>
-              {profile.is_self ? (
-                <Link to="/settings" className="btn btn-secondary btn-sm">
-                  Edit profile
-                </Link>
-              ) : (
+        <CookbookProfile
+          data={profileToCookbookData(profile)}
+          actions={
+            profile.is_self ? (
+              <>
                 <button
                   type="button"
-                  className={`btn btn-sm ${profile.is_following ? "btn-secondary" : "btn-primary"}`}
-                  disabled={followBusy}
-                  onClick={toggleFollow}
+                  className="btn btn-primary btn-sm"
+                  onClick={() => setCustomizeOpen(true)}
                 >
-                  {profile.is_following ? "Following" : "Follow"}
+                  Personalize
                 </button>
-              )}
-            </div>
-            <h2 className="profile-name">{profile.display_name}</h2>
-            <p className="profile-handle">@{profile.handle}</p>
-            {profile.bio && <p className="profile-bio">{profile.bio}</p>}
-            <div className="stat-row">
-              <span className="stat">
-                <strong>{profile.cooked_count}</strong> cooked
-              </span>
-              <span className="stat">
-                <strong>{profile.want_count}</strong> want to cook
-              </span>
-              <span className="stat">
-                <strong>{profile.followers_count}</strong> followers
-              </span>
-              <span className="stat">
-                <strong>{profile.following_count}</strong> following
-              </span>
-            </div>
-          </div>
-        </section>
+                <Link to="/cookbook" className="btn btn-secondary btn-sm">
+                  My CookBook
+                </Link>
+              </>
+            ) : (
+              <button
+                type="button"
+                className={`btn btn-sm ${profile.is_following ? "btn-secondary" : "btn-primary"}`}
+                disabled={followBusy}
+                onClick={toggleFollow}
+              >
+                {profile.is_following ? "Following" : "Follow"}
+              </button>
+            )
+          }
+        />
 
         <div className="seg" role="tablist">
-          {TABS.map((t) => (
-            <button
-              key={t}
-              type="button"
-              role="tab"
-              aria-selected={tab === t}
-              className={tab === t ? "active" : undefined}
-              onClick={() => setTab(t)}
-            >
-              {t}
-            </button>
-          ))}
+          {TABS.map((t) => {
+            const count = t === "Cooked" ? profile.cooked_count : profile.want_count;
+            return (
+              <button
+                key={t}
+                type="button"
+                role="tab"
+                aria-selected={tab === t}
+                className={tab === t ? "active" : undefined}
+                onClick={() => setTab(t)}
+              >
+                {t} <span className="seg-count">{count}</span>
+              </button>
+            );
+          })}
         </div>
 
-        <section className="card card-pad">
-          {meals.length === 0 ? (
-            <div className="empty-state">
-              <p className="muted">No meals in this tab yet.</p>
-              {profile.is_self && (
-                <Link to="/meals/new" className="btn btn-primary btn-sm mt-12">
-                  Log a meal
-                </Link>
-              )}
+        <section className="cookbook-chapter">
+          <div className="cookbook-chapter-head">
+            <div>
+              <h2>{tab === "Cooked" ? "Cooked" : "Want to cook"}</h2>
+              <p className="muted text-sm mt-4">
+                Meals from {profile.display_name.split(/\s+/)[0]}
+              </p>
             </div>
-          ) : (
-            <div className="ing-list">
-              {meals.map((m) => (
-                <Link
-                  key={m.id}
-                  to={`/meals/${m.id}`}
-                  className="ing-row"
-                  style={{ textDecoration: "none" }}
-                >
-                  <div className="meal-thumb" aria-hidden>
-                    <span className="meal-thumb-ring" />
-                  </div>
-                  <div className="ing-meta">
-                    <div className="name">{m.title}</div>
-                    <div className="group">
-                      {m.cuisine || "Meal"}
-                      {m.time_minutes ? ` · ${m.time_minutes} min` : ""}
-                      {m.author_rating ? (
-                        <>
-                          {" · "}
-                          <StarRating value={m.author_rating} showValue />
-                        </>
-                      ) : null}
-                    </div>
-                    {m.story && (
-                      <p className="text-sm muted mt-8" style={{ margin: 0 }}>
-                        {m.story.slice(0, 120)}
-                        {m.story.length > 120 ? "…" : ""}
-                      </p>
-                    )}
-                  </div>
-                </Link>
-              ))}
-            </div>
-          )}
+          </div>
+          <div className="cookbook-chapter-body">
+            {meals.length === 0 ? (
+              <div className="empty-state">
+                <p className="muted">No meals in this list yet.</p>
+                {profile.is_self && (
+                  <Link to="/create/meal" className="btn btn-primary btn-sm mt-12">
+                    Add a meal
+                  </Link>
+                )}
+              </div>
+            ) : (
+              <div className="cookbook-meal-grid">
+                {meals.map((m) => {
+                  const img = mediaUrl(m.photo_url);
+                  return (
+                    <Link key={m.id} to={`/meals/${m.id}`} className="cookbook-meal-card">
+                      <div className="cookbook-meal-media">
+                        {img ? <img src={img} alt="" /> : <span className="meal-thumb-ring" aria-hidden />}
+                      </div>
+                      <div className="cookbook-meal-body">
+                        <div className="name">{m.title}</div>
+                        <div className="meta">
+                          {m.cuisine || "Meal"}
+                          {m.time_minutes ? ` · ${m.time_minutes} min` : ""}
+                        </div>
+                        {m.author_rating != null && (
+                          <div className="mt-8">
+                            <StarRating value={m.author_rating} showValue />
+                          </div>
+                        )}
+                        {m.story && (
+                          <p className="text-sm muted mt-8" style={{ margin: 0 }}>
+                            {m.story.slice(0, 90)}
+                            {m.story.length > 90 ? "…" : ""}
+                          </p>
+                        )}
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </section>
       </div>
 
       <aside className="rail">
         <div className="card card-pad">
-          <h2 className="card-title">Share</h2>
+          <h2 className="card-title">This volume</h2>
           <p className="muted text-sm mt-8">
-            Profile path <code>/u/{profile.handle}</code>
+            Share path <code>/u/{profile.handle}</code>
           </p>
+          {profile.is_self && (
+            <button
+              type="button"
+              className="btn btn-primary btn-sm mt-12"
+              onClick={() => setCustomizeOpen(true)}
+            >
+              Personalize cover
+            </button>
+          )}
         </div>
       </aside>
+
+      {profile.is_self && (
+        <ProfileCustomize
+          open={customizeOpen}
+          profile={profile}
+          onClose={() => setCustomizeOpen(false)}
+          onSaved={(saved) => {
+            setProfile(saved);
+            patchUser({
+              display_name: saved.display_name,
+              bio: saved.bio,
+            });
+          }}
+        />
+      )}
     </div>
   );
 }

@@ -79,6 +79,9 @@ export function SettingsPage() {
                     </div>
                   </div>
                 </div>
+                <Link to="/cookbook" className="btn btn-primary btn-sm">
+                  Personalize CookBook
+                </Link>
               </div>
               <div className="settings-item" style={{ cursor: "default" }}>
                 <div className="left">

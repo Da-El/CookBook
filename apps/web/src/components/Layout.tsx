@@ -1,6 +1,7 @@
 import type { ReactElement } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import { useApp } from "../context/AppContext";
+import { AccountMenu } from "./AccountMenu";
 import {
   BrandMark,
   IconBook,
@@ -26,14 +27,6 @@ const links: {
 
 export function Layout() {
   const { theme, toggleTheme, user } = useApp();
-  const initials = user
-    ? user.display_name
-        .split(/\s+/)
-        .map((w) => w[0])
-        .join("")
-        .slice(0, 2)
-        .toUpperCase()
-    : "?";
 
   return (
     <div className="app-shell">
@@ -71,14 +64,7 @@ export function Layout() {
               {theme === "dark" ? <IconSun /> : <IconMoon />}
             </button>
             {user ? (
-              <NavLink
-                to="/cookbook"
-                className="avatar avatar--sm avatar--accent"
-                aria-label={user.display_name}
-                title={`@${user.handle}`}
-              >
-                <span>{initials}</span>
-              </NavLink>
+              <AccountMenu />
             ) : (
               <>
                 <NavLink to="/login" className="btn btn-secondary btn-sm">
