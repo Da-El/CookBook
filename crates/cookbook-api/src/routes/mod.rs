@@ -2,7 +2,7 @@ mod foods;
 mod fridge;
 mod health;
 
-use axum::routing::{delete, get, post};
+use axum::routing::{delete, get};
 use axum::Router;
 use crate::state::AppState;
 
