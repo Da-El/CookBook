@@ -111,15 +111,43 @@ export function IconSettings({ className = "", size = 18 }: IconProps) {
   );
 }
 
-/** CSS open-book mark for brand */
+/**
+ * Enterprise CookBook mark — open book + clean monogram geometry.
+ */
 export function BrandMark({ className = "" }: { className?: string }) {
   return (
     <span className={`brand-mark ${className}`.trim()} aria-hidden>
-      <span className="brand-mark-book">
-        <span className="brand-mark-page brand-mark-page--l" />
-        <span className="brand-mark-spine" />
-        <span className="brand-mark-page brand-mark-page--r" />
-      </span>
+      <svg className="brand-mark-svg" viewBox="0 0 32 32" fill="none">
+        <path
+          d="M6 8.5C9.2 6.2 12.8 5 16 5c3.2 0 6.8 1.2 10 3.5V24c-3-2-6.5-3-10-3s-7 1-10 3V8.5Z"
+          fill="white"
+          fillOpacity="0.2"
+        />
+        <path
+          d="M16 7c-3.5 0-6.8 1.1-9 2.8v13.2c2.4-1.4 5.5-2.2 9-2.2V7Z"
+          fill="white"
+        />
+        <path
+          d="M16 7c3.5 0 6.8 1.1 9 2.8v13.2c-2.4-1.4-5.5-2.2-9-2.2V7Z"
+          fill="white"
+          fillOpacity="0.88"
+        />
+        <path d="M16 7v14" stroke="#1e3a8a" strokeWidth="1.4" strokeLinecap="round" />
+        <path
+          d="M9.5 12h4M9.5 15h5M9.5 18h3.5"
+          stroke="#2563eb"
+          strokeWidth="1.35"
+          strokeLinecap="round"
+          opacity="0.55"
+        />
+        <path
+          d="M18.5 12h4M18.5 15h5M18.5 18h3.5"
+          stroke="#0d9488"
+          strokeWidth="1.35"
+          strokeLinecap="round"
+          opacity="0.45"
+        />
+      </svg>
     </span>
   );
 }

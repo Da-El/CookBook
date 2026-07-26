@@ -1,17 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
-  <rect width="512" height="512" rx="96" fill="#c45c26"/>
-  <rect x="40" y="40" width="432" height="432" rx="72" fill="url(#g)"/>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
   <!-- open book -->
-  <path d="M128 150c28-22 72-34 128-34s100 12 128 34v236c-28-18-72-28-128-28s-100 10-128 28V150z" fill="#fffaf3" opacity=".15"/>
-  <path d="M256 140c-52 0-96 14-120 34v212c28-16 68-26 120-26V140z" fill="#fffaf3"/>
-  <path d="M256 140c52 0 96 14 120 34v212c-28-16-68-26-120-26V140z" fill="#f3ebe0"/>
-  <path d="M256 140v220" stroke="#8f3d18" stroke-width="8" stroke-linecap="round"/>
-  <path d="M176 200h48M176 248h56M176 296h40" stroke="#c45c26" stroke-width="10" stroke-linecap="round" opacity=".45"/>
-  <path d="M288 200h48M288 248h56M288 296h40" stroke="#c45c26" stroke-width="10" stroke-linecap="round" opacity=".35"/>
+  <path d="M96 136c52-36 108-52 160-52s108 16 160 52v248c-48-32-104-48-160-48s-112 16-160 48V136z" fill="#fff" fill-opacity=".14"/>
+  <path d="M256 112c-56 0-108 18-144 44v212c38-22 88-36 144-36V112z" fill="#fff"/>
+  <path d="M256 112c56 0 108 18 144 44v212c-38-22-88-36-144-36V112z" fill="#e8eefc"/>
+  <path d="M256 112v232" stroke="#1e3a8a" stroke-width="14" stroke-linecap="round"/>
+  <path d="M152 192h64M152 240h80M152 288h56" stroke="#2563eb" stroke-width="14" stroke-linecap="round" opacity=".5"/>
+  <path d="M296 192h64M296 240h80M296 288h56" stroke="#0d9488" stroke-width="14" stroke-linecap="round" opacity=".4"/>
   <defs>
-    <linearGradient id="g" x1="80" y1="40" x2="440" y2="480" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#e08a52"/>
-      <stop offset="1" stop-color="#a84c1c"/>
+    <linearGradient id="bg" x1="64" y1="32" x2="448" y2="480" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3b82f6"/>
+      <stop offset="0.55" stop-color="#1d4ed8"/>
+      <stop offset="1" stop-color="#0f766e"/>
     </linearGradient>
   </defs>
 </svg>

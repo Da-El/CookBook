@@ -1,80 +1,80 @@
 /* ==========================================================================
    CookBook Design System
-   Light-first kitchen journal · CSS icons · optional dark mode
+   Light enterprise SaaS · clean neutrals · indigo accent
    ========================================================================== */
 
 /* --- Light (default) --- */
 :root {
-  --bg-canvas: #f3efe6;
-  --bg-canvas-mid: #ebe4d6;
-  --bg-surface: #fffcf7;
-  --bg-surface-2: #f7f1e6;
-  --bg-hover: #efe8da;
-  --bg-inset: #e8e0d0;
-  --border: #d9cfbc;
-  --border-strong: #c4b7a0;
-  --text: #2a2318;
-  --text-secondary: #5c5346;
-  --text-muted: #8a8070;
-  --text-on-accent: #fffaf3;
-  --accent: #c45c26;
-  --accent-hover: #a84c1c;
-  --accent-soft: rgba(196, 92, 38, 0.12);
-  --accent-2: #3d6b4f;
-  --accent-2-soft: rgba(61, 107, 79, 0.12);
-  --success: #2f7a52;
-  --warning: #b8860b;
-  --danger: #b33a3a;
-  --link: #2a5f8f;
-  --star: #c9962a;
-  --shadow-sm: 0 1px 2px rgba(42, 35, 24, 0.06);
-  --shadow: 0 4px 16px rgba(42, 35, 24, 0.08), 0 1px 3px rgba(42, 35, 24, 0.05);
-  --shadow-lg: 0 12px 40px rgba(42, 35, 24, 0.12);
-  --radius: 14px;
-  --radius-sm: 10px;
+  --bg-canvas: #f4f6f9;
+  --bg-canvas-mid: #eef1f6;
+  --bg-surface: #ffffff;
+  --bg-surface-2: #f8fafc;
+  --bg-hover: #f1f5f9;
+  --bg-inset: #e8edf3;
+  --border: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --text: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --text-on-accent: #ffffff;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --accent-soft: rgba(37, 99, 235, 0.1);
+  --accent-2: #0d9488;
+  --accent-2-soft: rgba(13, 148, 136, 0.1);
+  --success: #059669;
+  --warning: #d97706;
+  --danger: #dc2626;
+  --link: #2563eb;
+  --star: #f59e0b;
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow: 0 4px 16px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 12px 40px rgba(15, 23, 42, 0.08);
+  --radius: 12px;
+  --radius-sm: 8px;
   --radius-xs: 6px;
   --radius-pill: 999px;
-  --font-sans: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif;
-  --font-display: "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --font-sans: "Inter", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif;
+  --font-display: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
   --content-w: 720px;
   --page-pad: 24px;
-  --header-h: 64px;
+  --header-h: 60px;
   --avatar-sm: 32px;
   --avatar-md: 44px;
   --avatar-lg: 72px;
   --avatar-xl: 96px;
-  --focus: 0 0 0 3px rgba(196, 92, 38, 0.35);
+  --focus: 0 0 0 3px rgba(37, 99, 235, 0.28);
   color-scheme: light;
 }
 
 /* --- Dark (optional) --- */
 [data-theme="dark"] {
-  --bg-canvas: #16130f;
-  --bg-canvas-mid: #1c1813;
-  --bg-surface: #221e18;
-  --bg-surface-2: #2a241c;
-  --bg-hover: #322c23;
-  --bg-inset: #1a1612;
-  --border: #3d352a;
-  --border-strong: #524737;
-  --text: #f3ebe0;
-  --text-secondary: #b5a894;
-  --text-muted: #857867;
-  --text-on-accent: #fffaf3;
-  --accent: #e08a52;
-  --accent-hover: #efa06d;
-  --accent-soft: rgba(224, 138, 82, 0.16);
-  --accent-2: #6fa887;
-  --accent-2-soft: rgba(111, 168, 135, 0.14);
-  --success: #5cb88a;
-  --warning: #d4a84b;
-  --danger: #e07070;
-  --link: #8eb8e0;
-  --star: #e0b24a;
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.25);
-  --shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
-  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.45);
-  --focus: 0 0 0 3px rgba(224, 138, 82, 0.4);
+  --bg-canvas: #0b1220;
+  --bg-canvas-mid: #0f172a;
+  --bg-surface: #111827;
+  --bg-surface-2: #1e293b;
+  --bg-hover: #243044;
+  --bg-inset: #0f172a;
+  --border: #1e293b;
+  --border-strong: #334155;
+  --text: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-on-accent: #ffffff;
+  --accent: #3b82f6;
+  --accent-hover: #60a5fa;
+  --accent-soft: rgba(59, 130, 246, 0.16);
+  --accent-2: #2dd4bf;
+  --accent-2-soft: rgba(45, 212, 191, 0.14);
+  --success: #34d399;
+  --warning: #fbbf24;
+  --danger: #f87171;
+  --link: #60a5fa;
+  --star: #fbbf24;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.5);
+  --focus: 0 0 0 3px rgba(59, 130, 246, 0.35);
   color-scheme: dark;
 }
 
@@ -100,7 +100,7 @@ body {
   min-height: 100vh;
   line-height: 1.5;
   background-image:
-    radial-gradient(ellipse 90% 50% at 50% -10%, var(--bg-canvas-mid), transparent 55%);
+    radial-gradient(ellipse 80% 40% at 50% -5%, rgba(37, 99, 235, 0.04), transparent 55%);
 }
 
 a {
@@ -184,41 +184,47 @@ ul {
   height: 36px;
   flex-shrink: 0;
   border-radius: 10px;
-  background: linear-gradient(145deg, var(--accent), #8f3d18);
+  background: linear-gradient(145deg, #3b82f6 0%, #1d4ed8 55%, #0f766e 100%);
   color: var(--text-on-accent);
   display: grid;
   place-items: center;
-  box-shadow: 0 2px 8px rgba(196, 92, 38, 0.35);
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.28);
   overflow: hidden;
+}
+
+.brand-mark-svg {
+  width: 22px;
+  height: 22px;
+  display: block;
 }
 
 .brand-mark-book {
   display: flex;
   align-items: stretch;
-  width: 20px;
-  height: 16px;
-  gap: 1px;
+  width: 18px;
+  height: 14px;
+  gap: 1.5px;
 }
 
 .brand-mark-page {
   flex: 1;
-  background: rgba(255, 250, 243, 0.92);
+  background: rgba(255, 255, 255, 0.95);
   border-radius: 1px 2px 2px 1px;
 }
 
 .brand-mark-page--l {
-  transform: skewY(-6deg);
+  transform: skewY(-5deg);
   transform-origin: right center;
 }
 
 .brand-mark-page--r {
-  transform: skewY(6deg);
+  transform: skewY(5deg);
   transform-origin: left center;
 }
 
 .brand-mark-spine {
-  width: 2px;
-  background: rgba(42, 35, 24, 0.35);
+  width: 1.5px;
+  background: rgba(15, 23, 42, 0.25);
   border-radius: 1px;
   flex-shrink: 0;
 }
@@ -238,9 +244,9 @@ ul {
 
 .brand-name {
   font-family: var(--font-display);
-  font-size: 1.35rem;
+  font-size: 1.15rem;
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
   color: var(--text);
   line-height: 1;
   white-space: nowrap;
@@ -248,6 +254,7 @@ ul {
 
 .brand-name em {
   font-style: normal;
+  font-weight: 700;
   color: var(--accent);
 }
 
@@ -444,7 +451,7 @@ ul {
   display: grid;
   place-items: center;
   overflow: hidden;
-  background: linear-gradient(145deg, #d4c4a8, #b8a88c);
+  background: linear-gradient(145deg, #cbd5e1, #94a3b8);
   color: var(--text);
   font-weight: 700;
   font-size: calc(var(--size) * 0.32);
@@ -483,7 +490,7 @@ ul {
 }
 
 .avatar--accent {
-  background: linear-gradient(145deg, var(--accent), #8f3d18);
+  background: linear-gradient(145deg, #3b82f6, #1e40af);
   color: var(--text-on-accent);
 }
 
@@ -1007,18 +1014,18 @@ ul {
 }
 
 .profile-cover {
-  height: 140px;
+  height: 120px;
   border-radius: var(--radius) var(--radius) 0 0;
   background:
-    linear-gradient(125deg, color-mix(in srgb, var(--accent) 45%, transparent), transparent 60%),
-    linear-gradient(200deg, #c4a574, #8a6b4a 40%, var(--bg-surface-2));
+    linear-gradient(125deg, color-mix(in srgb, var(--accent) 28%, transparent), transparent 55%),
+    linear-gradient(180deg, #e0e7ff 0%, #f1f5f9 45%, var(--bg-surface-2));
   border-bottom: 1px solid var(--border);
 }
 
 [data-theme="dark"] .profile-cover {
   background:
-    linear-gradient(125deg, color-mix(in srgb, var(--accent) 35%, transparent), transparent 60%),
-    linear-gradient(200deg, #4a3828, #2a2218 50%, var(--bg-surface-2));
+    linear-gradient(125deg, color-mix(in srgb, var(--accent) 25%, transparent), transparent 55%),
+    linear-gradient(180deg, #1e3a5f 0%, #0f172a 55%, var(--bg-surface-2));
 }
 
 .profile-main {
@@ -2396,8 +2403,8 @@ code {
 .hero-welcome {
   overflow: hidden;
   background:
-    radial-gradient(ellipse 80% 70% at 10% 0%, var(--accent-soft), transparent 50%),
-    radial-gradient(ellipse 60% 50% at 100% 100%, var(--accent-2-soft), transparent 45%),
+    radial-gradient(ellipse 70% 60% at 0% 0%, rgba(37, 99, 235, 0.08), transparent 55%),
+    radial-gradient(ellipse 50% 45% at 100% 100%, rgba(13, 148, 136, 0.06), transparent 50%),
     var(--bg-surface);
 }
 
@@ -2434,15 +2441,15 @@ code {
 
 .profile-cover--book {
   background:
-    repeating-linear-gradient(
-      -12deg,
-      transparent,
-      transparent 10px,
-      color-mix(in srgb, var(--accent) 8%, transparent) 10px,
-      color-mix(in srgb, var(--accent) 8%, transparent) 11px
-    ),
-    linear-gradient(120deg, color-mix(in srgb, var(--accent) 55%, #5a2a10), color-mix(in srgb, var(--accent-2) 40%, #2a4030));
-  height: 96px;
+    linear-gradient(135deg, rgba(37, 99, 235, 0.12) 0%, transparent 50%),
+    linear-gradient(180deg, #e2e8f0 0%, #f8fafc 100%);
+  height: 88px;
+}
+
+[data-theme="dark"] .profile-cover--book {
+  background:
+    linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, transparent 50%),
+    linear-gradient(180deg, #1e293b 0%, #111827 100%);
 }
 
 .suggest-list {
