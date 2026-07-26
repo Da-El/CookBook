@@ -72,10 +72,23 @@ async fn main() -> anyhow::Result<()> {
     }
     let jwt = JwtKeys::from_secret(&jwt_secret);
 
+    // Free USDA FDC key: https://api.data.gov/signup/ — DEMO_KEY works for light local testing
+    let fdc_api_key = std::env::var("FDC_API_KEY").unwrap_or_else(|_| {
+        tracing::warn!("FDC_API_KEY not set — using DEMO_KEY (low rate limits; fine for light Branded search)");
+        "DEMO_KEY".into()
+    });
+    let http = reqwest::Client::builder()
+        .user_agent("CookBook/1.0 (https://github.com/Da-El/grok-cookbook)")
+        .timeout(std::time::Duration::from_secs(20))
+        .build()
+        .expect("reqwest client");
+
     let state = AppState {
         pool,
         catalog,
         jwt,
+        fdc_api_key,
+        http,
     };
 
     let cors = CorsLayer::new()

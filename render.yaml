@@ -28,6 +28,9 @@ services:
         value: 0.0.0.0
       - key: JWT_SECRET
         generateValue: true
+      # Free key: https://api.data.gov/signup/ — used only for Branded food search
+      - key: FDC_API_KEY
+        sync: false
 
 databases:
   - name: cookbook-db

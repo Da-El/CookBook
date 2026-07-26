@@ -1,4 +1,5 @@
 mod auth;
+mod branded;
 mod feed;
 mod foods;
 mod follows;
@@ -35,6 +36,9 @@ pub fn router() -> Router<AppState> {
             get(foods::get_food_meta).put(foods::put_food_meta),
         )
         .route("/v1/foods/{id}", get(foods::get_food))
+        // Branded foods (live USDA search — not stored locally)
+        .route("/v1/branded", get(branded::search_branded))
+        .route("/v1/branded/{id}", get(branded::get_branded))
         // Fridge (auth required)
         .route("/v1/fridge", get(fridge::list_fridge).post(fridge::add_fridge))
         .route("/v1/fridge/{id}", delete(fridge::delete_fridge))

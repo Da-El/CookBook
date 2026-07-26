@@ -100,6 +100,11 @@ export type ApiFood = {
   id: string;
   fdc_id?: number | null;
   foodb_id?: number | null;
+  brand_owner?: string;
+  brand_name?: string;
+  gtin_upc?: string;
+  ingredients_label?: string;
+  serving_size?: string | null;
   name: string;
   name_scientific?: string | null;
   description?: string | null;
@@ -108,6 +113,7 @@ export type ApiFood = {
   picture?: string | null;
   picture_candidates?: string[];
   emoji?: string;
+  source?: string;
   macros: Record<string, number | null>;
   macros_complete?: boolean;
   micros?: unknown;
@@ -312,6 +318,26 @@ export const api = {
     ),
 
   groups: () => request<{ groups: string[] }>("/v1/foods/groups"),
+
+  /** Live USDA Branded Foods search (server proxies FDC API — nothing stored). */
+  searchBranded: (params: { q: string; page?: number; page_size?: number; brand?: string }) => {
+    const sp = new URLSearchParams();
+    sp.set("q", params.q);
+    if (params.page) sp.set("page", String(params.page));
+    if (params.page_size) sp.set("page_size", String(params.page_size));
+    if (params.brand) sp.set("brand", params.brand);
+    return request<{
+      items: ApiFood[];
+      total: number;
+      page: number;
+      page_size: number;
+      message?: string;
+      note?: string;
+    }>(`/v1/branded?${sp.toString()}`);
+  },
+
+  getBranded: (id: string) =>
+    request<ApiFood>(`/v1/branded/${encodeURIComponent(id)}`),
 
   listFridge: () => request<{ items: FridgeItemDto[] }>("/v1/fridge", undefined, true),
 

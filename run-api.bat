@@ -7,6 +7,7 @@ set DATABASE_URL=postgres://grok_cookbook:grok_cookbook@127.0.0.1:5432/grok_cook
 set CATALOG_PATH=C:\Users\bjenn\CookBook\apps\web\public\data\catalog.json
 set JWT_SECRET=grok-cookbook-local-dev-jwt-secret-32chars
 set UPLOAD_DIR=C:\Users\bjenn\CookBook\uploads
+set FDC_API_KEY=DEMO_KEY
 set PORT=8080
 set HOST=127.0.0.1
 set RUST_LOG=grok_cookbook_api=info,sqlx=warn

@@ -7,6 +7,7 @@ import { CookBookPage } from "./pages/CookBookPage";
 import { CreateHubPage } from "./pages/CreateHubPage";
 import { CreateMealPage } from "./pages/CreateMealPage";
 import { HomePage } from "./pages/HomePage";
+import { BrandedDetailPage } from "./pages/BrandedDetailPage";
 import { IngredientDetailPage } from "./pages/IngredientDetailPage";
 import { LoginPage } from "./pages/LoginPage";
 import { MealDetailPage } from "./pages/MealDetailPage";
@@ -29,6 +30,7 @@ export default function App() {
             <Route path="create/ingredient" element={<AddIngredientPage />} />
             <Route path="cookbook" element={<CookBookPage />} />
             <Route path="ingredients/:foodId" element={<IngredientDetailPage />} />
+            <Route path="branded/:fdcId" element={<BrandedDetailPage />} />
             <Route path="meals/new" element={<Navigate to="/create/meal" replace />} />
             <Route path="meals/:mealId" element={<MealDetailPage />} />
             <Route path="u/:handle" element={<ProfilePage />} />
