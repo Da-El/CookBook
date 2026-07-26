@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Settings · CookBook</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script>
+    try {
+      var t = localStorage.getItem("cookbook-theme");
+      if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t);
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="top-nav">
+      <div class="top-nav-inner">
+        <a href="index.html" class="brand">
+          <span class="brand-mark" aria-hidden="true">🍳</span>
+          <span class="brand-name">Cook<em>Book</em></span>
+        </a>
+        <nav class="top-links" aria-label="Primary">
+          <a href="index.html"><span class="nav-ico">⌂</span><span class="nav-label">Home</span></a>
+          <a href="cookbook.html"><span class="nav-ico">☰</span><span class="nav-label">Kitchen</span></a>
+          <a href="add-meal.html"><span class="nav-ico">＋</span><span class="nav-label">Log meal</span></a>
+          <a href="add-ingredient.html"><span class="nav-ico">◈</span><span class="nav-label">Fridge</span></a>
+          <a href="settings.html" class="active"><span class="nav-ico">⚙</span><span class="nav-label">Settings</span></a>
+        </nav>
+        <div class="top-actions">
+          <button type="button" class="icon-chip" data-theme-toggle aria-pressed="false" title="Dark mode">
+            <span data-theme-icon>🌙</span>
+          </button>
+          <a href="cookbook.html" class="avatar avatar--sm avatar--accent" aria-label="Your kitchen"><span>AJ</span></a>
+        </div>
+      </div>
+    </header>
+
+    <div class="page page--single">
+      <div class="column">
+        <div class="page-hero">
+          <div>
+            <h1>Settings</h1>
+            <p class="lede">Account, security, privacy, and appearance</p>
+          </div>
+        </div>
+
+        <section class="card">
+          <div class="settings-group">Appearance</div>
+          <div class="settings-item" style="cursor:default">
+            <div class="left">
+              <div class="ico-box" aria-hidden="true">◐</div>
+              <div class="copy">
+                <div class="title">Theme</div>
+                <div class="desc">Light by default · optional dark</div>
+              </div>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" data-theme-toggle>
+              <span data-theme-icon>🌙</span>
+              <span>Toggle</span>
+            </button>
+          </div>
+
+          <div class="settings-group">Account</div>
+          <div class="settings-item">
+            <div class="left">
+              <div class="ico-box" aria-hidden="true">👤</div>
+              <div class="copy">
+                <div class="title">Edit profile</div>
+                <div class="desc">Name, bio, photo, handle</div>
+              </div>
+            </div>
+            <span class="chev" aria-hidden="true">›</span>
+          </div>
+          <div class="settings-item">
+            <div class="left">
+              <div class="ico-box" aria-hidden="true">✉</div>
+              <div class="copy">
+                <div class="title">Email</div>
+                <div class="desc">alex@kitchen.com · verified</div>
+              </div>
+            </div>
+            <span class="chev" aria-hidden="true">›</span>
+          </div>
+
+          <div class="settings-group">Security</div>
+          <div class="settings-item">
+            <div class="left">
+              <div class="ico-box" aria-hidden="true">🔑</div>
+              <div class="copy">
+                <div class="title">Password</div>
+                <div class="desc">Last changed 3 months ago</div>
+              </div>
+            </div>
+            <span class="chev" aria-hidden="true">›</span>
+          </div>
+          <div class="settings-item">
+            <div class="left">
+              <div class="ico-box" aria-hidden="true">🛡</div>
+              <div class="copy">
+                <div class="title">Two-factor authentication</div>
+                <div class="desc">Authenticator app or security key</div>
+              </div>
+            </div>
+            <button type="button" class="toggle" aria-pressed="false" title="Off"></button>
+          </div>
+          <div class="settings-item">
+            <div class="left">
+              <div class="ico-box" aria-hidden="true">🔐</div>
+              <div class="copy">
+                <div class="title">Passkeys</div>
+                <div class="desc">Face ID / fingerprint / hardware key</div>
+              </div>
+            </div>
+            <span class="chev" aria-hidden="true">›</span>
+          </div>
+          <div class="settings-item">
+            <div class="left">
+              <div class="ico-box" aria-hidden="true">💻</div>
+              <div class="copy">
+                <div class="title">Active sessions</div>
+                <div class="desc">3 devices · revoke anytime</div>
+              </div>
+            </div>
+            <span class="chev" aria-hidden="true">›</span>
+          </div>
+          <div class="settings-item">
+            <div class="left">
+              <div class="ico-box" aria-hidden="true">🔗</div>
+              <div class="copy">
+                <div class="title">Connected accounts</div>
+                <div class="desc">Apple, Google</div>
+              </div>
+            </div>
+            <span class="chev" aria-hidden="true">›</span>
+          </div>
+
+          <div class="settings-group">Privacy</div>
+          <div class="settings-item">
+            <div class="left">
+              <div class="ico-box" aria-hidden="true">👁</div>
+              <div class="copy">
+                <div class="title">Default meal visibility</div>
+                <div class="desc">Public</div>
+              </div>
+            </div>
+            <span class="chev" aria-hidden="true">›</span>
+          </div>
+          <div class="settings-item">
+            <div class="left">
+              <div class="ico-box" aria-hidden="true">🧊</div>
+              <div class="copy">
+                <div class="title">Fridge privacy</div>
+                <div class="desc">Only me</div>
+              </div>
+            </div>
+            <span class="chev" aria-hidden="true">›</span>
+          </div>
+          <div class="settings-item">
+            <div class="left">
+              <div class="ico-box" aria-hidden="true">🚫</div>
+              <div class="copy">
+                <div class="title">Blocked chefs</div>
+                <div class="desc">0 blocked</div>
+              </div>
+            </div>
+            <span class="chev" aria-hidden="true">›</span>
+          </div>
+
+          <div class="settings-group">Preferences</div>
+          <div class="settings-item">
+            <div class="left">
+              <div class="ico-box" aria-hidden="true">🔔</div>
+              <div class="copy">
+                <div class="title">Notifications</div>
+                <div class="desc">Follows, reviews, mentions</div>
+              </div>
+            </div>
+            <span class="chev" aria-hidden="true">›</span>
+          </div>
+
+          <div class="settings-group">Danger zone</div>
+          <div class="settings-item" onclick="location.href='auth.html'">
+            <div class="left">
+              <div class="ico-box" aria-hidden="true">🚪</div>
+              <div class="copy">
+                <div class="title">Sign out</div>
+                <div class="desc">This device only</div>
+              </div>
+            </div>
+            <span class="chev" aria-hidden="true">›</span>
+          </div>
+          <div class="settings-item">
+            <div class="left">
+              <div class="ico-box" aria-hidden="true">⚠</div>
+              <div class="copy">
+                <div class="title danger-text">Sign out all devices</div>
+                <div class="desc">Revoke every refresh token</div>
+              </div>
+            </div>
+            <span class="chev" aria-hidden="true">›</span>
+          </div>
+          <div class="settings-item">
+            <div class="left">
+              <div class="ico-box" aria-hidden="true">🗑</div>
+              <div class="copy">
+                <div class="title danger-text">Delete account</div>
+                <div class="desc">Permanent · export data first</div>
+              </div>
+            </div>
+            <span class="chev" aria-hidden="true">›</span>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <nav class="mobile-nav" aria-label="Mobile">
+    <a href="index.html"><span class="ico">⌂</span>Home</a>
+    <a href="cookbook.html"><span class="ico">☰</span>Kitchen</a>
+    <a href="add-meal.html"><span class="ico">＋</span>Log</a>
+    <a href="add-ingredient.html"><span class="ico">◈</span>Fridge</a>
+    <a href="settings.html" class="active"><span class="ico">⚙</span>More</a>
+  </nav>
+  <script src="theme.js"></script>
+</body>
+</html>

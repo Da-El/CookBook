@@ -1,0 +1,15 @@
+{
+  "name": "cookbook",
+  "private": true,
+  "version": "0.1.0",
+  "description": "CookBook monorepo — web first",
+  "scripts": {
+    "dev": "npm --prefix apps/web run dev",
+    "build": "npm --prefix apps/web run build",
+    "preview": "npm --prefix apps/web run preview",
+    "catalog": "node scripts/build-catalog.mjs",
+    "catalog:usda": "node scripts/merge-usda.mjs",
+    "catalog:enrich": "node scripts/enrich-catalog.mjs",
+    "catalog:all": "node scripts/build-catalog.mjs && node scripts/enrich-catalog.mjs"
+  }
+}

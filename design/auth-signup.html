@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign up · CookBook</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script>
+    try {
+      var t = localStorage.getItem("cookbook-theme");
+      if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t);
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <div class="auth-page">
+    <div class="auth-card">
+      <a href="index.html" class="brand">
+        <span class="brand-mark" aria-hidden="true">🍳</span>
+        <span class="brand-name">Cook<em>Book</em></span>
+      </a>
+      <h1>Start your kitchen</h1>
+      <p class="lead">Create a chef profile. Follow others, log meals, and build a living pantry.</p>
+
+      <form action="index.html" method="get">
+        <div class="field-row">
+          <div class="field">
+            <label for="name">Display name</label>
+            <input id="name" type="text" autocomplete="name" placeholder="Alex Jordan" required />
+          </div>
+          <div class="field">
+            <label for="handle">Handle</label>
+            <input id="handle" type="text" autocomplete="username" placeholder="chef_alex" required />
+          </div>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" type="email" autocomplete="email" placeholder="you@kitchen.com" required />
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" type="password" autocomplete="new-password" placeholder="At least 12 characters" required />
+          <p class="field-hint">12+ characters. We check against known breached passwords.</p>
+        </div>
+        <div class="field">
+          <label for="password2">Confirm password</label>
+          <input id="password2" type="password" autocomplete="new-password" required />
+        </div>
+        <button class="btn btn-primary btn-block" type="submit">Create account</button>
+      </form>
+
+      <div class="divider">or</div>
+      <div class="oauth-stack">
+        <button type="button" class="oauth-btn">Continue with Apple</button>
+        <button type="button" class="oauth-btn">Continue with Google</button>
+      </div>
+
+      <div class="security-note">
+        By joining you agree to our Terms. Passwords are hashed with Argon2id. Email verification is required before public posts.
+      </div>
+
+      <p class="auth-footer">
+        Already cooking? <a href="auth.html">Sign in</a>
+      </p>
+    </div>
+
+    <button type="button" class="icon-chip auth-theme" data-theme-toggle aria-pressed="false" title="Dark mode">
+      <span data-theme-icon>🌙</span>
+    </button>
+  </div>
+  <script src="theme.js"></script>
+</body>
+</html>

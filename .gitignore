@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build outputs
+dist/
+**/dist/
+apps/web/dist/
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+*.log
+
+# Huge offline dumps (rebuild catalog with scripts; do NOT commit)
+data/foodb_raw/
+data/usda/
+*.zip
+
+# Optional local caches
+.cache/
+tmp/
+temp/

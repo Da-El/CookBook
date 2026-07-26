@@ -1,0 +1,7 @@
+# Default
+* text=auto eol=lf
+
+# Keep Windows scripts CRLF-friendly if needed
+*.ps1 text eol=crlf
+*.cmd text eol=crlf
+*.bat text eol=crlf

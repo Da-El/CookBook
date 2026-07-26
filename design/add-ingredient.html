@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Add ingredient · CookBook</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script>
+    try {
+      var t = localStorage.getItem("cookbook-theme");
+      if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t);
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="top-nav">
+      <div class="top-nav-inner">
+        <a href="index.html" class="brand">
+          <span class="brand-mark" aria-hidden="true">🍳</span>
+          <span class="brand-name">Cook<em>Book</em></span>
+        </a>
+        <nav class="top-links" aria-label="Primary">
+          <a href="index.html"><span class="nav-ico">⌂</span><span class="nav-label">Home</span></a>
+          <a href="cookbook.html"><span class="nav-ico">☰</span><span class="nav-label">Kitchen</span></a>
+          <a href="add-meal.html"><span class="nav-ico">＋</span><span class="nav-label">Log meal</span></a>
+          <a href="add-ingredient.html" class="active"><span class="nav-ico">◈</span><span class="nav-label">Fridge</span></a>
+          <a href="settings.html"><span class="nav-ico">⚙</span><span class="nav-label">Settings</span></a>
+        </nav>
+        <div class="top-actions">
+          <button type="button" class="icon-chip" data-theme-toggle aria-pressed="false" title="Dark mode">
+            <span data-theme-icon>🌙</span>
+          </button>
+          <a href="cookbook.html" class="avatar avatar--sm avatar--accent" aria-label="Your kitchen"><span>AJ</span></a>
+        </div>
+      </div>
+    </header>
+
+    <div class="page">
+      <div class="column">
+        <div class="page-hero">
+          <div>
+            <h1>Add to fridge</h1>
+            <p class="lede">Search catalog · quantity · optional review</p>
+          </div>
+          <div class="row-end">
+            <button type="button" class="btn btn-ghost btn-sm" onclick="location.href='cookbook.html'">Cancel</button>
+            <button type="button" class="btn btn-primary btn-sm">Add to fridge</button>
+          </div>
+        </div>
+
+        <section class="card card-pad">
+          <div class="field">
+            <label for="foodb">Search catalog</label>
+            <input id="foodb" type="search" placeholder="Name, group…" value="broccoli" />
+            <p class="field-hint">Name, description, group, subgroup, macros &amp; micros from Foodb / USDA catalog.</p>
+            <div class="search-results">
+              <div class="search-result selected">
+                <span class="emoji" aria-hidden="true">🥦</span>
+                <div class="ing-meta">
+                  <div class="name">Broccoli</div>
+                  <div class="group">Vegetables · Brassicas</div>
+                </div>
+                <span class="badge-ok">Catalog</span>
+              </div>
+              <div class="search-result">
+                <span class="emoji" aria-hidden="true">🥦</span>
+                <div class="ing-meta">
+                  <div class="name">Broccoli, cooked</div>
+                  <div class="group">Vegetables · Brassicas</div>
+                </div>
+                <span class="badge-ok">Catalog</span>
+              </div>
+              <div class="search-result">
+                <span class="emoji" aria-hidden="true">🥦</span>
+                <div class="ing-meta">
+                  <div class="name">Broccoli raab</div>
+                  <div class="group">Vegetables · Brassicas</div>
+                </div>
+                <span class="badge-ok">Catalog</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="plate" style="margin:0;border:none;border-radius:0">
+            <div class="plate-media var-2">
+              <span class="plate-badge">From catalog</span>
+              <span aria-hidden="true">🥦</span>
+            </div>
+            <div class="plate-body">
+              <h3>Broccoli</h3>
+              <p class="plate-meta">Vegetables · Brassicas</p>
+              <p class="text-sm muted">Edible green plant in the cabbage family — flowering head, stalk, and leaves used as a vegetable.</p>
+              <div class="macro-row mt-12">
+                <span class="macro"><strong>34</strong> kcal</span>
+                <span class="macro"><strong>2.8g</strong> protein</span>
+                <span class="macro"><strong>0.4g</strong> fat</span>
+                <span class="macro"><strong>7g</strong> carbs</span>
+                <span class="macro"><strong>2.6g</strong> fiber</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card card-pad">
+          <h2 class="card-title">In your kitchen</h2>
+          <div class="field-row mt-12">
+            <div class="field">
+              <label for="qty">Quantity</label>
+              <input id="qty" type="text" placeholder="1 head" />
+            </div>
+            <div class="field">
+              <label for="loc">Location</label>
+              <select id="loc">
+                <option>Fridge</option>
+                <option>Freezer</option>
+                <option>Pantry</option>
+                <option>Counter</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="bought">Bought on</label>
+              <input id="bought" type="date" />
+            </div>
+            <div class="field">
+              <label for="exp">Expires</label>
+              <input id="exp" type="date" />
+            </div>
+          </div>
+
+          <p class="section-label">Micros (per 100g)</p>
+          <div class="nutrient-grid">
+            <div class="nutrient"><div class="val">89mg</div><div class="lbl">Vit C</div></div>
+            <div class="nutrient"><div class="val">102µg</div><div class="lbl">Vit K</div></div>
+            <div class="nutrient"><div class="val">47mg</div><div class="lbl">Calcium</div></div>
+            <div class="nutrient"><div class="val">0.7mg</div><div class="lbl">Iron</div></div>
+            <div class="nutrient"><div class="val">316mg</div><div class="lbl">Potassium</div></div>
+            <div class="nutrient"><div class="val">63µg</div><div class="lbl">Folate</div></div>
+          </div>
+
+          <p class="section-label">Ingredient review</p>
+          <div class="field">
+            <label>Quality rating</label>
+            <div class="stars" style="font-size:1.5rem">★★★★★</div>
+          </div>
+          <div class="field">
+            <label for="ireview">Notes</label>
+            <textarea id="ireview" placeholder="Freshness, taste, brand, value…"></textarea>
+          </div>
+
+          <div class="row-end mt-16">
+            <button type="button" class="btn btn-secondary">Save without review</button>
+            <button type="button" class="btn btn-primary">Add to fridge</button>
+          </div>
+        </section>
+      </div>
+
+      <aside class="rail">
+        <div class="card card-pad">
+          <h2 class="card-title">Why a catalog?</h2>
+          <p class="muted text-sm mt-8">One shared ingredient graph keeps fridge and meals consistent — name, group, macros, and micros.</p>
+        </div>
+        <div class="card card-pad">
+          <h2 class="card-title">Can’t find it?</h2>
+          <p class="muted text-sm mt-8">Request a custom ingredient. Moderators can link catalog entries later.</p>
+          <button type="button" class="btn btn-secondary btn-sm mt-12">Request ingredient</button>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <nav class="mobile-nav" aria-label="Mobile">
+    <a href="index.html"><span class="ico">⌂</span>Home</a>
+    <a href="cookbook.html"><span class="ico">☰</span>Kitchen</a>
+    <a href="add-meal.html"><span class="ico">＋</span>Log</a>
+    <a href="add-ingredient.html" class="active"><span class="ico">◈</span>Fridge</a>
+    <a href="settings.html"><span class="ico">⚙</span>More</a>
+  </nav>
+  <script src="theme.js"></script>
+</body>
+</html>

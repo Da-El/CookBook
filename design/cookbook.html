@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kitchen · CookBook</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script>
+    try {
+      var t = localStorage.getItem("cookbook-theme");
+      if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t);
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="top-nav">
+      <div class="top-nav-inner">
+        <a href="index.html" class="brand">
+          <span class="brand-mark" aria-hidden="true">🍳</span>
+          <span class="brand-name">Cook<em>Book</em></span>
+        </a>
+        <nav class="top-links" aria-label="Primary">
+          <a href="index.html"><span class="nav-ico">⌂</span><span class="nav-label">Home</span></a>
+          <a href="cookbook.html" class="active"><span class="nav-ico">☰</span><span class="nav-label">Kitchen</span></a>
+          <a href="add-meal.html"><span class="nav-ico">＋</span><span class="nav-label">Log meal</span></a>
+          <a href="add-ingredient.html"><span class="nav-ico">◈</span><span class="nav-label">Fridge</span></a>
+          <a href="settings.html"><span class="nav-ico">⚙</span><span class="nav-label">Settings</span></a>
+        </nav>
+        <div class="top-actions">
+          <button type="button" class="icon-chip" data-theme-toggle aria-pressed="false" title="Dark mode">
+            <span data-theme-icon>🌙</span>
+          </button>
+          <a href="add-meal.html" class="btn btn-primary btn-sm nav-cook-label">Log meal</a>
+          <a href="cookbook.html" class="avatar avatar--sm avatar--accent" aria-label="Your kitchen"><span>AJ</span></a>
+        </div>
+      </div>
+    </header>
+
+    <div class="page">
+      <div class="column">
+        <div class="page-hero">
+          <div>
+            <h1>Your kitchen</h1>
+            <p class="lede">Profile, cooked meals, want-to-cook, and fridge</p>
+          </div>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="location.href='settings.html'">Edit profile</button>
+        </div>
+
+        <section class="card profile-card">
+          <div class="profile-cover" aria-hidden="true"></div>
+          <div class="profile-main">
+            <div class="profile-top">
+              <div class="avatar avatar--xl avatar--accent"><span>AJ</span></div>
+              <button type="button" class="btn btn-secondary btn-sm">Share kitchen</button>
+            </div>
+            <h2 class="profile-name">Alex Jordan</h2>
+            <p class="profile-handle">@chef_alex · Home kitchen</p>
+            <p class="profile-bio">Weeknight cook. Obsessed with fridge-clearing dinners and honest ingredient notes. Based in Austin.</p>
+            <div class="stat-row">
+              <span class="stat"><strong>48</strong> cooked</span>
+              <span class="stat"><strong>12</strong> want to cook</span>
+              <span class="stat"><strong>23</strong> fridge</span>
+              <span class="stat"><strong>312</strong> followers</span>
+              <span class="stat"><strong>89</strong> following</span>
+            </div>
+          </div>
+        </section>
+
+        <div class="seg" role="tablist">
+          <button type="button" class="active" role="tab">Cooked</button>
+          <button type="button" role="tab">Want to cook</button>
+          <button type="button" role="tab">Fridge</button>
+          <button type="button" role="tab">Reviews</button>
+        </div>
+
+        <section class="card card-pad">
+          <div class="card-head">
+            <h2 class="card-title">Recently cooked</h2>
+            <a href="add-meal.html" class="btn btn-ghost btn-sm">+ Log meal</a>
+          </div>
+          <div class="meal-grid">
+            <div class="mini-plate">
+              <div class="thumb" aria-hidden="true">🍜</div>
+              <div class="info">
+                <h4>Chili Oil Noodles</h4>
+                <span>★★★★☆ · 2 days ago</span>
+              </div>
+            </div>
+            <div class="mini-plate">
+              <div class="thumb" aria-hidden="true">🥗</div>
+              <div class="info">
+                <h4>Citrus Grain Bowl</h4>
+                <span>★★★★★ · 4 days ago</span>
+              </div>
+            </div>
+            <div class="mini-plate">
+              <div class="thumb" aria-hidden="true">🍲</div>
+              <div class="info">
+                <h4>White Bean Stew</h4>
+                <span>★★★★☆ · 1 week ago</span>
+              </div>
+            </div>
+            <div class="mini-plate">
+              <div class="thumb" aria-hidden="true">🥞</div>
+              <div class="info">
+                <h4>Sourdough Pancakes</h4>
+                <span>★★★☆☆ · 1 week ago</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card card-pad">
+          <div class="card-head">
+            <h2 class="card-title">Want to cook</h2>
+            <span class="tag">Wishlist</span>
+          </div>
+          <div class="meal-grid">
+            <div class="mini-plate">
+              <div class="thumb" aria-hidden="true">🥘</div>
+              <div class="info">
+                <h4>Shakshuka</h4>
+                <span>Saved from @mayakim</span>
+              </div>
+            </div>
+            <div class="mini-plate">
+              <div class="thumb" aria-hidden="true">🥩</div>
+              <div class="info">
+                <h4>Reverse-sear Ribeye</h4>
+                <span>3 ingredients missing</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card card-pad">
+          <div class="card-head">
+            <h2 class="card-title">Fridge</h2>
+            <a href="add-ingredient.html" class="btn btn-ghost btn-sm">+ Add</a>
+          </div>
+          <div class="ing-list">
+            <div class="ing-row">
+              <div class="ing-icon" aria-hidden="true">🥚</div>
+              <div class="ing-meta">
+                <div class="name">Egg, free-range</div>
+                <div class="group">Animal foods · Dairy &amp; eggs</div>
+              </div>
+              <div class="ing-side"><strong>6 left</strong>qty · fridge</div>
+            </div>
+            <div class="ing-row">
+              <div class="ing-icon" aria-hidden="true">🥦</div>
+              <div class="ing-meta">
+                <div class="name">Broccoli</div>
+                <div class="group">Vegetables · Brassicas</div>
+              </div>
+              <div class="ing-side"><strong>1 head</strong>exp. 2d</div>
+            </div>
+            <div class="ing-row">
+              <div class="ing-icon" aria-hidden="true">🧄</div>
+              <div class="ing-meta">
+                <div class="name">Garlic</div>
+                <div class="group">Vegetables · Onion-family</div>
+              </div>
+              <div class="ing-side"><strong>4 cloves</strong>pantry</div>
+            </div>
+            <div class="ing-row">
+              <div class="ing-icon" aria-hidden="true">🧈</div>
+              <div class="ing-meta">
+                <div class="name">Butter, unsalted</div>
+                <div class="group">Animal foods · Dairy</div>
+              </div>
+              <div class="ing-side"><strong>200g</strong>fridge</div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <aside class="rail">
+        <div class="search-field">
+          <span class="ico" aria-hidden="true">⌕</span>
+          <input type="search" placeholder="Search your kitchen…" />
+        </div>
+        <div class="card card-pad">
+          <h2 class="card-title">This month</h2>
+          <div class="nutrient-grid mt-12" style="grid-template-columns: 1fr 1fr">
+            <div class="nutrient">
+              <div class="val">11</div>
+              <div class="lbl">Meals</div>
+            </div>
+            <div class="nutrient">
+              <div class="val">4.6</div>
+              <div class="lbl">Avg rating</div>
+            </div>
+          </div>
+        </div>
+        <div class="card card-pad">
+          <h2 class="card-title">Catalog coverage</h2>
+          <p class="muted text-sm mt-8">19 of 23 fridge items linked with full nutrient profiles.</p>
+          <span class="badge-ok mt-12">✓ Catalog linked</span>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <nav class="mobile-nav" aria-label="Mobile">
+    <a href="index.html"><span class="ico">⌂</span>Home</a>
+    <a href="cookbook.html" class="active"><span class="ico">☰</span>Kitchen</a>
+    <a href="add-meal.html"><span class="ico">＋</span>Log</a>
+    <a href="add-ingredient.html"><span class="ico">◈</span>Fridge</a>
+    <a href="settings.html"><span class="ico">⚙</span>More</a>
+  </nav>
+  <script src="theme.js"></script>
+</body>
+</html>

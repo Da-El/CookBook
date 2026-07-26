@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Log meal · CookBook</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script>
+    try {
+      var t = localStorage.getItem("cookbook-theme");
+      if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t);
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="top-nav">
+      <div class="top-nav-inner">
+        <a href="index.html" class="brand">
+          <span class="brand-mark" aria-hidden="true">🍳</span>
+          <span class="brand-name">Cook<em>Book</em></span>
+        </a>
+        <nav class="top-links" aria-label="Primary">
+          <a href="index.html"><span class="nav-ico">⌂</span><span class="nav-label">Home</span></a>
+          <a href="cookbook.html"><span class="nav-ico">☰</span><span class="nav-label">Kitchen</span></a>
+          <a href="add-meal.html" class="active"><span class="nav-ico">＋</span><span class="nav-label">Log meal</span></a>
+          <a href="add-ingredient.html"><span class="nav-ico">◈</span><span class="nav-label">Fridge</span></a>
+          <a href="settings.html"><span class="nav-ico">⚙</span><span class="nav-label">Settings</span></a>
+        </nav>
+        <div class="top-actions">
+          <button type="button" class="icon-chip" data-theme-toggle aria-pressed="false" title="Dark mode">
+            <span data-theme-icon>🌙</span>
+          </button>
+          <a href="cookbook.html" class="avatar avatar--sm avatar--accent" aria-label="Your kitchen"><span>AJ</span></a>
+        </div>
+      </div>
+    </header>
+
+    <div class="page">
+      <div class="column">
+        <div class="page-hero">
+          <div>
+            <h1>Log a meal</h1>
+            <p class="lede">Cooked or want-to-cook · photo, ingredients, notes</p>
+          </div>
+          <div class="row-end">
+            <button type="button" class="btn btn-ghost btn-sm" onclick="location.href='index.html'">Cancel</button>
+            <button type="button" class="btn btn-primary btn-sm">Save meal</button>
+          </div>
+        </div>
+
+        <section class="card card-pad">
+          <div class="field">
+            <label>Status</label>
+            <div class="seg" style="max-width:320px">
+              <button type="button" class="active">Cooked</button>
+              <button type="button">Want to cook</button>
+            </div>
+          </div>
+
+          <div class="upload-zone mt-8" role="button" tabindex="0">
+            <div class="icon" aria-hidden="true">📷</div>
+            <div><strong>Add a photo</strong></div>
+            <p class="text-sm muted mt-8">JPG, PNG, or WebP · max 10MB</p>
+          </div>
+
+          <div class="field mt-16">
+            <label for="title">Meal name</label>
+            <input id="title" type="text" placeholder="e.g. Miso Glazed Salmon" />
+          </div>
+
+          <div class="field">
+            <label for="story">Story / notes</label>
+            <textarea id="story" placeholder="How did it turn out? Tips for other cooks?"></textarea>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="cuisine">Cuisine</label>
+              <select id="cuisine">
+                <option>Choose…</option>
+                <option>Japanese</option>
+                <option>Italian</option>
+                <option>Mexican</option>
+                <option>American</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="time">Time (minutes)</label>
+              <input id="time" type="number" min="1" placeholder="25" />
+            </div>
+          </div>
+        </section>
+
+        <section class="card card-pad">
+          <h2 class="card-title">Ingredients used</h2>
+          <p class="muted text-sm mt-8">Pull from fridge or catalog</p>
+          <div class="field mt-12">
+            <label for="ing-search" class="sr-only">Search ingredients</label>
+            <input id="ing-search" type="search" placeholder="Search ingredients…" />
+            <div class="search-results">
+              <div class="search-result selected">
+                <span class="emoji" aria-hidden="true">🐟</span>
+                <div class="ing-meta">
+                  <div class="name">Salmon, Atlantic</div>
+                  <div class="group">Animal foods · Fish</div>
+                </div>
+                <span class="badge-ok">Catalog</span>
+              </div>
+              <div class="search-result">
+                <span class="emoji" aria-hidden="true">🫘</span>
+                <div class="ing-meta">
+                  <div class="name">Miso paste</div>
+                  <div class="group">Processed · Condiments</div>
+                </div>
+                <span class="badge-ok">Catalog</span>
+              </div>
+            </div>
+          </div>
+          <div class="ing-list mt-12">
+            <div class="ing-row">
+              <div class="ing-icon" aria-hidden="true">🐟</div>
+              <div class="ing-meta">
+                <div class="name">Salmon, Atlantic</div>
+                <div class="group">200g · from fridge</div>
+              </div>
+              <button type="button" class="btn btn-ghost btn-sm">Remove</button>
+            </div>
+            <div class="ing-row">
+              <div class="ing-icon" aria-hidden="true">🫘</div>
+              <div class="ing-meta">
+                <div class="name">Miso paste</div>
+                <div class="group">2 tbsp</div>
+              </div>
+              <button type="button" class="btn btn-ghost btn-sm">Remove</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="card card-pad">
+          <h2 class="card-title">Your review</h2>
+          <div class="field mt-12">
+            <label>Overall rating</label>
+            <div class="stars" style="font-size:1.5rem" aria-label="4 of 5 stars">★★★★☆</div>
+          </div>
+          <div class="field">
+            <label for="review">Review</label>
+            <textarea id="review" placeholder="Taste, texture, would you cook again?"></textarea>
+          </div>
+          <div class="field">
+            <label for="vis">Visibility</label>
+            <select id="vis">
+              <option>Public — followers’ feeds</option>
+              <option>Private — only me</option>
+            </select>
+          </div>
+          <div class="row-end mt-16">
+            <button type="button" class="btn btn-secondary">Save draft</button>
+            <button type="button" class="btn btn-primary">Save meal</button>
+          </div>
+        </section>
+      </div>
+
+      <aside class="rail">
+        <div class="card card-pad">
+          <h2 class="card-title">Tips</h2>
+          <p class="muted text-sm mt-8">Link catalog ingredients to fill macros when quantities are in grams.</p>
+        </div>
+        <div class="card card-pad">
+          <h2 class="card-title">Estimated macros</h2>
+          <div class="nutrient-grid mt-12">
+            <div class="nutrient"><div class="val">420</div><div class="lbl">kcal</div></div>
+            <div class="nutrient"><div class="val">38g</div><div class="lbl">protein</div></div>
+            <div class="nutrient"><div class="val">12g</div><div class="lbl">fat</div></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <nav class="mobile-nav" aria-label="Mobile">
+    <a href="index.html"><span class="ico">⌂</span>Home</a>
+    <a href="cookbook.html"><span class="ico">☰</span>Kitchen</a>
+    <a href="add-meal.html" class="active"><span class="ico">＋</span>Log</a>
+    <a href="add-ingredient.html"><span class="ico">◈</span>Fridge</a>
+    <a href="settings.html"><span class="ico">⚙</span>More</a>
+  </nav>
+  <script src="theme.js"></script>
+</body>
+</html>

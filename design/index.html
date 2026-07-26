@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Home · CookBook</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script>
+    try {
+      var t = localStorage.getItem("cookbook-theme");
+      if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t);
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="top-nav">
+      <div class="top-nav-inner">
+        <a href="index.html" class="brand">
+          <span class="brand-mark" aria-hidden="true">🍳</span>
+          <span class="brand-name">Cook<em>Book</em></span>
+        </a>
+        <nav class="top-links" aria-label="Primary">
+          <a href="index.html" class="active"><span class="nav-ico">⌂</span><span class="nav-label">Home</span></a>
+          <a href="cookbook.html"><span class="nav-ico">☰</span><span class="nav-label">Kitchen</span></a>
+          <a href="add-meal.html"><span class="nav-ico">＋</span><span class="nav-label">Log meal</span></a>
+          <a href="add-ingredient.html"><span class="nav-ico">◈</span><span class="nav-label">Fridge</span></a>
+          <a href="settings.html"><span class="nav-ico">⚙</span><span class="nav-label">Settings</span></a>
+        </nav>
+        <div class="top-actions">
+          <button type="button" class="icon-chip" data-theme-toggle aria-pressed="false" title="Dark mode">
+            <span data-theme-icon>🌙</span>
+          </button>
+          <a href="add-meal.html" class="btn btn-primary btn-sm nav-cook-label">Log meal</a>
+          <a href="cookbook.html" class="avatar avatar--sm avatar--accent" title="Your kitchen" aria-label="Your kitchen">
+            <span>AJ</span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <div class="page">
+      <div class="column">
+        <div class="page-hero">
+          <div>
+            <h1>Today’s table</h1>
+            <p class="lede">Meals and notes from kitchens you follow</p>
+          </div>
+        </div>
+
+        <div class="seg" role="tablist">
+          <button type="button" class="active" role="tab">Following</button>
+          <button type="button" role="tab">Discover</button>
+        </div>
+
+        <section class="card card-pad compose-card">
+          <div class="compose-row">
+            <div class="avatar avatar--accent" aria-hidden="true"><span>AJ</span></div>
+            <div style="flex:1;min-width:0">
+              <textarea placeholder="What did you cook today?" rows="2" aria-label="Compose note"></textarea>
+              <div class="compose-footer">
+                <div class="tool-row">
+                  <button type="button" class="tool-btn" title="Photo">📷</button>
+                  <button type="button" class="tool-btn" title="Ingredients">🥕</button>
+                  <button type="button" class="tool-btn" title="Rate">⭐</button>
+                </div>
+                <button type="button" class="btn btn-primary btn-sm" onclick="location.href='add-meal.html'">Open meal log</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Entry 1 -->
+        <article class="card entry">
+          <header class="entry-header">
+            <div class="avatar avatar--clay" aria-hidden="true"><span>MK</span></div>
+            <div class="entry-who">
+              <div class="name-line">
+                <span class="name">Maya Kim</span>
+                <span class="handle">@mayakim</span>
+                <span class="time">2h ago</span>
+              </div>
+            </div>
+          </header>
+          <div class="entry-body">
+            <p class="entry-text">Weeknight miso salmon — 25 minutes, fridge almost emptied itself. Sauce is a keeper.</p>
+          </div>
+          <div class="plate">
+            <div class="plate-media">
+              <span class="plate-badge">Cooked</span>
+              <span aria-hidden="true">🐟</span>
+            </div>
+            <div class="plate-body">
+              <h3>Miso Glazed Salmon</h3>
+              <p class="plate-meta">Japanese · Dinner · 25 min</p>
+              <div class="macro-row">
+                <span class="macro"><strong>420</strong> kcal</span>
+                <span class="macro"><strong>38g</strong> protein</span>
+                <span class="macro"><strong>12g</strong> fat</span>
+                <span class="macro"><strong>28g</strong> carbs</span>
+              </div>
+              <div class="rating-row">
+                <span class="stars" aria-label="4.9 stars">★★★★★</span>
+                <span class="score">4.9</span>
+                <span>· 128 reviews</span>
+              </div>
+            </div>
+          </div>
+          <div class="entry-actions">
+            <button type="button" class="act">Note · 24</button>
+            <button type="button" class="act liked">Saved · 186</button>
+            <button type="button" class="act">Cook this</button>
+          </div>
+        </article>
+
+        <!-- Entry 2 -->
+        <article class="card entry">
+          <header class="entry-header">
+            <div class="avatar avatar--sage" aria-hidden="true"><span>RL</span></div>
+            <div class="entry-who">
+              <div class="name-line">
+                <span class="name">Rafa Lopez</span>
+                <span class="handle">@rafacooks</span>
+                <span class="time">5h ago</span>
+              </div>
+            </div>
+          </header>
+          <div class="entry-body">
+            <p class="entry-text">Sourdough pizza night. Want-to-cook list officially conquered.</p>
+          </div>
+          <div class="plate">
+            <div class="plate-media var-2">
+              <span class="plate-badge">From want-to-cook</span>
+              <span aria-hidden="true">🍕</span>
+            </div>
+            <div class="plate-body">
+              <h3>Margherita Sourdough</h3>
+              <p class="plate-meta">Italian · Dinner · 90 min</p>
+              <div class="macro-row">
+                <span class="macro"><strong>580</strong> kcal</span>
+                <span class="macro"><strong>22g</strong> protein</span>
+              </div>
+              <div class="rating-row">
+                <span class="stars">★★★★☆</span>
+                <span class="score">4.4</span>
+                <span>· 56 reviews</span>
+              </div>
+            </div>
+          </div>
+          <div class="entry-actions">
+            <button type="button" class="act">Note · 11</button>
+            <button type="button" class="act">Saved · 94</button>
+            <button type="button" class="act">Cook this</button>
+          </div>
+        </article>
+
+        <!-- Entry 3 -->
+        <article class="card entry">
+          <header class="entry-header">
+            <div class="avatar avatar--dusk" aria-hidden="true"><span>SC</span></div>
+            <div class="entry-who">
+              <div class="name-line">
+                <span class="name">Sam Chen</span>
+                <span class="handle">@samstir</span>
+                <span class="time">1d ago</span>
+              </div>
+            </div>
+          </header>
+          <div class="entry-body">
+            <p class="entry-text">New fridge find: great free-range eggs. Reviewing the ingredient, not just the omelette.</p>
+          </div>
+          <div class="plate">
+            <div class="plate-media var-3">
+              <span class="plate-badge">Ingredient</span>
+              <span aria-hidden="true">🥚</span>
+            </div>
+            <div class="plate-body">
+              <h3>Egg, free-range</h3>
+              <p class="plate-meta">Animal foods · Dairy &amp; eggs · Catalog</p>
+              <div class="macro-row">
+                <span class="macro"><strong>143</strong> kcal / 100g</span>
+                <span class="macro"><strong>12.6g</strong> protein</span>
+              </div>
+              <div class="rating-row">
+                <span class="stars">★★★★★</span>
+                <span class="score">4.8</span>
+                <span>· taste, freshness, value</span>
+              </div>
+            </div>
+          </div>
+          <div class="entry-actions">
+            <button type="button" class="act">Note · 7</button>
+            <button type="button" class="act">Saved · 41</button>
+            <button type="button" class="act">Add to fridge</button>
+          </div>
+        </article>
+      </div>
+
+      <aside class="rail">
+        <div class="search-field">
+          <span class="ico" aria-hidden="true">⌕</span>
+          <input type="search" placeholder="Search chefs, meals…" />
+        </div>
+        <div class="card card-pad">
+          <div class="card-head">
+            <h2 class="card-title">Kitchens to follow</h2>
+          </div>
+          <div class="suggest">
+            <div class="avatar avatar--sm avatar--clay"><span>NP</span></div>
+            <div class="meta">
+              <div class="name">Nina Park</div>
+              <div class="handle">@ninabakery</div>
+            </div>
+            <button type="button" class="btn btn-soft btn-sm">Follow</button>
+          </div>
+          <div class="suggest">
+            <div class="avatar avatar--sm avatar--sage"><span>JO</span></div>
+            <div class="meta">
+              <div class="name">Jamal Okonkwo</div>
+              <div class="handle">@jamalspice</div>
+            </div>
+            <button type="button" class="btn btn-soft btn-sm">Follow</button>
+          </div>
+          <div class="suggest">
+            <div class="avatar avatar--sm avatar--dusk"><span>EL</span></div>
+            <div class="meta">
+              <div class="name">Elena Rossi</div>
+              <div class="handle">@elenapasta</div>
+            </div>
+            <button type="button" class="btn btn-soft btn-sm">Follow</button>
+          </div>
+        </div>
+        <div class="card card-pad">
+          <h2 class="card-title">Your fridge</h2>
+          <p class="muted text-sm mt-8">12 ingredients · 3 expiring soon</p>
+          <button type="button" class="btn btn-secondary btn-sm mt-12" onclick="location.href='cookbook.html'">Open fridge</button>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <nav class="mobile-nav" aria-label="Mobile">
+    <a href="index.html" class="active"><span class="ico">⌂</span>Home</a>
+    <a href="cookbook.html"><span class="ico">☰</span>Kitchen</a>
+    <a href="add-meal.html"><span class="ico">＋</span>Log</a>
+    <a href="add-ingredient.html"><span class="ico">◈</span>Fridge</a>
+    <a href="settings.html"><span class="ico">⚙</span>More</a>
+  </nav>
+  <script src="theme.js"></script>
+</body>
+</html>
