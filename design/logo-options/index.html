@@ -1,0 +1,1588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CookBook · Logo &amp; theme lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f4f6f9;
+      --bg-mid: #eef1f6;
+      --surface: #ffffff;
+      --surface-2: #f8fafc;
+      --border: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --text: #0f172a;
+      --text-secondary: #475569;
+      --muted: #94a3b8;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --accent-soft: rgba(37, 99, 235, 0.1);
+      --accent-2: #0d9488;
+      --on-accent: #ffffff;
+      --radius: 12px;
+      --header-h: 56px;
+      --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+      --shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+      --danger: #dc2626;
+      --success: #059669;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Inter, "Segoe UI", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input, select { font: inherit; color: inherit; }
+    button { cursor: pointer; border: none; background: none; }
+    code {
+      font-size: 0.85em;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+
+    /* Shell */
+    .lab-top {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: color-mix(in srgb, var(--surface) 92%, transparent);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .lab-top-inner {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 12px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px 20px;
+    }
+    .lab-brand {
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      font-size: 1.05rem;
+    }
+    .lab-brand span { color: var(--accent); }
+    .lab-tabs {
+      display: flex;
+      gap: 4px;
+      flex: 1;
+      flex-wrap: wrap;
+    }
+    .lab-tabs button {
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .lab-tabs button:hover { background: var(--surface-2); color: var(--text); }
+    .lab-tabs button.active {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+    .panel { display: none; max-width: 1180px; margin: 0 auto; padding: 24px 20px 80px; }
+    .panel.active { display: block; }
+
+    h1 { font-size: 1.55rem; font-weight: 700; letter-spacing: -0.03em; }
+    h2 { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.02em; }
+    .lede { color: var(--text-secondary); font-size: 0.95rem; margin-top: 6px; max-width: 68ch; }
+    .section { margin-top: 28px; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+    }
+    .card-pad { padding: 16px 18px; }
+    .muted { color: var(--muted); }
+    .text-sm { font-size: 0.875rem; }
+    .meta { font-size: 0.78rem; color: var(--muted); }
+
+    /* Logo grid */
+    .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 16px; }
+    .filters button {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .filters button.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--on-accent);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 14px;
+    }
+    .logo-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+    }
+    .logo-card.hidden { display: none; }
+    .logo-card .badge-new {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 2;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      background: var(--accent);
+      color: var(--on-accent);
+      padding: 3px 8px;
+      border-radius: 999px;
+    }
+    .logo-media {
+      aspect-ratio: 1;
+      background: #fff;
+      display: grid;
+      place-items: center;
+      padding: 10px;
+      border-bottom: 1px solid var(--border);
+      cursor: zoom-in;
+    }
+    .logo-media.wide { aspect-ratio: 16/9; }
+    .logo-media img { max-width: 100%; max-height: 100%; object-fit: contain; }
+    .logo-body { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+    .num { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); }
+    .logo-body .title { font-weight: 700; font-size: 0.95rem; }
+    .logo-body .desc { font-size: 0.8rem; color: var(--text-secondary); flex: 1; }
+    .theory {
+      font-size: 0.75rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      padding-top: 8px;
+      margin-top: 4px;
+      line-height: 1.45;
+    }
+    .theory strong { color: var(--text-secondary); }
+    .tags { display: flex; flex-wrap: wrap; gap: 5px; }
+    .tag {
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: var(--surface-2);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+    .pick {
+      margin-top: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 7px 10px;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+    .pick.on { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+    .picks-bar {
+      margin-top: 22px;
+      padding: 14px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+    }
+    .picks-bar strong { color: var(--accent); }
+
+    /* Theory essay */
+    .essay {
+      margin-top: 28px;
+      display: grid;
+      gap: 14px;
+    }
+    .essay article {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+    }
+    .essay h3 { font-size: 1rem; margin-bottom: 8px; }
+    .essay p { font-size: 0.9rem; color: var(--text-secondary); }
+    .essay ul { margin: 8px 0 0 1.1rem; font-size: 0.88rem; color: var(--text-secondary); }
+    .essay li { margin-bottom: 6px; }
+    .essay .cite {
+      display: block;
+      margin-top: 8px;
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    /* Color playground */
+    .theme-layout {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .theme-layout { grid-template-columns: 1fr; }
+    }
+    .controls {
+      position: sticky;
+      top: 72px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+      max-height: calc(100vh - 90px);
+      overflow-y: auto;
+    }
+    .controls h2 { margin-bottom: 12px; }
+    .control-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 0.85rem;
+    }
+    .control-row label { font-weight: 600; color: var(--text-secondary); }
+    .control-row input[type="color"] {
+      width: 42px;
+      height: 32px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 2px;
+      background: var(--surface);
+      cursor: pointer;
+    }
+    .control-row input[type="range"] { width: 100%; accent-color: var(--accent); }
+    .presets { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+    .presets-group {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 10px 0 2px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+    }
+    .presets-group:first-child { margin-top: 0; padding-top: 0; border-top: none; }
+    .presets button {
+      text-align: left;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .presets button:hover,
+    .presets button.active { border-color: var(--accent); background: var(--accent-soft); }
+    .presets button small {
+      display: block;
+      font-weight: 500;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .preset-swatch-row {
+      display: flex;
+      gap: 4px;
+      margin-top: 6px;
+    }
+    .preset-swatch-row i {
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      border: 1px solid var(--border-strong);
+      display: block;
+    }
+    .swatches {
+      display: flex;
+      gap: 6px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+    .swatch {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      border: 1px solid var(--border-strong);
+    }
+    .theme-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .theme-actions button {
+      flex: 1;
+      min-width: 110px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .theme-actions button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--on-accent);
+    }
+    .contrast-box {
+      margin-top: 14px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      font-size: 0.8rem;
+    }
+    .contrast-box .ok { color: var(--success); font-weight: 700; }
+    .contrast-box .warn { color: var(--danger); font-weight: 700; }
+    .export-box {
+      margin-top: 12px;
+      width: 100%;
+      min-height: 100px;
+      font-family: ui-monospace, Consolas, monospace;
+      font-size: 0.72rem;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text-secondary);
+      resize: vertical;
+    }
+
+    /* Mock homepage */
+    .mock {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      background: var(--bg);
+      box-shadow: var(--shadow);
+    }
+    .mock-nav {
+      height: var(--header-h);
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 16px;
+    }
+    .mock-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+    .mock-logo-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(145deg, var(--accent), var(--accent-hover));
+      display: grid;
+      place-items: center;
+      color: var(--on-accent);
+      overflow: hidden;
+    }
+    .mock-logo-mark svg { width: 18px; height: 18px; }
+    .mock-logo-mark img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .mock-logo em { font-style: normal; color: var(--accent); }
+    .mock-links {
+      display: flex;
+      gap: 4px;
+      flex: 1;
+      justify-content: center;
+    }
+    .mock-links span {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .mock-links span.on {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+    .mock-btn {
+      padding: 7px 12px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: var(--accent);
+      color: var(--on-accent);
+    }
+    .mock-btn.ghost {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+    .mock-body {
+      display: grid;
+      grid-template-columns: 1fr 240px;
+      gap: 16px;
+      padding: 20px 16px 24px;
+    }
+    @media (max-width: 720px) {
+      .mock-body { grid-template-columns: 1fr; }
+      .mock-rail { display: none; }
+      .mock-links { display: none; }
+    }
+    .mock-hero h2 {
+      font-size: 1.4rem;
+      letter-spacing: -0.03em;
+    }
+    .mock-hero p { color: var(--text-secondary); font-size: 0.9rem; margin-top: 4px; }
+    .mock-strip {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+    .mock-pill {
+      flex: 0 0 auto;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-secondary);
+    }
+    .mock-pill.on {
+      background: var(--accent-soft);
+      border-color: transparent;
+      color: var(--accent);
+    }
+    .mock-feed { display: flex; flex-direction: column; gap: 12px; margin-top: 14px; }
+    .mock-post {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+    }
+    .mock-post-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .mock-av {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, var(--accent), var(--accent-2));
+      color: var(--on-accent);
+      font-size: 0.7rem;
+      font-weight: 700;
+      display: grid;
+      place-items: center;
+    }
+    .mock-post h3 { font-size: 1rem; }
+    .mock-plate {
+      height: 100px;
+      border-radius: 8px;
+      background:
+        radial-gradient(circle at 35% 40%, var(--accent-soft), transparent 55%),
+        radial-gradient(circle at 70% 60%, color-mix(in srgb, var(--accent-2) 18%, transparent), transparent 50%),
+        var(--surface-2);
+      border: 1px solid var(--border);
+      margin: 10px 0;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .mock-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+    .mock-chip {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+    .mock-chip.alt {
+      background: color-mix(in srgb, var(--accent-2) 15%, transparent);
+      color: var(--accent-2);
+    }
+    .mock-chip.neutral {
+      background: var(--surface-2);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+    .mock-rail .card { margin-bottom: 12px; }
+    .mock-stat {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: -0.03em;
+    }
+    .mock-search {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .mock-search input {
+      flex: 1;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      background: var(--bg);
+      font-size: 0.8rem;
+      color: var(--text);
+    }
+    .mock-ing {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.8rem;
+    }
+    .mock-ing:last-child { border-bottom: none; }
+    .mock-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-2);
+    }
+    .mock-bottom {
+      display: none;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      padding: 8px;
+      justify-content: space-around;
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .mock-bottom span.on { color: var(--accent); }
+    @media (max-width: 720px) {
+      .mock-bottom { display: flex; }
+    }
+    .mock-logo-picker {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 16px 0 0;
+    }
+    .mock-logo-picker button {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      border: 2px solid var(--border);
+      overflow: hidden;
+      background: #fff;
+      padding: 2px;
+    }
+    .mock-logo-picker button.on {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-soft);
+    }
+    .mock-logo-picker button img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Lightbox */
+    .lb {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.75);
+      z-index: 60;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      cursor: zoom-out;
+    }
+    .lb.open { display: flex; }
+    .lb img {
+      max-width: min(900px, 100%);
+      max-height: 90vh;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+  </style>
+</head>
+<body>
+  <header class="lab-top">
+    <div class="lab-top-inner">
+      <div class="lab-brand">Cook<span>Book</span> · Design lab</div>
+      <nav class="lab-tabs" aria-label="Sections">
+        <button type="button" class="active" data-panel="logos">Logos (24)</button>
+        <button type="button" data-panel="colors">Color themes</button>
+        <button type="button" data-panel="mock">Mock homepage</button>
+        <button type="button" data-panel="theory">Design theory</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- LOGOS -->
+  <section class="panel active" id="panel-logos">
+    <h1>Logo gallery</h1>
+    <p class="lede">
+      24 concepts (6 new). Click an image to enlarge, mark favorites, filter by style.
+      Tell your agent the number(s) you want applied in the real app.
+    </p>
+
+    <div class="filters" role="group" aria-label="Filter logos">
+      <button type="button" class="active" data-filter="all">All</button>
+      <button type="button" data-filter="new">New batch</button>
+      <button type="button" data-filter="enterprise">Enterprise</button>
+      <button type="button" data-filter="icon">App icon</button>
+      <button type="button" data-filter="wordmark">Wordmark</button>
+      <button type="button" data-filter="clever">Clever</button>
+      <button type="button" data-filter="minimal">Minimal</button>
+      <button type="button" data-filter="friendly">Friendly</button>
+    </div>
+
+    <div class="grid" id="grid"></div>
+
+    <div class="picks-bar">
+      <strong>Your picks:</strong> <span id="pickList">none yet</span>
+      <div class="muted text-sm" style="margin-top:6px">
+        Reply with e.g. <code>#5 icon + #21 wordmark</code> or <code>refine #19 warmer</code>
+      </div>
+    </div>
+  </section>
+
+  <!-- COLORS -->
+  <section class="panel" id="panel-colors">
+    <h1>Color theme playground</h1>
+    <p class="lede">
+      Drag pickers or load a preset. Tokens apply live across this lab (CSS variables) — the same approach
+      product teams use before wiring design tokens into React/CSS. Themes are saved in this browser
+      (<code>localStorage</code>) so you can leave and come back.
+    </p>
+
+    <div class="theme-layout section">
+      <aside class="controls">
+        <h2>Tokens</h2>
+        <div class="control-row">
+          <label for="c-accent">Accent (primary actions)</label>
+          <input type="color" id="c-accent" value="#2563eb" data-var="--accent" />
+        </div>
+        <div class="control-row">
+          <label for="c-accent-hover">Accent hover</label>
+          <input type="color" id="c-accent-hover" value="#1d4ed8" data-var="--accent-hover" />
+        </div>
+        <div class="control-row">
+          <label for="c-accent-2">Secondary accent</label>
+          <input type="color" id="c-accent-2" value="#0d9488" data-var="--accent-2" />
+        </div>
+        <div class="control-row">
+          <label for="c-bg">Page background</label>
+          <input type="color" id="c-bg" value="#f4f6f9" data-var="--bg" />
+        </div>
+        <div class="control-row">
+          <label for="c-surface">Surface / cards</label>
+          <input type="color" id="c-surface" value="#ffffff" data-var="--surface" />
+        </div>
+        <div class="control-row">
+          <label for="c-text">Body text</label>
+          <input type="color" id="c-text" value="#0f172a" data-var="--text" />
+        </div>
+        <div class="control-row">
+          <label for="c-muted">Muted text</label>
+          <input type="color" id="c-muted" value="#94a3b8" data-var="--muted" />
+        </div>
+        <div class="control-row">
+          <label for="c-border">Borders</label>
+          <input type="color" id="c-border" value="#e2e8f0" data-var="--border" />
+        </div>
+        <div class="control-row" style="grid-template-columns:1fr">
+          <label for="c-radius">Corner radius <span id="radiusVal" class="muted">12px</span></label>
+          <input type="range" id="c-radius" min="4" max="24" value="12" />
+        </div>
+
+        <div class="swatches" id="swatches" aria-hidden="true"></div>
+
+        <div class="contrast-box" id="contrastBox">
+          Checking text contrast…
+        </div>
+
+        <div class="theme-actions">
+          <button type="button" class="primary" id="btnSaveTheme">Save theme</button>
+          <button type="button" id="btnResetTheme">Reset enterprise</button>
+          <button type="button" id="btnCopyCss">Copy CSS vars</button>
+        </div>
+        <textarea class="export-box" id="exportBox" readonly rows="6" aria-label="Exported CSS variables"></textarea>
+
+        <h2 style="margin-top:18px;font-size:0.95rem">Presets</h2>
+        <p class="text-sm muted" style="margin-bottom:8px">
+          CookBook moods first, then approximate social-app palettes (inspiration only — not official brand kits).
+        </p>
+        <div class="presets" id="presets"></div>
+      </aside>
+
+      <div>
+        <p class="text-sm muted" style="margin-bottom:10px">Live preview · same shell as full mock homepage</p>
+        <div class="mock" id="mini-mock"></div>
+        <article class="card card-pad section">
+          <h2>What you’re tuning (design science)</h2>
+          <ul class="text-sm" style="margin:10px 0 0 1.1rem;color:var(--text-secondary)">
+            <li><strong>Accent</strong> — primary action color; grabs pre-attentive attention before the user “reads” the UI.</li>
+            <li><strong>Surface vs canvas</strong> — figure/ground separation so cards float (Gestalt figure–ground).</li>
+            <li><strong>Text contrast</strong> — readability &amp; trust; WCAG suggests ~4.5:1 for body text.</li>
+            <li><strong>Secondary accent</strong> — health/nutrition cues without competing with primary CTAs.</li>
+            <li><strong>Radius</strong> — soft = approachable consumer; tight = precision / enterprise tool feel. X uses pill radius on CTAs; Facebook/Instagram stay tighter.</li>
+            <li><strong>Social presets</strong> — study how red (YouTube) vs black (X) vs blue (Meta/IG actions) changes urgency and “seriousness” on the same layout.</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- MOCK HOME -->
+  <section class="panel" id="panel-mock">
+    <h1>Mock homepage</h1>
+    <p class="lede">
+      A simplified CookBook home shell. Change colors under <strong>Color themes</strong>, then return here.
+      Optionally drop a gallery logo into the nav mark to preview brand + palette together.
+    </p>
+
+    <div class="section">
+      <p class="text-sm" style="font-weight:600;margin-bottom:8px">Nav logo preview (optional)</p>
+      <div class="mock-logo-picker" id="logoPicker"></div>
+      <p class="meta" style="margin-top:8px">SVG default · or pick a raster from the gallery</p>
+    </div>
+
+    <div class="section mock" id="full-mock"></div>
+  </section>
+
+  <!-- THEORY -->
+  <section class="panel" id="panel-theory">
+    <h1>Design theory · logos, color &amp; UX</h1>
+    <p class="lede">
+      How these marks and themes relate to user experience through visual perception, cognitive psychology,
+      and product design—not only “what looks cool.” Written for choosing a CookBook system, not a one-off image.
+    </p>
+
+    <div class="essay">
+      <article>
+        <h3>1. Recognition over recall (Nielsen heuristics / cognitive load)</h3>
+        <p>
+          Users should <em>recognize</em> CookBook in a glance on a phone home screen or browser tab.
+          Simple geometric books (#5, #8, #15, #23) minimize detail so the brain matches a known category
+          (“app about cooking/knowledge”) without decoding complex illustration. Dense or textured marks cost
+          milliseconds of processing—small on desktop, painful at 24–32px in a bottom tab bar. Working memory is
+          limited (~4±1 chunks in modern estimates); every extra visual feature competes with meal names, ratings, and CTAs.
+        </p>
+        <span class="cite">Related: Nielsen “Recognition rather than recall”; Sweller cognitive load theory.</span>
+      </article>
+
+      <article>
+        <h3>2. Gestalt: figure–ground, closure, and dual reads</h3>
+        <p>
+          Clever marks (#9 plate/book, #10 monogram, #19 heart pages, #22 plate-as-book) use <strong>closure</strong>—
+          the mind completes incomplete shapes—and sometimes dual figure–ground readings. That creates memorability
+          (von Restorff / isolation effect: distinctive items stick) but can hurt <strong>first-use clarity</strong>
+          if the metaphor is too clever. Enterprise products often prefer single-read icons for trust and scanability;
+          social/consumer apps can afford one clever primary mark if the wordmark always sits nearby.
+        </p>
+        <span class="cite">Gestalt principles (Wertheimer et al.); von Restorff isolation effect.</span>
+      </article>
+
+      <article>
+        <h3>3. Semantic color, affect, and brand positioning</h3>
+        <p>
+          Color is not decoration—it is a pre-attentive cue. Warm kitchen orange signals “food &amp; comfort”
+          (approach motivation, appetite cues in food marketing research). Cool indigo signals “tools, data, reliability”
+          (common in SaaS and finance). Your enterprise rebrand leans cool so CookBook feels like software you manage
+          inventory and nutrition with—not only a recipe blog. Teal secondary often maps to “health / success”
+          without fighting primary CTAs. Eye-tracking work (Yarbus and later HCI studies) shows contrast and color
+          guide fixations; put accent color only where action or status lives.
+        </p>
+        <span class="cite">Affective design / Kansei; semantic color conventions in UI systems.</span>
+      </article>
+
+      <article>
+        <h3>4. Visual hierarchy &amp; Fitt’s law (actions people take)</h3>
+        <p>
+          On the mock homepage, the primary button (“Log meal” / “Browse”) uses accent fill so it wins the hierarchy race
+          against muted nav links. That is intentional: users should not hunt for the next step.
+          <strong>Fitt’s law</strong> says larger, closer targets are faster to hit—so mobile bottom tabs and full-width
+          primary buttons beat tiny icon-only controls for frequent tasks. Logo choice affects hierarchy too: a heavy
+          shield steals attention from content; a quiet geometric mark lets the feed own the page.
+        </p>
+      </article>
+
+      <article>
+        <h3>5. Consistency &amp; multi-scale systems</h3>
+        <p>
+          A logo must work at 16px (favicon), 32px (nav), and 512px (PWA splash). Outline and flat geometric options
+          scale better than textured shields. Wordmarks (#1, #4, #18, #21) need a companion monochrome icon for
+          constrained contexts—classic logo system practice (primary mark + lockup + monochrome + reverse).
+          Color themes should be tokenized (<code>--accent</code>, <code>--surface</code>…) so light/dark and brand
+          experiments do not require redesigning every component—this lab mirrors that discipline.
+        </p>
+      </article>
+
+      <article>
+        <h3>6. Trust, credibility, and “enterprise” aesthetics</h3>
+        <p>
+          Shield (#3), badge (#7), and verified check (#16) borrow language from security and certified-data products—
+          useful if you emphasize USDA-backed nutrition. Overusing seals can feel bureaucratic; balance with open layout
+          and whitespace (clutter increases cognitive load and perceived difficulty; white space increases perceived
+          usability in several HCI studies). Data-layer and hex marks (#15, #17, #23) lean “platform / analytics,”
+          which fits Foundation + branded search, but may feel cold for a social kitchen journal—pair with warmer
+          photography and human avatars in the feed.
+        </p>
+      </article>
+
+      <article>
+        <h3>7. Friendly vs. precise (emotional design levels)</h3>
+        <p>
+          Norman’s three levels of emotional design: <em>visceral</em> (instant like/dislike of shape and color),
+          <em>behavioral</em> (does the product work smoothly?), <em>reflective</em> (identity: “I’m someone who tracks food well”).
+          Steam/soft book (#24) and heart-pages (#19) push visceral warmth; monoline chef-hat book (#20) and stack data
+          (#17) push reflective “serious cook / serious data.” Pick the visceral tone first, then keep behavioral UI
+          consistent so the brand promise matches the product experience.
+        </p>
+        <span class="cite">Don Norman, Emotional Design.</span>
+      </article>
+
+      <article>
+        <h3>8. How to choose for CookBook UX (practical shortlist)</h3>
+        <ul>
+          <li><strong>Primary app icon:</strong> high silhouette strength — #5, #8, #14, #15, #19, #23, #24.</li>
+          <li><strong>Nav lockup:</strong> icon + wordmark — #4, #18, #21.</li>
+          <li><strong>Differentiation:</strong> one clever element max (#9, #10, #19, #22), not clever icon <em>and</em> clever wordmark.</li>
+          <li><strong>Science / USDA story:</strong> verified or badge language — #7, #16; avoid if the app should feel purely social.</li>
+          <li><strong>Color:</strong> pick accent first for CTAs, then surfaces and text contrast—never the reverse.</li>
+          <li><strong>Theme test:</strong> use the playground + mock homepage; if chips and buttons disappear into the background, the palette fails hierarchy.</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>9. Mapping this lab to real product work</h3>
+        <p>
+          What you are doing here is a lightweight <strong>design critique loop</strong>: generate variants → evaluate against
+          principles → pick a system (icon + lockup + tokens) → implement once in the app. That beats endless AI generations
+          without criteria. When you reply with numbers, your agent can replace <code>BrandMark</code>, PWA icons, and CSS
+          variables so the live product matches what you saw in this lab—closing the gap between concept and experience.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <div class="lb" id="lb"><img id="lbImg" alt="" /></div>
+
+  <script>
+    /* ---------- Logo data (24) ---------- */
+    const logos = [
+      { n: 1,  title: "Wordmark only", desc: "Typography-led CookBook", tags: ["wordmark", "minimal", "enterprise"], wide: true,
+        theory: "Relies on language + brand literacy; strong once known, weaker as a tiny favicon." },
+      { n: 2,  title: "Two-tone split book", desc: "Blue / teal open book", tags: ["icon", "enterprise"],
+        theory: "Split color aids left–right structure (pages) and maps secondary accent to nutrition cues." },
+      { n: 3,  title: "Shield emblem", desc: "Book + utensil in a shield", tags: ["icon", "enterprise"],
+        theory: "Shield = protection/trust schema; good for ‘reliable data’ but heavier visually." },
+      { n: 4,  title: "Horizontal lockup", desc: "Icon + CookBook text", tags: ["wordmark", "enterprise"], wide: true,
+        theory: "Best for headers: dual coding (icon + text) improves recognition and accessibility." },
+      { n: 5,  title: "Rounded app tile", desc: "Indigo square, white book", tags: ["icon", "enterprise"],
+        theory: "Matches OS app-icon grammar (squircle); highest home-screen affordance." },
+      { n: 6,  title: "Outline line icon", desc: "Thin stroke book", tags: ["icon", "minimal"],
+        theory: "Low visual weight for dense UIs; weaker on busy wallpapers / small sizes." },
+      { n: 7,  title: "Circular badge", desc: "Book in a seal", tags: ["icon"],
+        theory: "Circular seals signal certification; useful for science/USDA credibility story." },
+      { n: 8,  title: "Minimal geometric book", desc: "Simple filled mark", tags: ["icon", "minimal", "enterprise"],
+        theory: "High silhouette strength — classic for product icons (recognition over detail)." },
+      { n: 9,  title: "Plate + book", desc: "Dual-read clever mark", tags: ["clever", "icon"],
+        theory: "Von Restorff memorability via surprise; test with users if metaphor is clear." },
+      { n: 10, title: "CB monogram", desc: "Letters as book geometry", tags: ["clever", "icon"],
+        theory: "Monograms help when the brand name is long; need consistent exposure to learn." },
+      { n: 11, title: "Stacked Swiss", desc: "Icon above spaced COOKBOOK", tags: ["wordmark", "enterprise"],
+        theory: "Wide tracking = modern enterprise; works on marketing pages more than tiny tabs." },
+      { n: 12, title: "Book + leaf", desc: "Soft food/nature cue", tags: ["clever", "icon", "friendly"],
+        theory: "Adds semantic ‘fresh/health’ without emoji; still risk of looking ‘organic grocery’." },
+      { n: 13, title: "Diamond book", desc: "Lozenge frame + book", tags: ["icon", "enterprise"],
+        theory: "Unusual container increases distinctiveness vs. square app icons nearby." },
+      { n: 14, title: "Letter-C book", desc: "C formed by open pages", tags: ["clever", "icon", "minimal"],
+        theory: "Letterform + object fusion; strong if ‘C’ for Cook is intentional in the brand system." },
+      { n: 15, title: "Hexagon book", desc: "Book in hex container", tags: ["icon", "enterprise"],
+        theory: "Hex often used in data/tech (cells, networks)—aligns with ‘food data platform’." },
+      { n: 16, title: "Verified app icon", desc: "Book + check on tile", tags: ["icon", "enterprise"],
+        theory: "Check = verified/trust; good for USDA-backed truth, avoid if the product feels clinical." },
+      { n: 17, title: "Stack / data layers", desc: "Book as layered stack", tags: ["icon", "enterprise", "clever"],
+        theory: "Metaphors database + cookbook; appeals to power users, may puzzle casual cooks." },
+      { n: 18, title: "Nav bar lockup v2", desc: "Clean icon + CookBook text", tags: ["wordmark", "enterprise"], wide: true,
+        theory: "Optimized for top navigation: horizontal scanning + dual coding." },
+      { n: 19, title: "Heart-page book", desc: "Open book with heart gutter", tags: ["new", "icon", "clever", "friendly"],
+        theory: "Emotional design (visceral warmth) + dual read; great for social cooking, softer than enterprise." },
+      { n: 20, title: "Monoline chef-book", desc: "Single stroke book → hat", tags: ["new", "icon", "minimal", "clever"],
+        theory: "Continuous line = craft & precision; low fill weight for dense UI chrome; elegant at large sizes." },
+      { n: 21, title: "SaaS lockup", desc: "App tile + CookBook word", tags: ["new", "wordmark", "enterprise"], wide: true,
+        theory: "Linear/Notion-style lockup; strongest for desktop nav and marketing headers together." },
+      { n: 22, title: "Plate is a book", desc: "Top-down plate dual-read", tags: ["new", "clever", "icon", "friendly"],
+        theory: "Strong isolation effect; memorable for food apps—verify first-use clarity with a 5-second test." },
+      { n: 23, title: "Book + data bars", desc: "Pages with nutrient lines", tags: ["new", "icon", "enterprise"],
+        theory: "Explicit data metaphor for Foundation/nutrition; hierarchy stays clear at small sizes if bars are bold." },
+      { n: 24, title: "Steam soft book", desc: "Warm pages + steam swirl", tags: ["new", "icon", "friendly"],
+        theory: "Visceral ‘hot meal’ cue + approachability; pair with softer radius themes for coherence." },
+    ];
+
+    const picks = new Set();
+    const grid = document.getElementById("grid");
+    const pickList = document.getElementById("pickList");
+    const lb = document.getElementById("lb");
+    const lbImg = document.getElementById("lbImg");
+    let mockLogoSrc = null; // null = SVG mark
+
+    function renderLogos() {
+      grid.innerHTML = logos.map((L) => `
+        <article class="logo-card" data-tags="${L.tags.join(" ")}" data-n="${L.n}">
+          ${L.tags.includes("new") ? '<span class="badge-new">New</span>' : ""}
+          <div class="logo-media ${L.wide ? "wide" : ""}" data-src="logo-${L.n}.jpg">
+            <img src="logo-${L.n}.jpg" alt="Option ${L.n}: ${L.title}" loading="lazy" />
+          </div>
+          <div class="logo-body">
+            <div class="num">Option ${L.n}</div>
+            <div class="title">${L.title}</div>
+            <div class="desc">${L.desc}</div>
+            <div class="tags">${L.tags.filter((t) => t !== "new").map((t) => `<span class="tag">${t}</span>`).join("")}</div>
+            <div class="theory"><strong>UX / theory:</strong> ${L.theory}</div>
+            <button type="button" class="pick" data-pick="${L.n}">☆ Mark favorite</button>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function updatePicks() {
+      pickList.textContent = picks.size
+        ? [...picks].sort((a, b) => a - b).map((n) => "#" + n).join(", ")
+        : "none yet";
+    }
+
+    renderLogos();
+
+    grid.addEventListener("click", (e) => {
+      const media = e.target.closest(".logo-media");
+      if (media) {
+        lbImg.src = media.dataset.src;
+        lb.classList.add("open");
+        return;
+      }
+      const btn = e.target.closest(".pick");
+      if (!btn) return;
+      const n = Number(btn.dataset.pick);
+      if (picks.has(n)) {
+        picks.delete(n);
+        btn.classList.remove("on");
+        btn.textContent = "☆ Mark favorite";
+      } else {
+        picks.add(n);
+        btn.classList.add("on");
+        btn.textContent = "★ Favorited";
+      }
+      updatePicks();
+    });
+
+    lb.addEventListener("click", () => lb.classList.remove("open"));
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") lb.classList.remove("open");
+    });
+
+    document.querySelector(".filters").addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-filter]");
+      if (!btn) return;
+      document.querySelectorAll(".filters button").forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      const f = btn.dataset.filter;
+      document.querySelectorAll(".logo-card").forEach((card) => {
+        card.classList.toggle("hidden", f !== "all" && !card.dataset.tags.includes(f));
+      });
+    });
+
+    /* ---------- Panels ---------- */
+    document.querySelector(".lab-tabs").addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-panel]");
+      if (!btn) return;
+      document.querySelectorAll(".lab-tabs button").forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      document.querySelectorAll(".panel").forEach((p) => p.classList.remove("active"));
+      document.getElementById("panel-" + btn.dataset.panel).classList.add("active");
+    });
+
+    /* ---------- Theme engine ---------- */
+    const STORAGE_KEY = "cookbook-design-lab-theme";
+    const presets = [
+      {
+        id: "enterprise",
+        name: "Enterprise indigo (current)",
+        blurb: "Cool slate + blue — tools & trust",
+        vars: {
+          "--bg": "#f4f6f9", "--surface": "#ffffff", "--surface-2": "#f8fafc",
+          "--border": "#e2e8f0", "--text": "#0f172a", "--text-secondary": "#475569",
+          "--muted": "#94a3b8", "--accent": "#2563eb", "--accent-hover": "#1d4ed8",
+          "--accent-2": "#0d9488", "--on-accent": "#ffffff", "--radius": "12px",
+        },
+      },
+      {
+        id: "kitchen",
+        name: "Warm kitchen",
+        blurb: "Cream + orange — comfort food feel",
+        vars: {
+          "--bg": "#f3efe6", "--surface": "#fffcf7", "--surface-2": "#f7f1e6",
+          "--border": "#d9cfbc", "--text": "#2a2318", "--text-secondary": "#5c5346",
+          "--muted": "#8a8070", "--accent": "#c45c26", "--accent-hover": "#a84c1c",
+          "--accent-2": "#3d6b4f", "--on-accent": "#fffaf3", "--radius": "14px",
+        },
+      },
+      {
+        id: "midnight",
+        name: "Midnight enterprise",
+        blurb: "Dark mode SaaS — focus / night cooks",
+        vars: {
+          "--bg": "#0b1220", "--surface": "#111827", "--surface-2": "#1e293b",
+          "--border": "#334155", "--text": "#f1f5f9", "--text-secondary": "#94a3b8",
+          "--muted": "#64748b", "--accent": "#3b82f6", "--accent-hover": "#60a5fa",
+          "--accent-2": "#2dd4bf", "--on-accent": "#ffffff", "--radius": "12px",
+        },
+      },
+      {
+        id: "forest",
+        name: "Forest health",
+        blurb: "Green-forward nutrition / wellness",
+        vars: {
+          "--bg": "#f3f6f4", "--surface": "#ffffff", "--surface-2": "#f0f7f3",
+          "--border": "#d7e3db", "--text": "#14231a", "--text-secondary": "#3d5c4a",
+          "--muted": "#7a9486", "--accent": "#0f766e", "--accent-hover": "#0d9488",
+          "--accent-2": "#2563eb", "--on-accent": "#ffffff", "--radius": "12px",
+        },
+      },
+      {
+        id: "violet",
+        name: "Violet product",
+        blurb: "Modern consumer app (Notion-adjacent)",
+        vars: {
+          "--bg": "#f6f5fb", "--surface": "#ffffff", "--surface-2": "#f3f1fa",
+          "--border": "#e4e0f0", "--text": "#1e1b2e", "--text-secondary": "#5b5675",
+          "--muted": "#9b96b0", "--accent": "#6d28d9", "--accent-hover": "#5b21b6",
+          "--accent-2": "#0891b2", "--on-accent": "#ffffff", "--radius": "12px",
+        },
+      },
+      {
+        id: "mono",
+        name: "Near-monochrome",
+        blurb: "Neutral professional, accent sparingly",
+        vars: {
+          "--bg": "#f5f5f5", "--surface": "#ffffff", "--surface-2": "#fafafa",
+          "--border": "#e5e5e5", "--text": "#171717", "--text-secondary": "#525252",
+          "--muted": "#a3a3a3", "--accent": "#171717", "--accent-hover": "#404040",
+          "--accent-2": "#525252", "--on-accent": "#ffffff", "--radius": "8px",
+        },
+      },
+      {
+        id: "sunset",
+        name: "Sunset social",
+        blurb: "Coral + plum — feed-first consumer",
+        vars: {
+          "--bg": "#faf6f4", "--surface": "#ffffff", "--surface-2": "#fff5f0",
+          "--border": "#f0ddd4", "--text": "#1f1410", "--text-secondary": "#6b4f45",
+          "--muted": "#b09084", "--accent": "#e11d48", "--accent-hover": "#be123c",
+          "--accent-2": "#7c3aed", "--on-accent": "#ffffff", "--radius": "16px",
+        },
+      },
+      {
+        id: "ocean",
+        name: "Ocean calm",
+        blurb: "Sky + deep teal — airy wellness",
+        group: "CookBook",
+        vars: {
+          "--bg": "#f0f7fb", "--surface": "#ffffff", "--surface-2": "#e8f4fa",
+          "--border": "#cfe3ef", "--text": "#0c1922", "--text-secondary": "#3d5a6c",
+          "--muted": "#7a97a8", "--accent": "#0284c7", "--accent-hover": "#0369a1",
+          "--accent-2": "#0d9488", "--on-accent": "#ffffff", "--radius": "14px",
+        },
+      },
+      /* ---- Social apps (approximate product UI palettes) ---- */
+      {
+        id: "youtube",
+        name: "YouTube (light)",
+        blurb: "White canvas · pure red CTA · gray chrome",
+        group: "Social apps",
+        vars: {
+          "--bg": "#f9f9f9", "--surface": "#ffffff", "--surface-2": "#f2f2f2",
+          "--border": "#e5e5e5", "--text": "#0f0f0f", "--text-secondary": "#606060",
+          "--muted": "#909090", "--accent": "#ff0000", "--accent-hover": "#cc0000",
+          "--accent-2": "#065fd4", "--on-accent": "#ffffff", "--radius": "10px",
+        },
+      },
+      {
+        id: "youtube-dark",
+        name: "YouTube (dark)",
+        blurb: "Near-black theater UI · red still owns actions",
+        group: "Social apps",
+        vars: {
+          "--bg": "#0f0f0f", "--surface": "#212121", "--surface-2": "#272727",
+          "--border": "#3f3f3f", "--text": "#f1f1f1", "--text-secondary": "#aaaaaa",
+          "--muted": "#717171", "--accent": "#ff0000", "--accent-hover": "#e60000",
+          "--accent-2": "#3ea6ff", "--on-accent": "#ffffff", "--radius": "10px",
+        },
+      },
+      {
+        id: "x-light",
+        name: "X.com (light)",
+        blurb: "Stark B&W · black primary · high contrast",
+        group: "Social apps",
+        vars: {
+          "--bg": "#ffffff", "--surface": "#ffffff", "--surface-2": "#f7f9f9",
+          "--border": "#eff3f4", "--text": "#0f1419", "--text-secondary": "#536471",
+          "--muted": "#8b98a5", "--accent": "#0f1419", "--accent-hover": "#272c30",
+          "--accent-2": "#1d9bf0", "--on-accent": "#ffffff", "--radius": "16px",
+        },
+      },
+      {
+        id: "x-dark",
+        name: "X.com (dark)",
+        blurb: "True black · white CTA · dim borders",
+        group: "Social apps",
+        vars: {
+          "--bg": "#000000", "--surface": "#16181c", "--surface-2": "#1d1f23",
+          "--border": "#2f3336", "--text": "#e7e9ea", "--text-secondary": "#71767b",
+          "--muted": "#536471", "--accent": "#eff3f4", "--accent-hover": "#d7dbdc",
+          "--accent-2": "#1d9bf0", "--on-accent": "#0f1419", "--radius": "16px",
+        },
+      },
+      {
+        id: "instagram",
+        name: "Instagram (light)",
+        blurb: "Clean white feed · blue follow · gradient brand vibe",
+        group: "Social apps",
+        vars: {
+          "--bg": "#fafafa", "--surface": "#ffffff", "--surface-2": "#efefef",
+          "--border": "#dbdbdb", "--text": "#262626", "--text-secondary": "#8e8e8e",
+          "--muted": "#a8a8a8", "--accent": "#0095f6", "--accent-hover": "#1877f2",
+          "--accent-2": "#e1306c", "--on-accent": "#ffffff", "--radius": "8px",
+        },
+      },
+      {
+        id: "instagram-dark",
+        name: "Instagram (dark)",
+        blurb: "Dim charcoal · same action blue · pink secondary",
+        group: "Social apps",
+        vars: {
+          "--bg": "#000000", "--surface": "#121212", "--surface-2": "#1a1a1a",
+          "--border": "#262626", "--text": "#f5f5f5", "--text-secondary": "#a8a8a8",
+          "--muted": "#737373", "--accent": "#0095f6", "--accent-hover": "#1aa1f7",
+          "--accent-2": "#e1306c", "--on-accent": "#ffffff", "--radius": "8px",
+        },
+      },
+      {
+        id: "facebook",
+        name: "Facebook (light)",
+        blurb: "Cool gray canvas · Meta blue · soft cards",
+        group: "Social apps",
+        vars: {
+          "--bg": "#f0f2f5", "--surface": "#ffffff", "--surface-2": "#e4e6eb",
+          "--border": "#ccd0d5", "--text": "#050505", "--text-secondary": "#65676b",
+          "--muted": "#8a8d91", "--accent": "#1877f2", "--accent-hover": "#166fe5",
+          "--accent-2": "#42b72a", "--on-accent": "#ffffff", "--radius": "8px",
+        },
+      },
+      {
+        id: "facebook-dark",
+        name: "Facebook (dark)",
+        blurb: "Dim navy-black · bright Meta blue CTAs",
+        group: "Social apps",
+        vars: {
+          "--bg": "#18191a", "--surface": "#242526", "--surface-2": "#3a3b3c",
+          "--border": "#3e4042", "--text": "#e4e6eb", "--text-secondary": "#b0b3b8",
+          "--muted": "#8a8d91", "--accent": "#2d88ff", "--accent-hover": "#4599ff",
+          "--accent-2": "#31a24c", "--on-accent": "#ffffff", "--radius": "8px",
+        },
+      },
+    ];
+
+    // Default group labels for older presets without group field
+    presets.forEach((p) => {
+      if (!p.group) p.group = "CookBook";
+    });
+
+    const colorInputs = {
+      "--accent": "c-accent",
+      "--accent-hover": "c-accent-hover",
+      "--accent-2": "c-accent-2",
+      "--bg": "c-bg",
+      "--surface": "c-surface",
+      "--text": "c-text",
+      "--muted": "c-muted",
+      "--border": "c-border",
+    };
+
+    function hexToRgb(hex) {
+      const h = hex.replace("#", "");
+      const full = h.length === 3 ? h.split("").map((c) => c + c).join("") : h;
+      const n = parseInt(full, 16);
+      return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
+    }
+
+    function hexToRgba(hex, a) {
+      const { r, g, b } = hexToRgb(hex);
+      return `rgba(${r},${g},${b},${a})`;
+    }
+
+    function relativeLuminance({ r, g, b }) {
+      const lin = [r, g, b].map((v) => {
+        const s = v / 255;
+        return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+      });
+      return 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2];
+    }
+
+    function contrastRatio(hex1, hex2) {
+      const L1 = relativeLuminance(hexToRgb(hex1));
+      const L2 = relativeLuminance(hexToRgb(hex2));
+      const light = Math.max(L1, L2);
+      const dark = Math.min(L1, L2);
+      return (light + 0.05) / (dark + 0.05);
+    }
+
+    function snapshotVars() {
+      const snap = {};
+      Object.keys(colorInputs).forEach((k) => {
+        snap[k] = document.getElementById(colorInputs[k]).value;
+      });
+      const r = document.getElementById("c-radius").value;
+      snap["--radius"] = r + "px";
+      // derived / companion
+      snap["--accent-hover"] = snap["--accent-hover"];
+      snap["--surface-2"] = getComputedStyle(document.documentElement).getPropertyValue("--surface-2").trim() || "#f8fafc";
+      snap["--text-secondary"] = getComputedStyle(document.documentElement).getPropertyValue("--text-secondary").trim() || "#475569";
+      snap["--on-accent"] = getComputedStyle(document.documentElement).getPropertyValue("--on-accent").trim() || "#ffffff";
+      return snap;
+    }
+
+    function updateContrast() {
+      const text = document.getElementById("c-text").value;
+      const surface = document.getElementById("c-surface").value;
+      const accent = document.getElementById("c-accent").value;
+      const onAccent = getComputedStyle(document.documentElement).getPropertyValue("--on-accent").trim() || "#ffffff";
+      const body = contrastRatio(text, surface);
+      const btn = contrastRatio(onAccent, accent);
+      const bodyOk = body >= 4.5;
+      const btnOk = btn >= 3;
+      document.getElementById("contrastBox").innerHTML = `
+        <div>Body text on surface: <span class="${bodyOk ? "ok" : "warn"}">${body.toFixed(2)}:1</span>
+          ${bodyOk ? "(passes ~WCAG AA body)" : "(low — darken text or lighten surface)"}</div>
+        <div style="margin-top:4px">Button label on accent: <span class="${btnOk ? "ok" : "warn"}">${btn.toFixed(2)}:1</span>
+          ${btnOk ? "(ok for large text/UI)" : "(accent may be too light)"}</div>
+      `;
+    }
+
+    function updateExport(vars) {
+      const lines = Object.entries(vars)
+        .filter(([k]) => k.startsWith("--"))
+        .map(([k, v]) => `  ${k}: ${v};`);
+      document.getElementById("exportBox").value = `:root {\n${lines.join("\n")}\n}`;
+    }
+
+    function applyVars(vars, presetId) {
+      const root = document.documentElement;
+      Object.entries(vars).forEach(([k, v]) => {
+        root.style.setProperty(k, v);
+        if (k === "--accent") {
+          root.style.setProperty("--accent-soft", hexToRgba(v, 0.12));
+        }
+        if (k === "--bg") {
+          // soft mid bg
+          root.style.setProperty("--bg-mid", v);
+        }
+      });
+      // if surface provided without surface-2, lightly derive
+      if (vars["--surface"] && !vars["--surface-2"]) {
+        root.style.setProperty("--surface-2", vars["--surface"]);
+      }
+      Object.entries(colorInputs).forEach(([cssVar, id]) => {
+        const el = document.getElementById(id);
+        if (el && vars[cssVar]) el.value = vars[cssVar];
+      });
+      if (vars["--radius"]) {
+        const n = parseInt(vars["--radius"], 10);
+        if (!Number.isNaN(n)) {
+          document.getElementById("c-radius").value = n;
+          document.getElementById("radiusVal").textContent = n + "px";
+        }
+      }
+      updateSwatches(vars);
+      updateContrast();
+      updateExport({ ...vars, "--accent-soft": hexToRgba(vars["--accent"] || "#2563eb", 0.12) });
+      document.querySelectorAll(".presets button").forEach((b) => {
+        b.classList.toggle("active", presetId && b.dataset.preset === presetId);
+      });
+    }
+
+    function updateSwatches(vars) {
+      const box = document.getElementById("swatches");
+      const keys = ["--accent", "--accent-2", "--bg", "--surface", "--text", "--border"];
+      box.innerHTML = keys.map((k) =>
+        `<div class="swatch" style="background:${vars[k] || getComputedStyle(document.documentElement).getPropertyValue(k)}" title="${k}"></div>`
+      ).join("");
+    }
+
+    Object.entries(colorInputs).forEach(([cssVar, id]) => {
+      document.getElementById(id).addEventListener("input", (e) => {
+        document.documentElement.style.setProperty(cssVar, e.target.value);
+        if (cssVar === "--accent") {
+          document.documentElement.style.setProperty("--accent-soft", hexToRgba(e.target.value, 0.12));
+        }
+        const snap = snapshotVars();
+        updateSwatches(snap);
+        updateContrast();
+        updateExport({ ...snap, "--accent-soft": hexToRgba(snap["--accent"], 0.12) });
+        document.querySelectorAll(".presets button").forEach((b) => b.classList.remove("active"));
+      });
+    });
+
+    document.getElementById("c-radius").addEventListener("input", (e) => {
+      const v = e.target.value + "px";
+      document.documentElement.style.setProperty("--radius", v);
+      document.getElementById("radiusVal").textContent = v;
+      const snap = snapshotVars();
+      updateExport({ ...snap, "--accent-soft": hexToRgba(snap["--accent"], 0.12) });
+    });
+
+    const presetsEl = document.getElementById("presets");
+    {
+      let html = "";
+      let lastGroup = null;
+      presets.forEach((p) => {
+        if (p.group !== lastGroup) {
+          lastGroup = p.group;
+          html += `<div class="presets-group">${p.group}</div>`;
+        }
+        const v = p.vars;
+        html += `<button type="button" data-preset="${p.id}">
+          <span>${p.name}</span>
+          <small>${p.blurb}</small>
+          <span class="preset-swatch-row" aria-hidden="true">
+            <i style="background:${v["--accent"]}"></i>
+            <i style="background:${v["--accent-2"]}"></i>
+            <i style="background:${v["--bg"]}"></i>
+            <i style="background:${v["--surface"]}"></i>
+            <i style="background:${v["--text"]}"></i>
+          </span>
+        </button>`;
+      });
+      presetsEl.innerHTML = html;
+    }
+    presetsEl.addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-preset]");
+      if (!btn) return;
+      const p = presets.find((x) => x.id === btn.dataset.preset);
+      if (p) applyVars(p.vars, p.id);
+    });
+
+    document.getElementById("btnSaveTheme").addEventListener("click", () => {
+      const snap = snapshotVars();
+      // also store companions currently on root
+      const root = getComputedStyle(document.documentElement);
+      ["--surface-2", "--text-secondary", "--on-accent", "--accent-hover"].forEach((k) => {
+        if (!snap[k]) snap[k] = root.getPropertyValue(k).trim();
+      });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(snap));
+      document.getElementById("btnSaveTheme").textContent = "Saved ✓";
+      setTimeout(() => { document.getElementById("btnSaveTheme").textContent = "Save theme"; }, 1400);
+    });
+
+    document.getElementById("btnResetTheme").addEventListener("click", () => {
+      localStorage.removeItem(STORAGE_KEY);
+      applyVars(presets[0].vars, "enterprise");
+    });
+
+    document.getElementById("btnCopyCss").addEventListener("click", async () => {
+      const box = document.getElementById("exportBox");
+      try {
+        await navigator.clipboard.writeText(box.value);
+        document.getElementById("btnCopyCss").textContent = "Copied ✓";
+      } catch {
+        box.select();
+        document.getElementById("btnCopyCss").textContent = "Select & copy";
+      }
+      setTimeout(() => { document.getElementById("btnCopyCss").textContent = "Copy CSS vars"; }, 1400);
+    });
+
+    // restore saved or default
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+      if (saved && saved["--accent"]) applyVars(saved, null);
+      else applyVars(presets[0].vars, "enterprise");
+    } catch {
+      applyVars(presets[0].vars, "enterprise");
+    }
+
+    /* ---------- Mock homepage HTML ---------- */
+    function mockMarkHTML() {
+      if (mockLogoSrc) {
+        return `<img src="${mockLogoSrc}" alt="" />`;
+      }
+      return `<svg viewBox="0 0 24 24" fill="none"><path d="M4 6.5C6.5 4.8 9 4 12 4s5.5.8 8 2.5V19c-2.5-1.5-5-2.2-8-2.2S6.5 17.5 4 19V6.5Z" stroke="currentColor" stroke-width="1.6"/><path d="M12 4v12.8" stroke="currentColor" stroke-width="1.6"/></svg>`;
+    }
+
+    function mockHTML() {
+      return `
+        <div class="mock-nav">
+          <div class="mock-logo">
+            <span class="mock-logo-mark" aria-hidden="true">${mockMarkHTML()}</span>
+            Cook<em>Book</em>
+          </div>
+          <div class="mock-links">
+            <span class="on">Home</span>
+            <span>Browse</span>
+            <span>Create</span>
+            <span>CookBook</span>
+          </div>
+          <button type="button" class="mock-btn ghost">Sign in</button>
+          <button type="button" class="mock-btn">Log meal</button>
+        </div>
+        <div class="mock-body">
+          <div>
+            <div class="mock-hero">
+              <h2>Today’s table</h2>
+              <p>Following feed · foundation + branded ingredients · your kitchen journal</p>
+            </div>
+            <div class="mock-strip">
+              <span class="mock-pill on">Following</span>
+              <span class="mock-pill">For you</span>
+              <span class="mock-pill">Want to cook</span>
+              <span class="mock-pill">Cooked</span>
+            </div>
+            <div class="mock-feed">
+              <article class="mock-post">
+                <div class="mock-post-head">
+                  <div class="mock-av">MK</div>
+                  <div>
+                    <strong>Maya Kim</strong>
+                    <div class="meta">@mayakim · 2h · Cooked</div>
+                  </div>
+                </div>
+                <h3>Miso glazed salmon</h3>
+                <div class="mock-plate">meal photo</div>
+                <div class="mock-chips">
+                  <span class="mock-chip">9/10</span>
+                  <span class="mock-chip alt">~420 kcal</span>
+                  <span class="mock-chip neutral">Japanese</span>
+                </div>
+              </article>
+              <article class="mock-post">
+                <div class="mock-post-head">
+                  <div class="mock-av">AJ</div>
+                  <div>
+                    <strong>Alex Jordan</strong>
+                    <div class="meta">@chef_alex · 5h · Want to cook</div>
+                  </div>
+                </div>
+                <h3>Weeknight grain bowl</h3>
+                <div class="mock-plate">meal photo</div>
+                <div class="mock-chips">
+                  <span class="mock-chip alt">Foundation</span>
+                  <span class="mock-chip">3 fridge matches</span>
+                  <span class="mock-chip neutral">High protein</span>
+                </div>
+              </article>
+            </div>
+          </div>
+          <aside class="mock-rail">
+            <div class="card card-pad">
+              <h2 style="font-size:0.95rem">Catalog</h2>
+              <div class="mock-stat">363</div>
+              <div class="meta">foundation ingredients</div>
+              <div class="mock-search">
+                <input type="search" placeholder="Search foods…" readonly />
+              </div>
+            </div>
+            <div class="card card-pad">
+              <h2 style="font-size:0.95rem">Your fridge</h2>
+              <div class="mock-ing"><span class="mock-dot"></span> Eggs</div>
+              <div class="mock-ing"><span class="mock-dot"></span> Spinach</div>
+              <div class="mock-ing"><span class="mock-dot"></span> Salmon</div>
+            </div>
+            <div class="card card-pad">
+              <h2 style="font-size:0.95rem">Branded search</h2>
+              <p class="text-sm muted" style="margin-top:8px">~430k products · live search</p>
+              <button type="button" class="mock-btn" style="margin-top:12px;width:100%">Browse branded</button>
+            </div>
+          </aside>
+        </div>
+        <nav class="mock-bottom">
+          <span class="on">Home</span>
+          <span>Browse</span>
+          <span>Create</span>
+          <span>CookBook</span>
+        </nav>
+      `;
+    }
+
+    function refreshMocks() {
+      document.getElementById("mini-mock").innerHTML = mockHTML();
+      document.getElementById("full-mock").innerHTML = mockHTML();
+    }
+
+    function renderLogoPicker() {
+      const picker = document.getElementById("logoPicker");
+      const iconCandidates = logos.filter((L) => L.tags.includes("icon") && !L.wide).slice(0, 12);
+      // include new batch icons
+      const extras = logos.filter((L) => L.tags.includes("new") && L.tags.includes("icon"));
+      const set = new Map();
+      [...iconCandidates, ...extras].forEach((L) => set.set(L.n, L));
+      const list = [...set.values()].sort((a, b) => a.n - b.n);
+
+      picker.innerHTML = `
+        <button type="button" data-logo="svg" class="${mockLogoSrc ? "" : "on"}" title="Default SVG mark">
+          <span style="display:grid;place-items:center;width:100%;height:100%;background:linear-gradient(145deg,var(--accent),var(--accent-hover));color:var(--on-accent);border-radius:6px">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 6.5C6.5 4.8 9 4 12 4s5.5.8 8 2.5V19c-2.5-1.5-5-2.2-8-2.2S6.5 17.5 4 19V6.5Z" stroke="currentColor" stroke-width="1.6"/><path d="M12 4v12.8" stroke="currentColor" stroke-width="1.6"/></svg>
+          </span>
+        </button>
+        ${list.map((L) => `
+          <button type="button" data-logo="logo-${L.n}.jpg" class="${mockLogoSrc === "logo-" + L.n + ".jpg" ? "on" : ""}" title="#${L.n} ${L.title}">
+            <img src="logo-${L.n}.jpg" alt="Option ${L.n}" />
+          </button>
+        `).join("")}
+      `;
+    }
+
+    document.getElementById("logoPicker").addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-logo]");
+      if (!btn) return;
+      mockLogoSrc = btn.dataset.logo === "svg" ? null : btn.dataset.logo;
+      renderLogoPicker();
+      refreshMocks();
+    });
+
+    renderLogoPicker();
+    refreshMocks();
+  </script>
+</body>
+</html>
