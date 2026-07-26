@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { BrandMark, IconMoon, IconSun } from "../components/Icons";
 import { useApp } from "../context/AppContext";
 import { ApiError } from "../lib/api";
 
@@ -45,15 +46,13 @@ export function SignupPage() {
     <div className="auth-page">
       <div className="auth-card">
         <Link to="/" className="brand">
-          <span className="brand-mark" aria-hidden>
-            🍳
-          </span>
+          <BrandMark />
           <span className="brand-name">
-            Grok<em>Cookbook</em>
+            Cook<em>Book</em>
           </span>
         </Link>
-        <h1>Start your kitchen</h1>
-        <p className="lead">Create a chef profile. Email + strong password (Argon2id).</p>
+        <h1>Start your CookBook</h1>
+        <p className="lead">Create a chef profile. Email + strong password.</p>
 
         <form onSubmit={onSubmit}>
           <div className="field-row">
@@ -132,7 +131,7 @@ export function SignupPage() {
         onClick={toggleTheme}
         title={theme === "dark" ? "Light mode" : "Dark mode"}
       >
-        <span>{theme === "dark" ? "☀️" : "🌙"}</span>
+        {theme === "dark" ? <IconSun /> : <IconMoon />}
       </button>
     </div>
   );

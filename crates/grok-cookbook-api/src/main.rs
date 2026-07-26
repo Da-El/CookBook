@@ -51,9 +51,11 @@ async fn main() -> anyhow::Result<()> {
         }
         Err(e) => {
             tracing::warn!(
-                error = %e,
+                error = ?e,
                 "database unavailable — API will start in degraded mode (catalog + health only)"
             );
+            // Also print full chain to stderr for local debugging
+            eprintln!("DB connect error: {e:#}");
             None
         }
     };
@@ -81,8 +83,16 @@ async fn main() -> anyhow::Result<()> {
         .allow_methods(Any)
         .allow_headers(Any);
 
+    let upload_dir = routes::media::media_dir();
+    if let Err(e) = std::fs::create_dir_all(&upload_dir) {
+        tracing::warn!(error = %e, path = %upload_dir.display(), "could not create upload dir");
+    } else {
+        tracing::info!(path = %upload_dir.display(), "media upload directory ready");
+    }
+
     let mut app = Router::new()
         .merge(routes::router())
+        .nest_service("/media", ServeDir::new(&upload_dir))
         .layer(TraceLayer::new_for_http())
         .layer(cors)
         .with_state(state);

@@ -85,7 +85,6 @@ export function IngredientDetailPage() {
               addToFridge({
                 foodId: food.id,
                 quantity: "1",
-                location: "Fridge",
                 boughtOn: null,
                 expiresOn: null,
                 rating: rating?.score ?? null,
@@ -241,7 +240,7 @@ export function IngredientDetailPage() {
                   <div className="ing-meta">
                     <div className="name">{item.quantity}</div>
                     <div className="group">
-                      {item.location}
+                      Fridge
                       {item.expiresOn ? ` · exp ${item.expiresOn}` : ""}
                     </div>
                   </div>

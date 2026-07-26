@@ -548,6 +548,7 @@ dependencies = [
  "argon2",
  "axum",
  "axum-extra",
+ "base64",
  "chrono",
  "dotenvy",
  "grok-cookbook-core",

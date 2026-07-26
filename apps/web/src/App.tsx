@@ -2,14 +2,15 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import { AppProvider } from "./context/AppContext";
 import { AddIngredientPage } from "./pages/AddIngredientPage";
-import { FridgePage } from "./pages/FridgePage";
+import { BrowsePage } from "./pages/BrowsePage";
+import { CookBookPage } from "./pages/CookBookPage";
+import { CreateHubPage } from "./pages/CreateHubPage";
+import { CreateMealPage } from "./pages/CreateMealPage";
 import { HomePage } from "./pages/HomePage";
 import { IngredientDetailPage } from "./pages/IngredientDetailPage";
-import { IngredientsBrowsePage } from "./pages/IngredientsBrowsePage";
-import { KitchenPage } from "./pages/KitchenPage";
 import { LoginPage } from "./pages/LoginPage";
 import { MealDetailPage } from "./pages/MealDetailPage";
-import { PlaceholderPage } from "./pages/PlaceholderPage";
+import { ProfilePage } from "./pages/ProfilePage";
 import { SettingsPage } from "./pages/SettingsPage";
 import { SignupPage } from "./pages/SignupPage";
 
@@ -22,19 +23,21 @@ export default function App() {
           <Route path="/signup" element={<SignupPage />} />
           <Route element={<Layout />}>
             <Route index element={<HomePage />} />
-            <Route path="kitchen" element={<KitchenPage />} />
-            <Route path="ingredients" element={<FridgePage />} />
-            <Route path="ingredients/browse" element={<IngredientsBrowsePage />} />
-            <Route path="ingredients/add" element={<AddIngredientPage />} />
+            <Route path="browse" element={<BrowsePage />} />
+            <Route path="create" element={<CreateHubPage />} />
+            <Route path="create/meal" element={<CreateMealPage />} />
+            <Route path="create/ingredient" element={<AddIngredientPage />} />
+            <Route path="cookbook" element={<CookBookPage />} />
             <Route path="ingredients/:foodId" element={<IngredientDetailPage />} />
-            <Route
-              path="meals/new"
-              element={
-                <PlaceholderPage title="Log a meal" blurb="Meal logging is next — ingredients are live first." />
-              }
-            />
+            <Route path="meals/new" element={<Navigate to="/create/meal" replace />} />
             <Route path="meals/:mealId" element={<MealDetailPage />} />
+            <Route path="u/:handle" element={<ProfilePage />} />
             <Route path="settings" element={<SettingsPage />} />
+            {/* Legacy redirects */}
+            <Route path="kitchen" element={<Navigate to="/cookbook" replace />} />
+            <Route path="ingredients" element={<Navigate to="/cookbook" replace />} />
+            <Route path="ingredients/browse" element={<Navigate to="/browse" replace />} />
+            <Route path="ingredients/add" element={<Navigate to="/create/ingredient" replace />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>

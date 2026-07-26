@@ -1,4 +1,5 @@
 //! Authenticated fridge API — requires Bearer access token.
+//! All items live in a single "Fridge" location.
 
 use axum::extract::{Path, State};
 use axum::Json;
@@ -22,17 +23,18 @@ pub struct FridgeItem {
     pub expires_on: Option<NaiveDate>,
     pub notes: String,
     pub rating: Option<i16>,
+    pub photo_url: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct AddFridgeBody {
     pub food_id: String,
     pub quantity: Option<String>,
-    pub location: Option<String>,
     pub bought_on: Option<String>,
     pub expires_on: Option<String>,
     pub notes: Option<String>,
     pub rating: Option<i16>,
+    pub photo_url: Option<String>,
 }
 
 fn require_pool(state: &AppState) -> ApiResult<&sqlx::PgPool> {
@@ -50,7 +52,7 @@ pub async fn list_fridge(
     let items: Vec<FridgeItem> = sqlx::query_as(
         r#"
         SELECT id, user_id, food_id, food_name, quantity, location,
-               bought_on, expires_on, notes, rating
+               bought_on, expires_on, notes, rating, photo_url
         FROM fridge_items
         WHERE user_id = $1
         ORDER BY created_at DESC
@@ -81,7 +83,7 @@ pub async fn add_fridge(
 
     let id = Ulid::new().to_string();
     let quantity = body.quantity.unwrap_or_else(|| "1".into());
-    let location = body.location.unwrap_or_else(|| "Fridge".into());
+    let location = "Fridge".to_string();
     let notes = body.notes.unwrap_or_default();
     let rating = body.rating;
     if let Some(r) = rating {
@@ -89,6 +91,10 @@ pub async fn add_fridge(
             return Err(AppError::BadRequest("rating must be 0-10".into()));
         }
     }
+    let photo_url = body
+        .photo_url
+        .filter(|s| !s.trim().is_empty())
+        .map(|s| s.trim().to_string());
 
     let bought_on = parse_date_opt(body.bought_on.as_deref())?;
     let expires_on = parse_date_opt(body.expires_on.as_deref())?;
@@ -96,10 +102,10 @@ pub async fn add_fridge(
     let item: FridgeItem = sqlx::query_as(
         r#"
         INSERT INTO fridge_items
-            (id, user_id, food_id, food_name, quantity, location, bought_on, expires_on, notes, rating)
-        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+            (id, user_id, food_id, food_name, quantity, location, bought_on, expires_on, notes, rating, photo_url)
+        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
         RETURNING id, user_id, food_id, food_name, quantity, location,
-                  bought_on, expires_on, notes, rating
+                  bought_on, expires_on, notes, rating, photo_url
         "#,
     )
     .bind(&id)
@@ -112,6 +118,7 @@ pub async fn add_fridge(
     .bind(expires_on)
     .bind(&notes)
     .bind(rating)
+    .bind(&photo_url)
     .fetch_one(pool)
     .await?;
 

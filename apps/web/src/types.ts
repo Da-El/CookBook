@@ -47,7 +47,8 @@ export type CatalogPayload = {
   foods: CatalogFood[];
 };
 
-export type FridgeLocation = "Fridge" | "Freezer" | "Pantry" | "Counter";
+/** Single storage location — fridge only. */
+export type FridgeLocation = "Fridge";
 
 export type FridgeItem = {
   id: string;
@@ -60,6 +61,7 @@ export type FridgeItem = {
   rating: number | null;
   notes: string;
   addedAt: string;
+  photoUrl: string | null;
 };
 
 /** 1–10 star community-style rating stored per user (local for now) */

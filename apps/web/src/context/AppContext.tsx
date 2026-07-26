@@ -29,7 +29,6 @@ import type {
   CatalogFood,
   CatalogPayload,
   FridgeItem,
-  FridgeLocation,
   SubjectRating,
   Theme,
 } from "../types";
@@ -37,12 +36,37 @@ import type {
 type AddFridgeInput = {
   foodId: string;
   quantity: string;
-  location: FridgeLocation;
   boughtOn: string | null;
   expiresOn: string | null;
   rating: number | null;
   notes: string;
+  photoUrl?: string | null;
 };
+
+function mapFridgeDto(i: {
+  id: string;
+  food_id: string;
+  quantity: string;
+  location: string;
+  bought_on: string | null;
+  expires_on: string | null;
+  notes: string;
+  rating: number | null;
+  photo_url?: string | null;
+}): FridgeItem {
+  return {
+    id: i.id,
+    foodId: i.food_id,
+    quantity: i.quantity,
+    location: "Fridge",
+    boughtOn: i.bought_on,
+    expiresOn: i.expires_on,
+    notes: i.notes,
+    rating: i.rating,
+    addedAt: new Date().toISOString(),
+    photoUrl: i.photo_url ?? null,
+  };
+}
 
 type AppContextValue = {
   theme: Theme;
@@ -131,19 +155,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         try {
           const remote = await api.listFridge();
           if (!cancelled && remote.items) {
-            setFridge(
-              remote.items.map((i) => ({
-                id: i.id,
-                foodId: i.food_id,
-                quantity: i.quantity,
-                location: i.location as FridgeLocation,
-                boughtOn: i.bought_on,
-                expiresOn: i.expires_on,
-                notes: i.notes,
-                rating: i.rating,
-                addedAt: new Date().toISOString(),
-              })),
-            );
+            setFridge(remote.items.map(mapFridgeDto));
           }
         } catch {
           /* keep local fridge */
@@ -178,19 +190,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setUser(tokens.user);
     try {
       const remote = await api.listFridge();
-      setFridge(
-        remote.items.map((i) => ({
-          id: i.id,
-          foodId: i.food_id,
-          quantity: i.quantity,
-          location: i.location as FridgeLocation,
-          boughtOn: i.bought_on,
-          expiresOn: i.expires_on,
-          notes: i.notes,
-          rating: i.rating,
-          addedAt: new Date().toISOString(),
-        })),
-      );
+      setFridge(remote.items.map(mapFridgeDto));
     } catch {
       /* empty remote fridge ok */
     }
@@ -234,31 +234,27 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const addToFridge = useCallback(
     async (input: AddFridgeInput) => {
+      let photoUrl = input.photoUrl ?? null;
+      if (user && getAccessToken() && photoUrl?.startsWith("data:")) {
+        try {
+          const up = await api.uploadMedia(photoUrl);
+          photoUrl = up.url;
+        } catch {
+          /* keep data URL locally if upload fails */
+        }
+      }
       if (user && getAccessToken()) {
         try {
           const item = await api.addFridge({
             food_id: input.foodId,
             quantity: input.quantity.trim() || "1",
-            location: input.location,
             bought_on: input.boughtOn,
             expires_on: input.expiresOn,
             notes: input.notes.trim(),
             rating: input.rating,
+            photo_url: photoUrl,
           });
-          setFridge((prev) => [
-            {
-              id: item.id,
-              foodId: item.food_id,
-              quantity: item.quantity,
-              location: item.location as FridgeLocation,
-              boughtOn: item.bought_on,
-              expiresOn: item.expires_on,
-              notes: item.notes,
-              rating: item.rating,
-              addedAt: new Date().toISOString(),
-            },
-            ...prev,
-          ]);
+          setFridge((prev) => [mapFridgeDto(item), ...prev]);
           return;
         } catch {
           /* fall through to local */
@@ -268,12 +264,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
         id: uid(),
         foodId: input.foodId,
         quantity: input.quantity.trim() || "1",
-        location: input.location,
+        location: "Fridge",
         boughtOn: input.boughtOn,
         expiresOn: input.expiresOn,
         rating: input.rating,
         notes: input.notes.trim(),
         addedAt: new Date().toISOString(),
+        photoUrl,
       };
       setFridge((prev) => [item, ...prev]);
     },

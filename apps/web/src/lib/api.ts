@@ -125,6 +125,7 @@ export type FridgeItemDto = {
   expires_on: string | null;
   notes: string;
   rating: number | null;
+  photo_url: string | null;
 };
 
 export type UserPublic = {
@@ -151,6 +152,96 @@ export type SessionDto = {
   expires_at: string;
   remember: boolean;
   current: boolean;
+};
+
+export type AuthorDto = {
+  id: string;
+  handle: string;
+  display_name: string;
+  avatar_url: string | null;
+};
+
+export type MealIngredientDto = {
+  id: string;
+  food_id: string;
+  food_name: string;
+  quantity_text: string;
+  quantity_g: number | null;
+  sort_order: number;
+};
+
+export type MealMacrosDto = {
+  kcal: number | null;
+  protein_g: number | null;
+  fat_g: number | null;
+  carbs_g: number | null;
+  fiber_g: number | null;
+};
+
+export type MealDto = {
+  id: string;
+  author: AuthorDto;
+  status: "cooked" | "want_to_cook" | string;
+  title: string;
+  story: string;
+  cuisine: string;
+  time_minutes: number | null;
+  visibility: "public" | "private" | string;
+  photo_url: string | null;
+  author_rating: number | null;
+  macros_estimated: MealMacrosDto | null;
+  ingredients: MealIngredientDto[];
+  review_avg: number | null;
+  review_count: number;
+  my_score: number | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type ReviewDto = {
+  id: string;
+  user_id: string;
+  handle: string;
+  display_name: string;
+  subject_type: string;
+  subject_id: string;
+  score: number;
+  notes: string;
+  updated_at: string;
+};
+
+export type ProfileDto = {
+  id: string;
+  handle: string;
+  display_name: string;
+  bio: string;
+  avatar_url: string | null;
+  cooked_count: number;
+  want_count: number;
+  followers_count: number;
+  following_count: number;
+  is_following: boolean;
+  is_self: boolean;
+};
+
+export type FeedItemDto = {
+  type: "meal";
+  id: string;
+  created_at: string;
+  author: AuthorDto;
+  meal: MealDto;
+};
+
+export type CreateMealBody = {
+  status: "cooked" | "want_to_cook";
+  title: string;
+  story?: string;
+  cuisine?: string;
+  time_minutes?: number | null;
+  visibility?: "public" | "private";
+  photo_url?: string | null;
+  rating?: number | null;
+  ingredients?: { food_id: string; quantity_text?: string; quantity_g?: number | null }[];
 };
 
 export const api = {
@@ -207,11 +298,11 @@ export const api = {
   addFridge: (body: {
     food_id: string;
     quantity?: string;
-    location?: string;
     bought_on?: string | null;
     expires_on?: string | null;
     notes?: string;
     rating?: number | null;
+    photo_url?: string | null;
   }) =>
     request<FridgeItemDto>("/v1/fridge", {
       method: "POST",
@@ -222,6 +313,127 @@ export const api = {
     request<{ deleted: boolean; id: string }>(`/v1/fridge/${encodeURIComponent(id)}`, {
       method: "DELETE",
     }, true),
+
+  uploadMedia: (imageDataUrl: string) =>
+    request<{ url: string; id: string }>("/v1/media", {
+      method: "POST",
+      body: JSON.stringify({ image: imageDataUrl }),
+    }, true),
+
+  // Meals
+  createMeal: (body: CreateMealBody) =>
+    request<MealDto>("/v1/meals", { method: "POST", body: JSON.stringify(body) }, true),
+
+  searchMeals: (params: { q?: string; limit?: number } = {}) => {
+    const sp = new URLSearchParams();
+    if (params.q) sp.set("q", params.q);
+    if (params.limit) sp.set("limit", String(params.limit));
+    const qs = sp.toString();
+    return request<{ items: MealDto[] }>(
+      `/v1/meals/search${qs ? `?${qs}` : ""}`,
+      undefined,
+      true,
+    );
+  },
+
+  listMeals: (params: { user_id?: string; handle?: string; status?: string; limit?: number } = {}) => {
+    const sp = new URLSearchParams();
+    if (params.user_id) sp.set("user_id", params.user_id);
+    if (params.handle) sp.set("handle", params.handle);
+    if (params.status) sp.set("status", params.status);
+    if (params.limit) sp.set("limit", String(params.limit));
+    const qs = sp.toString();
+    return request<{ items: MealDto[] }>(`/v1/meals${qs ? `?${qs}` : ""}`, undefined, true);
+  },
+
+  getMeal: (id: string) =>
+    request<MealDto>(`/v1/meals/${encodeURIComponent(id)}`, undefined, true),
+
+  updateMeal: (id: string, body: Partial<CreateMealBody>) =>
+    request<MealDto>(`/v1/meals/${encodeURIComponent(id)}`, {
+      method: "PATCH",
+      body: JSON.stringify(body),
+    }, true),
+
+  deleteMeal: (id: string) =>
+    request<{ deleted: boolean; id: string }>(`/v1/meals/${encodeURIComponent(id)}`, {
+      method: "DELETE",
+    }, true),
+
+  // Reviews
+  upsertReview: (body: {
+    subject_type: "ingredient" | "meal";
+    subject_id: string;
+    score: number;
+    notes?: string;
+  }) =>
+    request<ReviewDto>("/v1/reviews", { method: "PUT", body: JSON.stringify(body) }, true),
+
+  listReviews: (params: {
+    subject_type?: string;
+    subject_id?: string;
+    mine?: boolean;
+    limit?: number;
+  } = {}) => {
+    const sp = new URLSearchParams();
+    if (params.subject_type) sp.set("subject_type", params.subject_type);
+    if (params.subject_id) sp.set("subject_id", params.subject_id);
+    if (params.mine) sp.set("mine", "true");
+    if (params.limit) sp.set("limit", String(params.limit));
+    const qs = sp.toString();
+    return request<{ items: ReviewDto[] }>(`/v1/reviews${qs ? `?${qs}` : ""}`, undefined, true);
+  },
+
+  deleteReview: (id: string) =>
+    request<{ deleted: boolean; id: string }>(`/v1/reviews/${encodeURIComponent(id)}`, {
+      method: "DELETE",
+    }, true),
+
+  // Social
+  getProfile: (handle: string) =>
+    request<ProfileDto>(`/v1/users/${encodeURIComponent(handle)}`, undefined, true),
+
+  follow: (handle: string) =>
+    request<{ following: boolean; handle: string }>(
+      `/v1/follows/${encodeURIComponent(handle)}`,
+      { method: "POST" },
+      true,
+    ),
+
+  unfollow: (handle: string) =>
+    request<{ following: boolean; handle: string }>(
+      `/v1/follows/${encodeURIComponent(handle)}`,
+      { method: "DELETE" },
+      true,
+    ),
+
+  listFollowing: () =>
+    request<{ items: { id: string; handle: string; display_name: string; bio: string }[] }>(
+      "/v1/follows/following",
+      undefined,
+      true,
+    ),
+
+  listFollowers: () =>
+    request<{ items: { id: string; handle: string; display_name: string; bio: string }[] }>(
+      "/v1/follows/followers",
+      undefined,
+      true,
+    ),
+
+  // Feed
+  feed: (params: { tab?: "following" | "discover"; limit?: number; cursor?: string } = {}) => {
+    const sp = new URLSearchParams();
+    if (params.tab) sp.set("tab", params.tab);
+    if (params.limit) sp.set("limit", String(params.limit));
+    if (params.cursor) sp.set("cursor", params.cursor);
+    const qs = sp.toString();
+    return request<{ items: FeedItemDto[]; next_cursor: string | null; tab: string }>(
+      `/v1/feed${qs ? `?${qs}` : ""}`,
+      undefined,
+      true,
+    );
+  },
 };
 
 export function apiBase(): string {

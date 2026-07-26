@@ -70,9 +70,7 @@ export function SettingsPage() {
             <>
               <div className="settings-item" style={{ cursor: "default" }}>
                 <div className="left">
-                  <div className="ico-box" aria-hidden>
-                    👤
-                  </div>
+                  <div className="ico-box ico-box--user" aria-hidden />
                   <div className="copy">
                     <div className="title">{user.display_name}</div>
                     <div className="desc">
@@ -84,7 +82,7 @@ export function SettingsPage() {
               </div>
               <div className="settings-item" style={{ cursor: "default" }}>
                 <div className="left">
-                  <div className="ico-box">🚪</div>
+                  <div className="ico-box ico-box--out" aria-hidden />
                   <div className="copy">
                     <div className="title">Sign out</div>
                     <div className="desc">This device only</div>
@@ -96,7 +94,7 @@ export function SettingsPage() {
               </div>
               <div className="settings-item" style={{ cursor: "default" }}>
                 <div className="left">
-                  <div className="ico-box">⚠</div>
+                  <div className="ico-box ico-box--warn" aria-hidden />
                   <div className="copy">
                     <div className="title danger-text">Sign out all devices</div>
                     <div className="desc">Revoke every refresh token + bump token version</div>
@@ -110,7 +108,7 @@ export function SettingsPage() {
           ) : (
             <div className="settings-item" style={{ cursor: "default" }}>
               <div className="left">
-                <div className="ico-box">🔑</div>
+                <div className="ico-box ico-box--key" aria-hidden />
                 <div className="copy">
                   <div className="title">Not signed in</div>
                   <div className="desc">Create an account to sync fridge to the server</div>
@@ -133,7 +131,7 @@ export function SettingsPage() {
               {sessions.map((s) => (
                 <div key={s.id} className="settings-item" style={{ cursor: "default" }}>
                   <div className="left">
-                    <div className="ico-box">💻</div>
+                    <div className="ico-box ico-box--device" aria-hidden />
                     <div className="copy">
                       <div className="title">
                         {s.current ? "This device" : "Other device"}
@@ -153,25 +151,21 @@ export function SettingsPage() {
           <div className="settings-group">Appearance</div>
           <div className="settings-item" style={{ cursor: "default" }}>
             <div className="left">
-              <div className="ico-box" aria-hidden>
-                ◐
-              </div>
+              <div className="ico-box ico-box--theme" aria-hidden />
               <div className="copy">
                 <div className="title">Theme</div>
                 <div className="desc">Currently {theme}</div>
               </div>
             </div>
             <button type="button" className="btn btn-secondary btn-sm" onClick={toggleTheme}>
-              {theme === "dark" ? "☀️ Light" : "🌙 Dark"}
+              {theme === "dark" ? "Light mode" : "Dark mode"}
             </button>
           </div>
 
           <div className="settings-group">Kitchen data</div>
           <div className="settings-item" style={{ cursor: "default" }}>
             <div className="left">
-              <div className="ico-box" aria-hidden>
-                🧊
-              </div>
+              <div className="ico-box ico-box--fridge" aria-hidden />
               <div className="copy">
                 <div className="title">Fridge items</div>
                 <div className="desc">
@@ -191,9 +185,7 @@ export function SettingsPage() {
           </div>
           <div className="settings-item" style={{ cursor: "default" }}>
             <div className="left">
-              <div className="ico-box" aria-hidden>
-                📚
-              </div>
+              <div className="ico-box ico-box--book" aria-hidden />
               <div className="copy">
                 <div className="title">Catalog</div>
                 <div className="desc">
@@ -201,7 +193,7 @@ export function SettingsPage() {
                 </div>
               </div>
             </div>
-            <Link to="/ingredients/browse" className="btn btn-soft btn-sm">
+            <Link to="/browse" className="btn btn-soft btn-sm">
               Browse
             </Link>
           </div>

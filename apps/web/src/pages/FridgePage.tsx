@@ -7,7 +7,7 @@ import { useApp } from "../context/AppContext";
 import { getFoodById } from "../lib/catalog";
 import type { FridgeLocation } from "../types";
 
-const LOCATIONS: Array<"All" | FridgeLocation> = ["All", "Fridge", "Freezer", "Pantry", "Counter"];
+const LOCATIONS: Array<"All" | FridgeLocation> = ["All", "Fridge"];
 
 export function FridgePage() {
   const navigate = useNavigate();

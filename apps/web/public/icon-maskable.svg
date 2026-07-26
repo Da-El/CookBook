@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- full-bleed for safe maskable zone -->
+  <rect width="512" height="512" fill="#c45c26"/>
+  <rect width="512" height="512" fill="url(#g)"/>
+  <g transform="translate(56 56) scale(0.78)">
+    <path d="M256 140c-52 0-96 14-120 34v212c28-16 68-26 120-26V140z" fill="#fffaf3"/>
+    <path d="M256 140c52 0 96 14 120 34v212c-28-16-68-26-120-26V140z" fill="#f3ebe0"/>
+    <path d="M256 140v220" stroke="#8f3d18" stroke-width="10" stroke-linecap="round"/>
+  </g>
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#e08a52"/>
+      <stop offset="1" stop-color="#a84c1c"/>
+    </linearGradient>
+  </defs>
+</svg>

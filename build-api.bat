@@ -4,5 +4,5 @@ set PATH=C:\Users\bjenn\.cargo\bin;C:\Program Files (x86)\Microsoft Visual Studi
 set RUSTUP_HOME=C:\Users\bjenn\.rustup
 set CARGO_HOME=C:\Users\bjenn\.cargo
 cd /d C:\Users\bjenn\CookBook
-cargo build -p cookbook-api --target x86_64-pc-windows-msvc
+cargo check -p grok-cookbook-api --target x86_64-pc-windows-msvc
 exit /b %ERRORLEVEL%

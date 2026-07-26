@@ -67,3 +67,22 @@ impl FromRequestParts<AppState> for AuthUser {
         })
     }
 }
+
+/// Optional auth — missing/invalid token yields `None` (no error).
+#[derive(Debug, Clone, Default)]
+pub struct OptionalAuthUser(pub Option<AuthUser>);
+
+impl FromRequestParts<AppState> for OptionalAuthUser {
+    type Rejection = AppError;
+
+    async fn from_request_parts(
+        parts: &mut Parts,
+        state: &AppState,
+    ) -> Result<Self, Self::Rejection> {
+        match AuthUser::from_request_parts(parts, state).await {
+            Ok(u) => Ok(OptionalAuthUser(Some(u))),
+            Err(AppError::Unauthorized(_)) => Ok(OptionalAuthUser(None)),
+            Err(e) => Err(e),
+        }
+    }
+}

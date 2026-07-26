@@ -2,10 +2,11 @@ import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FoodThumb } from "../components/FoodThumb";
 import { MacroPills } from "../components/MacroPills";
+import { PhotoPicker } from "../components/PhotoPicker";
 import { StarRating } from "../components/StarRating";
 import { useApp } from "../context/AppContext";
 import { searchFoods, uniqueGroups } from "../lib/catalog";
-import type { CatalogFood, FridgeLocation } from "../types";
+import type { CatalogFood } from "../types";
 
 export function AddIngredientPage() {
   const navigate = useNavigate();
@@ -17,12 +18,13 @@ export function AddIngredientPage() {
   const [selected, setSelected] = useState<CatalogFood | null>(null);
 
   const [quantity, setQuantity] = useState("1");
-  const [location, setLocation] = useState<FridgeLocation>("Fridge");
   const [boughtOn, setBoughtOn] = useState("");
   const [expiresOn, setExpiresOn] = useState("");
   const [rating, setRatingLocal] = useState(0);
   const [notes, setNotes] = useState("");
+  const [photo, setPhoto] = useState<string | null>(null);
   const [savedMsg, setSavedMsg] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
 
   const groups = useMemo(() => ["All", ...uniqueGroups(foods)], [foods]);
 
@@ -31,36 +33,43 @@ export function AddIngredientPage() {
     [foods, query, group],
   );
 
-  // Auto-select first result when searching if nothing selected / selection not in results
   const active = useMemo(() => {
     if (selected && results.some((r) => r.id === selected.id)) return selected;
     return results[0] ?? selected;
   }, [selected, results]);
 
-  function handleAdd(andAnother: boolean) {
+  async function handleAdd(andAnother: boolean) {
     if (!active) return;
-    addToFridge({
-      foodId: active.id,
-      quantity,
-      location,
-      boughtOn: boughtOn || null,
-      expiresOn: expiresOn || null,
-      rating: rating || null,
-      notes,
-    });
-    if (rating > 0) {
-      saveSubjectRating("ingredient", active.id, rating, notes);
+    setBusy(true);
+    try {
+      await addToFridge({
+        foodId: active.id,
+        quantity,
+        boughtOn: boughtOn || null,
+        expiresOn: expiresOn || null,
+        rating: rating || null,
+        notes,
+        photoUrl: photo,
+      });
+      if (rating > 0) {
+        saveSubjectRating("ingredient", active.id, rating, notes);
+      }
+      setSavedMsg(`Added ${active.name} to your fridge.`);
+      if (andAnother) {
+        setQuantity("1");
+        setNotes("");
+        setRatingLocal(0);
+        setPhoto(null);
+        setQuery("");
+        setSelected(null);
+        setBoughtOn("");
+        setExpiresOn("");
+        return;
+      }
+      navigate("/cookbook");
+    } finally {
+      setBusy(false);
     }
-    setSavedMsg(`Added ${active.name} to ${location}.`);
-    if (andAnother) {
-      setQuantity("1");
-      setNotes("");
-      setRatingLocal(0);
-      setQuery("");
-      setSelected(null);
-      return;
-    }
-    navigate(`/ingredients/${encodeURIComponent(active.id)}`);
   }
 
   return (
@@ -68,20 +77,20 @@ export function AddIngredientPage() {
       <div className="column">
         <div className="page-hero">
           <div>
-            <h1>Add to fridge</h1>
-            <p className="lede">Search FooDB · set quantity · optional review</p>
+            <h1>Add ingredient</h1>
+            <p className="lede">Pick from the catalog · photo · quantity · dates</p>
           </div>
           <div className="row-end">
-            <Link to="/ingredients" className="btn btn-ghost btn-sm">
+            <Link to="/create" className="btn btn-ghost btn-sm">
               Cancel
             </Link>
             <button
               type="button"
               className="btn btn-primary btn-sm"
-              disabled={!active}
+              disabled={!active || busy}
               onClick={() => handleAdd(false)}
             >
-              Add to fridge
+              {busy ? "Saving…" : "Add to fridge"}
             </button>
           </div>
         </div>
@@ -90,12 +99,22 @@ export function AddIngredientPage() {
           <div className="card card-pad" style={{ borderColor: "var(--success)" }}>
             <p>
               {savedMsg}{" "}
-              <Link to="/ingredients" className="btn btn-soft btn-sm">
-                View fridge
+              <Link to="/cookbook" className="btn btn-soft btn-sm">
+                Open CookBook
               </Link>
             </p>
           </div>
         )}
+
+        <section className="card card-pad">
+          <PhotoPicker
+            value={photo}
+            onChange={setPhoto}
+            label="Your photo (optional)"
+            hint="Snap the package or produce · overrides catalog image in your fridge"
+            large
+          />
+        </section>
 
         <section className="card card-pad">
           <div className="field">
@@ -113,10 +132,10 @@ export function AddIngredientPage() {
             />
             <p className="field-hint">
               {catalogLoading
-                ? "Loading FooDB…"
+                ? "Loading catalog…"
                 : catalogError
                   ? catalogError
-                  : `${catalog?.count ?? foods.length} foods · ${catalog?.source ?? "FooDB"}`}
+                  : `${catalog?.count ?? foods.length} foods`}
             </p>
           </div>
 
@@ -159,7 +178,7 @@ export function AddIngredientPage() {
                   {food.macros_complete ? (
                     <span className="badge-ok">Macros</span>
                   ) : (
-                    <span className="tag">FooDB</span>
+                    <span className="tag">Catalog</span>
                   )}
                 </button>
                 <Link
@@ -179,7 +198,7 @@ export function AddIngredientPage() {
             <section className="card">
               <FoodThumb food={active} size="lg" />
               <div className="plate-body">
-                <span className="plate-badge plate-badge--inline">From FooDB</span>
+                <span className="plate-badge plate-badge--inline">From catalog</span>
                 <h3>{active.name}</h3>
                 {active.name_scientific && (
                   <p className="plate-meta" style={{ fontStyle: "italic" }}>
@@ -190,44 +209,23 @@ export function AddIngredientPage() {
                   {active.food_group}
                   {active.food_subgroup ? ` · ${active.food_subgroup}` : ""}
                 </p>
-                {active.description && (
-                  <p className="text-sm muted mt-8 desc-clamp">{active.description}</p>
-                )}
                 <div className="mt-12">
                   <MacroPills macros={active.macros} />
                 </div>
-                <p className="field-hint mt-12">
-                  Per 100g when available · catalog id {active.id}
-                </p>
               </div>
             </section>
 
             <section className="card card-pad">
-              <h2 className="card-title">In your kitchen</h2>
-              <div className="field-row mt-12">
-                <div className="field">
-                  <label htmlFor="qty">Quantity</label>
-                  <input
-                    id="qty"
-                    type="text"
-                    value={quantity}
-                    onChange={(e) => setQuantity(e.target.value)}
-                    placeholder="1 head, 200g…"
-                  />
-                </div>
-                <div className="field">
-                  <label htmlFor="loc">Location</label>
-                  <select
-                    id="loc"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value as FridgeLocation)}
-                  >
-                    <option>Fridge</option>
-                    <option>Freezer</option>
-                    <option>Pantry</option>
-                    <option>Counter</option>
-                  </select>
-                </div>
+              <h2 className="card-title">In your fridge</h2>
+              <div className="field mt-12">
+                <label htmlFor="qty">Quantity</label>
+                <input
+                  id="qty"
+                  type="text"
+                  value={quantity}
+                  onChange={(e) => setQuantity(e.target.value)}
+                  placeholder="1 head, 200g…"
+                />
               </div>
               <div className="field-row">
                 <div className="field">
@@ -255,11 +253,6 @@ export function AddIngredientPage() {
                 <label>Quality rating</label>
                 <StarRating value={rating} onChange={setRatingLocal} size="lg" />
               </div>
-              {active && (
-                <Link to={`/ingredients/${encodeURIComponent(active.id)}`} className="btn btn-soft btn-sm">
-                  View full ingredient page
-                </Link>
-              )}
               <div className="field">
                 <label htmlFor="notes">Notes</label>
                 <textarea
@@ -271,11 +264,21 @@ export function AddIngredientPage() {
               </div>
 
               <div className="row-end mt-16">
-                <button type="button" className="btn btn-secondary" onClick={() => handleAdd(true)} disabled={!active}>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => handleAdd(true)}
+                  disabled={!active || busy}
+                >
                   Save &amp; add another
                 </button>
-                <button type="button" className="btn btn-primary" onClick={() => handleAdd(false)} disabled={!active}>
-                  Add to fridge
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => handleAdd(false)}
+                  disabled={!active || busy}
+                >
+                  {busy ? "Saving…" : "Add to fridge"}
                 </button>
               </div>
             </section>
@@ -285,18 +288,11 @@ export function AddIngredientPage() {
 
       <aside className="rail">
         <div className="card card-pad">
-          <h2 className="card-title">Why FooDB?</h2>
-          <p className="muted text-sm mt-8">
-            Name, description, group, subgroup, picture, and macronutrients when present in the dump. Full compound
-            graph stays offline for later enrichment.
-          </p>
-        </div>
-        <div className="card card-pad">
           <h2 className="card-title">Tips</h2>
           <ul className="muted text-sm mt-8 tip-list">
-            <li>Filter by group to narrow results</li>
-            <li>Use grams in quantity when you want macros later</li>
-            <li>Fridge data is stored only in this browser</li>
+            <li>Add a photo so your fridge is easy to scan</li>
+            <li>Use grams in quantity for meal macros later</li>
+            <li>Everything goes into one fridge list</li>
           </ul>
         </div>
       </aside>

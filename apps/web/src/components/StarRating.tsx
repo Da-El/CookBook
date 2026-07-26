@@ -8,7 +8,7 @@ type Props = {
 };
 
 /**
- * 10-star rating (Grok Cookbook standard for meals and ingredients).
+ * 10-step rating using CSS segments (no emoji stars).
  */
 export function StarRating({
   value,
@@ -23,22 +23,20 @@ export function StarRating({
   return (
     <div className={`star-rating ${size === "lg" ? "star-rating--lg" : ""}`}>
       <div
-        className="stars"
+        className="rating-pips"
         role={interactive ? "radiogroup" : "img"}
-        aria-label={`${clamped} of ${max} stars`}
+        aria-label={`${clamped} of ${max}`}
       >
         {Array.from({ length: max }, (_, i) => i + 1).map((n) => (
           <button
             key={n}
             type="button"
-            className={`star-btn ${n <= clamped ? "on" : ""}`}
+            className={`rating-pip ${n <= clamped ? "on" : ""}`}
             disabled={!interactive}
             onClick={() => onChange?.(n === clamped ? 0 : n)}
-            aria-label={`${n} of ${max} stars`}
-            title={`${n}/10`}
-          >
-            {n <= clamped ? "★" : "☆"}
-          </button>
+            aria-label={`${n} of ${max}`}
+            title={`${n}/${max}`}
+          />
         ))}
       </div>
       {showValue && (

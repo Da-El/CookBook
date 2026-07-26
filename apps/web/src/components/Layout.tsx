@@ -1,12 +1,27 @@
+import type { ReactElement } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import { useApp } from "../context/AppContext";
+import {
+  BrandMark,
+  IconBook,
+  IconBrowse,
+  IconCreate,
+  IconHome,
+  IconMoon,
+  IconSun,
+} from "./Icons";
+import { PwaInstallHint } from "./PwaInstallHint";
 
-const links = [
-  { to: "/", label: "Home", icon: "⌂", end: true },
-  { to: "/kitchen", label: "Kitchen", icon: "☰" },
-  { to: "/ingredients/browse", label: "Foods", icon: "◎" },
-  { to: "/ingredients", label: "Fridge", icon: "◈" },
-  { to: "/settings", label: "Settings", icon: "⚙" },
+const links: {
+  to: string;
+  label: string;
+  end?: boolean;
+  Icon: (props: { className?: string; size?: number }) => ReactElement;
+}[] = [
+  { to: "/", label: "Home", end: true, Icon: IconHome },
+  { to: "/browse", label: "Browse", Icon: IconBrowse },
+  { to: "/create", label: "Create", Icon: IconCreate },
+  { to: "/cookbook", label: "CookBook", Icon: IconBook },
 ];
 
 export function Layout() {
@@ -24,25 +39,23 @@ export function Layout() {
     <div className="app-shell">
       <header className="top-nav">
         <div className="top-nav-inner">
-          <NavLink to="/" className="brand">
-            <span className="brand-mark" aria-hidden>
-              🍳
-            </span>
+          <NavLink to="/" className="brand" end>
+            <BrandMark />
             <span className="brand-name">
-              Grok<em>Cookbook</em>
+              Cook<em>Book</em>
             </span>
           </NavLink>
 
           <nav className="top-links" aria-label="Primary">
-            {links.map((l) => (
+            {links.map(({ to, label, end, Icon }) => (
               <NavLink
-                key={l.to}
-                to={l.to}
-                end={l.end}
+                key={to}
+                to={to}
+                end={end}
                 className={({ isActive }) => (isActive ? "active" : undefined)}
               >
-                <span className="nav-ico">{l.icon}</span>
-                <span className="nav-label">{l.label}</span>
+                <Icon className="nav-ico-svg" />
+                <span className="nav-label">{label}</span>
               </NavLink>
             ))}
           </nav>
@@ -55,22 +68,17 @@ export function Layout() {
               aria-pressed={theme === "dark"}
               title={theme === "dark" ? "Light mode" : "Dark mode"}
             >
-              <span>{theme === "dark" ? "☀️" : "🌙"}</span>
+              {theme === "dark" ? <IconSun /> : <IconMoon />}
             </button>
             {user ? (
-              <>
-                <NavLink to="/ingredients/add" className="btn btn-primary btn-sm nav-cook-label">
-                  Add ingredient
-                </NavLink>
-                <NavLink
-                  to="/settings"
-                  className="avatar avatar--sm avatar--accent"
-                  aria-label={user.display_name}
-                  title={`@${user.handle}`}
-                >
-                  <span>{initials}</span>
-                </NavLink>
-              </>
+              <NavLink
+                to="/cookbook"
+                className="avatar avatar--sm avatar--accent"
+                aria-label={user.display_name}
+                title={`@${user.handle}`}
+              >
+                <span>{initials}</span>
+              </NavLink>
             ) : (
               <>
                 <NavLink to="/login" className="btn btn-secondary btn-sm">
@@ -85,18 +93,19 @@ export function Layout() {
         </div>
       </header>
 
+      <PwaInstallHint />
       <Outlet />
 
       <nav className="mobile-nav" aria-label="Mobile">
-        {links.map((l) => (
+        {links.map(({ to, label, end, Icon }) => (
           <NavLink
-            key={l.to}
-            to={l.to}
-            end={l.end}
+            key={to}
+            to={to}
+            end={end}
             className={({ isActive }) => (isActive ? "active" : undefined)}
           >
-            <span className="ico">{l.icon}</span>
-            {l.label === "Settings" ? "More" : l.label}
+            <Icon className="ico" size={22} />
+            <span>{label}</span>
           </NavLink>
         ))}
       </nav>

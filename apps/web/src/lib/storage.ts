@@ -9,7 +9,12 @@ export function loadFridge(): FridgeItem[] {
     const raw = localStorage.getItem(FRIDGE_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw) as FridgeItem[];
-    return Array.isArray(parsed) ? parsed : [];
+    if (!Array.isArray(parsed)) return [];
+    return parsed.map((item) => ({
+      ...item,
+      location: "Fridge" as const,
+      photoUrl: item.photoUrl ?? null,
+    }));
   } catch {
     return [];
   }
