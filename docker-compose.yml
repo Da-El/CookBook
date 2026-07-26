@@ -1,3 +1,9 @@
+# Local stack for CookBook
+# Usage:
+#   docker compose up -d db          # Postgres only (API runs on host with cargo)
+#   docker compose up -d             # Postgres + API (after first image build)
+#   docker compose up -d --build     # rebuild API image
+
 services:
   db:
     image: postgres:16-alpine
@@ -14,7 +20,29 @@ services:
       test: ["CMD-SHELL", "pg_isready -U cookbook -d cookbook"]
       interval: 5s
       timeout: 5s
-      retries: 10
+      retries: 15
+      start_period: 10s
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cookbook-api
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_URL: postgres://cookbook:cookbook@db:5432/cookbook
+      HOST: 0.0.0.0
+      PORT: "8080"
+      CATALOG_PATH: /app/catalog.json
+      STATIC_DIR: /app/static
+      JWT_SECRET: local-dev-jwt-secret-change-in-production-32
+      RUST_LOG: cookbook_api=info,tower_http=info
+    profiles:
+      - full   # only start with: docker compose --profile full up -d
 
 volumes:
   cookbook_pg:
