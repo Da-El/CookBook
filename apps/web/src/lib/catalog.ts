@@ -7,18 +7,40 @@ export async function loadCatalog(): Promise<CatalogPayload> {
   if (cache) return cache;
   if (loadPromise) return loadPromise;
 
-  loadPromise = fetch("/data/catalog.json")
-    .then(async (res) => {
-      if (!res.ok) throw new Error(`Failed to load catalog (${res.status})`);
-      const data = (await res.json()) as CatalogPayload;
-      data.foods = (data.foods || []).map((f) => ensureFoodShape(f));
-      cache = data;
-      return data;
-    })
-    .catch((err) => {
-      loadPromise = null;
-      throw err;
-    });
+  loadPromise = (async () => {
+    // Prefer API (Rust backend) when available; fall back to static FooDB catalog.
+    try {
+      const base = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, "") ?? "";
+      const res = await fetch(`${base}/v1/foods?limit=1000`);
+      if (res.ok) {
+        const body = (await res.json()) as { total?: number; items: CatalogFood[] };
+        if (body.items?.length) {
+          const data: CatalogPayload = {
+            version: 3,
+            source: "API /v1/foods",
+            license: "FooDB CC BY-NC + USDA public domain",
+            generated_at: new Date().toISOString(),
+            count: body.total ?? body.items.length,
+            foods: body.items.map((f) => ensureFoodShape(f as CatalogFood)),
+          };
+          cache = data;
+          return data;
+        }
+      }
+    } catch {
+      /* offline / API down */
+    }
+
+    const res = await fetch("/data/catalog.json");
+    if (!res.ok) throw new Error(`Failed to load catalog (${res.status})`);
+    const data = (await res.json()) as CatalogPayload;
+    data.foods = (data.foods || []).map((f) => ensureFoodShape(f));
+    cache = data;
+    return data;
+  })().catch((err) => {
+    loadPromise = null;
+    throw err;
+  });
 
   return loadPromise;
 }

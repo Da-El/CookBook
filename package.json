@@ -5,8 +5,13 @@
   "description": "CookBook monorepo — web first",
   "scripts": {
     "dev": "npm --prefix apps/web run dev",
+    "dev:web": "npm --prefix apps/web run dev",
+    "dev:api": "cargo run -p cookbook-api",
     "build": "npm --prefix apps/web run build",
+    "build:api": "cargo build -p cookbook-api --release",
     "preview": "npm --prefix apps/web run preview",
+    "db:up": "docker compose up -d db",
+    "db:down": "docker compose down",
     "catalog": "node scripts/build-catalog.mjs",
     "catalog:usda": "node scripts/merge-usda.mjs",
     "catalog:enrich": "node scripts/enrich-catalog.mjs",

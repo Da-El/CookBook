@@ -1,0 +1,30 @@
+# Render Blueprint: https://render.com/docs/blueprint-spec
+# Deploy: Dashboard → New → Blueprint → connect this repo
+
+services:
+  - type: web
+    name: cookbook-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /healthz
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: cookbook-db
+          property: connectionString
+      - key: CATALOG_PATH
+        value: /app/catalog.json
+      - key: STATIC_DIR
+        value: /app/static
+      - key: RUST_LOG
+        value: cookbook_api=info,tower_http=info
+      - key: HOST
+        value: 0.0.0.0
+
+databases:
+  - name: cookbook-db
+    plan: free
+    databaseName: cookbook
+    user: cookbook

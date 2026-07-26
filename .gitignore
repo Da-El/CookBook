@@ -2,6 +2,15 @@
 node_modules/
 **/node_modules/
 
+# Rust
+/target/
+**/*.rs.bk
+Cargo.lock.bak
+
+# Local env
+.env
+gh-auth-*.txt
+
 # Build outputs
 dist/
 **/dist/

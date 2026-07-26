@@ -1,8 +1,18 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useApp } from "../context/AppContext";
+import { api, apiBase } from "../lib/api";
 
 export function HomePage() {
   const { fridge, foods, catalog } = useApp();
+  const [apiStatus, setApiStatus] = useState<string>("checking…");
+
+  useEffect(() => {
+    api
+      .health()
+      .then((h) => setApiStatus(`${h.status} · ${h.service} v${h.version}`))
+      .catch(() => setApiStatus("offline (using static catalog)"));
+  }, []);
 
   return (
     <div className="page">
@@ -10,19 +20,19 @@ export function HomePage() {
         <div className="page-hero">
           <div>
             <h1>Today’s table</h1>
-            <p className="lede">Start with your kitchen inventory — meals &amp; social feed come next.</p>
+            <p className="lede">React + Vite frontend · Rust/Axum API · PostgreSQL · Render</p>
           </div>
         </div>
 
         <section className="card card-pad">
           <h2 className="card-title">Welcome to CookBook</h2>
           <p className="muted text-sm mt-8">
-            This working slice focuses on <strong>ingredients</strong>: search the FooDB catalog, add items to
-            your fridge, and manage them. Your fridge is saved in this browser.
+            Browse FooDB ingredients, stock your fridge, rate foods. Backend powers health/foods/fridge when
+            running; catalog falls back to static JSON offline.
           </p>
           <div className="row-end mt-16" style={{ justifyContent: "flex-start", gap: 10 }}>
             <Link to="/ingredients/browse" className="btn btn-primary">
-              Browse all 992 foods
+              Browse all foods
             </Link>
             <Link to="/ingredients" className="btn btn-secondary">
               Open fridge
@@ -35,32 +45,36 @@ export function HomePage() {
 
         <section className="card card-pad">
           <div className="card-head">
-            <h2 className="card-title">Quick stats</h2>
+            <h2 className="card-title">Stack status</h2>
           </div>
           <div className="nutrient-grid" style={{ gridTemplateColumns: "1fr 1fr 1fr" }}>
             <div className="nutrient">
               <div className="val">{catalog?.count ?? "…"}</div>
-              <div className="lbl">Catalog</div>
+              <div className="lbl">Foods</div>
             </div>
             <div className="nutrient">
               <div className="val">{fridge.length}</div>
-              <div className="lbl">In fridge</div>
+              <div className="lbl">Fridge</div>
             </div>
             <div className="nutrient">
               <div className="val">{foods.filter((f) => f.macros_complete).length || "—"}</div>
               <div className="lbl">W/ macros</div>
             </div>
           </div>
+          <p className="text-sm muted mt-16">
+            API base: <code>{apiBase()}</code>
+            <br />
+            Health: {apiStatus}
+          </p>
         </section>
       </div>
 
       <aside className="rail">
         <div className="card card-pad">
-          <h2 className="card-title">Catalog source</h2>
+          <h2 className="card-title">Deploy</h2>
           <p className="muted text-sm mt-8">
-            {catalog?.source ?? "Loading…"}
-            <br />
-            <span className="text-sm">CC BY-NC 4.0 FooDB data · attribution required</span>
+            Connect this repo on Render with <code>render.yaml</code> — API + Postgres + static SPA in one Docker
+            service.
           </p>
         </div>
       </aside>

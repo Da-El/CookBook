@@ -1,0 +1,94 @@
+mod catalog;
+mod error;
+mod routes;
+mod state;
+
+use axum::Router;
+use state::AppState;
+use std::net::SocketAddr;
+use std::path::PathBuf;
+use tower_http::cors::{Any, CorsLayer};
+use tower_http::services::{ServeDir, ServeFile};
+use tower_http::trace::TraceLayer;
+use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    dotenvy::dotenv().ok();
+
+    tracing_subscriber::registry()
+        .with(
+            tracing_subscriber::EnvFilter::try_from_default_env()
+                .unwrap_or_else(|_| "cookbook_api=info,tower_http=info".into()),
+        )
+        .with(tracing_subscriber::fmt::layer())
+        .init();
+
+    let database_url = std::env::var("DATABASE_URL").unwrap_or_else(|_| {
+        "postgres://cookbook:cookbook@127.0.0.1:5432/cookbook".to_string()
+    });
+    let host = std::env::var("HOST").unwrap_or_else(|_| "0.0.0.0".to_string());
+    let port: u16 = std::env::var("PORT")
+        .ok()
+        .and_then(|p| p.parse().ok())
+        .unwrap_or(8080);
+    let catalog_path = std::env::var("CATALOG_PATH").unwrap_or_else(|_| {
+        // monorepo default
+        "apps/web/public/data/catalog.json".to_string()
+    });
+    let static_dir = std::env::var("STATIC_DIR").ok();
+
+    tracing::info!(%database_url, %catalog_path, "starting cookbook-api");
+
+    let pool = match cookbook_db::connect(&database_url).await {
+        Ok(pool) => {
+            if let Err(e) = cookbook_db::migrate(&pool).await {
+                tracing::error!(error = %e, "migration failed");
+                return Err(e);
+            }
+            Some(pool)
+        }
+        Err(e) => {
+            tracing::warn!(
+                error = %e,
+                "database unavailable — API will start in degraded mode (catalog + health only)"
+            );
+            None
+        }
+    };
+
+    let catalog = catalog::load_catalog(&catalog_path)?;
+    tracing::info!(foods = catalog.foods.len(), "catalog loaded");
+
+    let state = AppState { pool, catalog };
+
+    let cors = CorsLayer::new()
+        .allow_origin(Any)
+        .allow_methods(Any)
+        .allow_headers(Any);
+
+    let mut app = Router::new()
+        .merge(routes::router())
+        .layer(TraceLayer::new_for_http())
+        .layer(cors)
+        .with_state(state);
+
+    // Optional: serve SPA build (used on Render single-service or local preview)
+    if let Some(dir) = static_dir {
+        let dir = PathBuf::from(dir);
+        if dir.exists() {
+            tracing::info!(path = %dir.display(), "serving static frontend");
+            let index = dir.join("index.html");
+            let spa = ServeDir::new(&dir).not_found_service(ServeFile::new(index));
+            app = app.fallback_service(spa);
+        } else {
+            tracing::warn!(path = %dir.display(), "STATIC_DIR set but missing");
+        }
+    }
+
+    let addr: SocketAddr = format!("{host}:{port}").parse()?;
+    tracing::info!(%addr, "listening");
+    let listener = tokio::net::TcpListener::bind(addr).await?;
+    axum::serve(listener, app).await?;
+    Ok(())
+}

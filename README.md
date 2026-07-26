@@ -1,25 +1,53 @@
 # CookBook
 
-A chef-focused kitchen web app: browse FooDB ingredients, log a fridge, rate foods (10★), and (soon) meals & social feed.
+Chef kitchen web app: FooDB ingredients, fridge, 10★ ratings, meals & social next.
 
-**Stack (web-first):** Vite + React + TypeScript. Catalog built from **FooDB** + **USDA SR Legacy** overlays.
+## Stack
 
-## Quick start
+| Layer | Tech |
+|-------|------|
+| Frontend | **React + Vite** (`apps/web`) |
+| Backend | **Rust (Axum)** (`crates/cookbook-api`) |
+| Database | **PostgreSQL** |
+| Hosting | **Render** (`render.yaml` + `Dockerfile`) |
+
+Catalog data: **FooDB** + **USDA** overlays → `apps/web/public/data/catalog.json`.
+
+## Quick start (frontend only)
 
 ```powershell
-# Need Node 20+
 cd apps/web
 npm install
 npm run dev
 ```
 
-Open the URL Vite prints (usually http://127.0.0.1:5173).
+→ http://127.0.0.1:5173
+
+## Full local stack
+
+```powershell
+# 1) Postgres
+docker compose up -d db
+
+# 2) API (needs Rust + Docker Postgres)
+copy .env.example .env
+cargo run -p cookbook-api
+
+# 3) Web (separate terminal)
+cd apps/web
+npm run dev
+```
+
+Vite proxies `/v1` and `/healthz` to `http://127.0.0.1:8080`.
+
+See **[DEPLOY.md](./DEPLOY.md)** for Render.
 
 From repo root:
 
 ```powershell
-npm run dev      # starts apps/web
-npm run build    # production build
+npm run dev        # web only
+npm run build      # web production build
+cargo run -p cookbook-api
 ```
 
 ## Features (current)
