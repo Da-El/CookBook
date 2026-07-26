@@ -1,6 +1,6 @@
 /* CookBook service worker — network-first so deploys show up */
 // Bump CACHE on every release so old shells are dropped.
-const CACHE = "cookbook-shell-v3";
+const CACHE = "cookbook-shell-v4-kitchen";
 const PRECACHE = ["/manifest.webmanifest", "/icon.svg", "/icon-maskable.svg"];
 
 self.addEventListener("install", (event) => {

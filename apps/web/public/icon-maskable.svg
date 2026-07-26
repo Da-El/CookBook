@@ -2,13 +2,13 @@
   <rect width="512" height="512" fill="url(#bg)"/>
   <g transform="translate(64 64) scale(0.75)">
     <path d="M256 112c-56 0-108 18-144 44v212c38-22 88-36 144-36V112z" fill="#fff"/>
-    <path d="M256 112c56 0 108 18 144 44v212c-38-22-88-36-144-36V112z" fill="#e8eefc"/>
-    <path d="M256 112v232" stroke="#1e3a8a" stroke-width="16" stroke-linecap="round"/>
+    <path d="M256 112c56 0 108 18 144 44v212c-38-22-88-36-144-36V112z" fill="#f7efe4"/>
+    <path d="M256 112v232" stroke="#7a3d18" stroke-width="16" stroke-linecap="round"/>
   </g>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#3b82f6"/>
-      <stop offset="1" stop-color="#1d4ed8"/>
+      <stop stop-color="#e07a3d"/>
+      <stop offset="1" stop-color="#c45c26"/>
     </linearGradient>
   </defs>
 </svg>

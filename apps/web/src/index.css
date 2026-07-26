@@ -1,37 +1,37 @@
 /* ==========================================================================
    CookBook Design System
-   Light enterprise SaaS · clean neutrals · indigo accent
+   Warm kitchen · cream canvas · terracotta accent · herb green secondary
    ========================================================================== */
 
-/* --- Light (default) --- */
+/* --- Light (default) — Warm kitchen --- */
 :root {
-  --bg-canvas: #f4f6f9;
-  --bg-canvas-mid: #eef1f6;
-  --bg-surface: #ffffff;
-  --bg-surface-2: #f8fafc;
-  --bg-hover: #f1f5f9;
-  --bg-inset: #e8edf3;
-  --border: #e2e8f0;
-  --border-strong: #cbd5e1;
-  --text: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #94a3b8;
-  --text-on-accent: #ffffff;
-  --accent: #2563eb;
-  --accent-hover: #1d4ed8;
-  --accent-soft: rgba(37, 99, 235, 0.1);
-  --accent-2: #0d9488;
-  --accent-2-soft: rgba(13, 148, 136, 0.1);
-  --success: #059669;
-  --warning: #d97706;
-  --danger: #dc2626;
-  --link: #2563eb;
-  --star: #f59e0b;
-  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
-  --shadow: 0 4px 16px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
-  --shadow-lg: 0 12px 40px rgba(15, 23, 42, 0.08);
-  --radius: 12px;
-  --radius-sm: 8px;
+  --bg-canvas: #f3efe6;
+  --bg-canvas-mid: #ebe4d6;
+  --bg-surface: #fffcf7;
+  --bg-surface-2: #f7f1e6;
+  --bg-hover: #f0e8da;
+  --bg-inset: #e8dfd0;
+  --border: #d9cfbc;
+  --border-strong: #c4b8a2;
+  --text: #2a2318;
+  --text-secondary: #5c5346;
+  --text-muted: #8a8070;
+  --text-on-accent: #fffaf3;
+  --accent: #c45c26;
+  --accent-hover: #a84c1c;
+  --accent-soft: rgba(196, 92, 38, 0.12);
+  --accent-2: #3d6b4f;
+  --accent-2-soft: rgba(61, 107, 79, 0.12);
+  --success: #3d6b4f;
+  --warning: #c45c26;
+  --danger: #b91c1c;
+  --link: #b45309;
+  --star: #d97706;
+  --shadow-sm: 0 1px 2px rgba(42, 35, 24, 0.05);
+  --shadow: 0 4px 16px rgba(42, 35, 24, 0.07), 0 1px 3px rgba(42, 35, 24, 0.04);
+  --shadow-lg: 0 12px 40px rgba(42, 35, 24, 0.1);
+  --radius: 14px;
+  --radius-sm: 10px;
   --radius-xs: 6px;
   --radius-pill: 999px;
   --font-sans: "Inter", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif;
@@ -44,38 +44,38 @@
   --avatar-md: 44px;
   --avatar-lg: 72px;
   --avatar-xl: 96px;
-  --focus: 0 0 0 3px rgba(37, 99, 235, 0.28);
+  --focus: 0 0 0 3px rgba(196, 92, 38, 0.3);
   color-scheme: light;
 }
 
-/* --- Dark (optional) --- */
+/* --- Dark — warm kitchen night --- */
 [data-theme="dark"] {
-  --bg-canvas: #0b1220;
-  --bg-canvas-mid: #0f172a;
-  --bg-surface: #111827;
-  --bg-surface-2: #1e293b;
-  --bg-hover: #243044;
-  --bg-inset: #0f172a;
-  --border: #1e293b;
-  --border-strong: #334155;
-  --text: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --text-on-accent: #ffffff;
-  --accent: #3b82f6;
-  --accent-hover: #60a5fa;
-  --accent-soft: rgba(59, 130, 246, 0.16);
-  --accent-2: #2dd4bf;
-  --accent-2-soft: rgba(45, 212, 191, 0.14);
-  --success: #34d399;
-  --warning: #fbbf24;
+  --bg-canvas: #1a1510;
+  --bg-canvas-mid: #221c16;
+  --bg-surface: #241e18;
+  --bg-surface-2: #2e261f;
+  --bg-hover: #3a3028;
+  --bg-inset: #15110d;
+  --border: #3d342a;
+  --border-strong: #52463a;
+  --text: #f5efe6;
+  --text-secondary: #c4b8a8;
+  --text-muted: #8a7f70;
+  --text-on-accent: #1a1510;
+  --accent: #e07a3d;
+  --accent-hover: #f09050;
+  --accent-soft: rgba(224, 122, 61, 0.16);
+  --accent-2: #6b9b7a;
+  --accent-2-soft: rgba(107, 155, 122, 0.14);
+  --success: #6b9b7a;
+  --warning: #e07a3d;
   --danger: #f87171;
-  --link: #60a5fa;
+  --link: #f0a060;
   --star: #fbbf24;
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
   --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.5);
-  --focus: 0 0 0 3px rgba(59, 130, 246, 0.35);
+  --focus: 0 0 0 3px rgba(224, 122, 61, 0.35);
   color-scheme: dark;
 }
 
@@ -101,7 +101,7 @@ body {
   min-height: 100vh;
   line-height: 1.5;
   background-image:
-    radial-gradient(ellipse 80% 40% at 50% -5%, rgba(37, 99, 235, 0.04), transparent 55%);
+    radial-gradient(ellipse 80% 40% at 50% -5%, rgba(196, 92, 38, 0.06), transparent 55%);
 }
 
 a {
@@ -185,11 +185,11 @@ ul {
   height: 36px;
   flex-shrink: 0;
   border-radius: 10px;
-  background: linear-gradient(145deg, #3b82f6 0%, #1d4ed8 55%, #0f766e 100%);
+  background: linear-gradient(145deg, #e07a3d 0%, #c45c26 55%, #3d6b4f 100%);
   color: var(--text-on-accent);
   display: grid;
   place-items: center;
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.28);
+  box-shadow: 0 2px 8px rgba(196, 92, 38, 0.28);
   overflow: hidden;
 }
 
@@ -584,7 +584,7 @@ ul {
 }
 
 .avatar--accent {
-  background: linear-gradient(145deg, #3b82f6, #1e40af);
+  background: linear-gradient(145deg, #e07a3d, #a84c1c);
   color: var(--text-on-accent);
 }
 
@@ -2510,7 +2510,7 @@ code {
 .hero-welcome {
   overflow: hidden;
   background:
-    radial-gradient(ellipse 70% 60% at 0% 0%, rgba(37, 99, 235, 0.08), transparent 55%),
+    radial-gradient(ellipse 70% 60% at 0% 0%, rgba(196, 92, 38, 0.1), transparent 55%),
     radial-gradient(ellipse 50% 45% at 100% 100%, rgba(13, 148, 136, 0.06), transparent 50%),
     var(--bg-surface);
 }
@@ -2548,7 +2548,7 @@ code {
 
 .profile-cover--book {
   background:
-    linear-gradient(135deg, rgba(37, 99, 235, 0.12) 0%, transparent 50%),
+    linear-gradient(135deg, rgba(196, 92, 38, 0.12) 0%, transparent 50%),
     linear-gradient(180deg, #e2e8f0 0%, #f8fafc 100%);
   height: 88px;
 }

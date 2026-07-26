@@ -75,7 +75,7 @@ type Props = {
  * Followers / following open a list modal.
  */
 export function CookbookProfile({ data, actions, footer }: Props) {
-  const style = (data.cover_style || "parchment").toLowerCase().replace(/[^a-z0-9-]/g, "");
+  const style = (data.cover_style || "kitchen").toLowerCase().replace(/[^a-z0-9-]/g, "");
   const title =
     data.cookbook_title?.trim() ||
     `${data.display_name.split(/\s+/)[0] || data.display_name}'s CookBook`;

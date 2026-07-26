@@ -264,11 +264,11 @@ export type UpdateProfileBody = {
 };
 
 export const COVER_STYLES = [
+  { id: "kitchen", label: "Kitchen", blurb: "Warm terracotta (app default)" },
   { id: "parchment", label: "Parchment", blurb: "Classic paper cookbook" },
   { id: "linen", label: "Linen", blurb: "Soft fabric cover" },
-  { id: "indigo", label: "Indigo", blurb: "Enterprise cool" },
-  { id: "kitchen", label: "Kitchen", blurb: "Warm terracotta" },
   { id: "forest", label: "Forest", blurb: "Fresh greens" },
+  { id: "indigo", label: "Indigo", blurb: "Cool enterprise" },
   { id: "midnight", label: "Midnight", blurb: "Dark leather" },
   { id: "rose", label: "Rose", blurb: "Soft blush" },
   { id: "ocean", label: "Ocean", blurb: "Calm blues" },

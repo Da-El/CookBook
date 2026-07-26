@@ -29,7 +29,7 @@ export function ProfileCustomize({ open, profile, onClose, onSaved }: Props) {
   const [bio, setBio] = useState(profile.bio || "");
   const [title, setTitle] = useState(profile.cookbook_title || "");
   const [tagline, setTagline] = useState(profile.tagline || "");
-  const [coverStyle, setCoverStyle] = useState(profile.cover_style || "parchment");
+  const [coverStyle, setCoverStyle] = useState(profile.cover_style || "kitchen");
   const [accent, setAccent] = useState(profile.accent_hex || "");
   const [cuisines, setCuisines] = useState(profile.favorite_cuisines || "");
   const [location, setLocation] = useState(profile.location_label || "");
@@ -47,7 +47,7 @@ export function ProfileCustomize({ open, profile, onClose, onSaved }: Props) {
     setBio(profile.bio || "");
     setTitle(profile.cookbook_title || "");
     setTagline(profile.tagline || "");
-    setCoverStyle(profile.cover_style || "parchment");
+    setCoverStyle(profile.cover_style || "kitchen");
     setAccent(profile.accent_hex || "");
     setCuisines(profile.favorite_cuisines || "");
     setLocation(profile.location_label || "");

@@ -3,15 +3,15 @@
   <!-- open book -->
   <path d="M96 136c52-36 108-52 160-52s108 16 160 52v248c-48-32-104-48-160-48s-112 16-160 48V136z" fill="#fff" fill-opacity=".14"/>
   <path d="M256 112c-56 0-108 18-144 44v212c38-22 88-36 144-36V112z" fill="#fff"/>
-  <path d="M256 112c56 0 108 18 144 44v212c-38-22-88-36-144-36V112z" fill="#e8eefc"/>
-  <path d="M256 112v232" stroke="#1e3a8a" stroke-width="14" stroke-linecap="round"/>
-  <path d="M152 192h64M152 240h80M152 288h56" stroke="#2563eb" stroke-width="14" stroke-linecap="round" opacity=".5"/>
-  <path d="M296 192h64M296 240h80M296 288h56" stroke="#0d9488" stroke-width="14" stroke-linecap="round" opacity=".4"/>
+  <path d="M256 112c56 0 108 18 144 44v212c-38-22-88-36-144-36V112z" fill="#f7efe4"/>
+  <path d="M256 112v232" stroke="#7a3d18" stroke-width="14" stroke-linecap="round"/>
+  <path d="M152 192h64M152 240h80M152 288h56" stroke="#c45c26" stroke-width="14" stroke-linecap="round" opacity=".55"/>
+  <path d="M296 192h64M296 240h80M296 288h56" stroke="#3d6b4f" stroke-width="14" stroke-linecap="round" opacity=".45"/>
   <defs>
     <linearGradient id="bg" x1="64" y1="32" x2="448" y2="480" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#3b82f6"/>
-      <stop offset="0.55" stop-color="#1d4ed8"/>
-      <stop offset="1" stop-color="#0f766e"/>
+      <stop stop-color="#e07a3d"/>
+      <stop offset="0.55" stop-color="#c45c26"/>
+      <stop offset="1" stop-color="#3d6b4f"/>
     </linearGradient>
   </defs>
 </svg>

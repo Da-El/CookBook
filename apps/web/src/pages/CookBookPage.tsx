@@ -36,7 +36,7 @@ function emptyProfile(user: {
     avatar_url: null,
     cookbook_title: "",
     tagline: "",
-    cover_style: "parchment",
+    cover_style: "kitchen",
     accent_hex: null,
     favorite_cuisines: "",
     location_label: "",
