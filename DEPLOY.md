@@ -83,3 +83,23 @@ Auth: Argon2id passwords, 15m JWT access, rotating hashed refresh tokens, sessio
 
 - Render free web services **spin down** after idle; first request may take ~30–60s.
 - Free Postgres may sleep / have limits — fine for demos.
+
+## Live URL (CLI deploy)
+
+- App (API + SPA + PWA): https://cookbook-sqbd.onrender.com
+- Health: https://cookbook-sqbd.onrender.com/healthz
+- Dashboard: https://dashboard.render.com/web/srv-d9iobpf41pts73bi1cg0
+- Postgres: cookbook-db (free)
+
+### Mobile PWA
+
+1. Open the live URL on your phone.
+2. First load may take 30�60s if free tier spun down.
+3. Chrome/Safari: Add to Home Screen / Install app.
+
+### CLI used
+
+`render login`
+`render postgres create --name cookbook-db --plan free ...`
+`render services create --name cookbook --runtime docker --repo Da-El/grok-cookbook ...`
+`render deploys create <serviceId> --wait`
